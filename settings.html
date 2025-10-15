@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Settings - User management and configuration">
+    <title>Settings - Adani-Fintell-Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar and Header will be loaded dynamically -->
+
+        <!-- Main Content -->
+        <main class="app-main" id="main-content">
+            <div class="settings-container">
+                <h2 style="font-size: var(--font-size-3xl); margin-block-end: var(--space-8);">Settings</h2>
+
+                <!-- User Profile Section -->
+                <section class="settings-section">
+                    <div class="settings-section__header">
+                        <h3 class="settings-section__title">User Profile</h3>
+                        <p class="settings-section__description">Manage your account information and preferences</p>
+                    </div>
+
+                    <div class="user-profile">
+                        <div class="user-profile__avatar">
+                            AD
+                        </div>
+                        <div class="user-profile__info">
+                            <h4 class="user-profile__name">Admin User</h4>
+                            <p class="user-profile__email">admin@adani.com</p>
+                            <span class="user-profile__role">System Administrator</span>
+                        </div>
+                    </div>
+
+                    <form class="settings-form">
+                        <div class="settings-form__row">
+                            <div class="settings-form__group">
+                                <label class="label">Full Name</label>
+                                <input type="text" class="input" value="Admin User" />
+                            </div>
+                            <div class="settings-form__group">
+                                <label class="label">Email Address</label>
+                                <input type="email" class="input" value="admin@adani.com" />
+                            </div>
+                        </div>
+
+                        <div class="settings-form__row">
+                            <div class="settings-form__group">
+                                <label class="label">Phone Number</label>
+                                <input type="tel" class="input" value="+91 98765 43210" />
+                            </div>
+                            <div class="settings-form__group">
+                                <label class="label">Department</label>
+                                <select class="select">
+                                    <option>Finance</option>
+                                    <option>Accounting</option>
+                                    <option>Audit</option>
+                                    <option>IT</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-form__actions">
+                            <button type="submit" class="btn btn--primary">Save Changes</button>
+                            <button type="button" class="btn btn--secondary">Cancel</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Notification Settings -->
+                <section class="settings-section">
+                    <div class="settings-section__header">
+                        <h3 class="settings-section__title">Notifications</h3>
+                        <p class="settings-section__description">Configure how you receive alerts and updates</p>
+                    </div>
+
+                    <div class="notification-settings">
+                        <div class="setting-item">
+                            <div class="setting-item__content">
+                                <p class="setting-item__title">Email Notifications</p>
+                                <p class="setting-item__description">Receive alerts via email</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-switch__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-item__content">
+                                <p class="setting-item__title">Anomaly Alerts</p>
+                                <p class="setting-item__description">Get notified when anomalies are detected</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-switch__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-item__content">
+                                <p class="setting-item__title">Processing Complete</p>
+                                <p class="setting-item__description">Notifications when documents finish processing</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" />
+                                <span class="toggle-switch__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-item__content">
+                                <p class="setting-item__title">Weekly Reports</p>
+                                <p class="setting-item__description">Receive weekly summary reports</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-switch__slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Settings -->
+                <section class="settings-section">
+                    <div class="settings-section__header">
+                        <h3 class="settings-section__title">Security</h3>
+                        <p class="settings-section__description">Manage your account security settings</p>
+                    </div>
+
+                    <div class="security-info">
+                        <span class="security-info__icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <div class="security-info__content">
+                            <p class="security-info__title">Your account is secure</p>
+                            <p class="security-info__text">Last login: 15 Oct 2025 at 09:30 AM</p>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-item__content">
+                            <p class="setting-item__title">Two-Factor Authentication</p>
+                            <p class="setting-item__description">Add an extra layer of security to your account</p>
+                        </div>
+                        <button class="btn btn--outline">Enable 2FA</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-item__content">
+                            <p class="setting-item__title">Change Password</p>
+                            <p class="setting-item__description">Update your account password</p>
+                        </div>
+                        <button class="btn btn--outline">Change Password</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-item__content">
+                            <p class="setting-item__title">Session Timeout</p>
+                            <p class="setting-item__description">Automatically log out after inactivity</p>
+                        </div>
+                        <select class="select" style="width: 150px;">
+                            <option>15 minutes</option>
+                            <option selected>30 minutes</option>
+                            <option>1 hour</option>
+                            <option>2 hours</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- Appearance Settings -->
+                <section class="settings-section">
+                    <div class="settings-section__header">
+                        <h3 class="settings-section__title">Appearance</h3>
+                        <p class="settings-section__description">Customize how the application looks</p>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-item__content">
+                            <p class="setting-item__title">Dark Mode</p>
+                            <p class="setting-item__description">Switch to dark theme</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" data-theme-toggle />
+                            <span class="toggle-switch__slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-item__content">
+                            <p class="setting-item__title">Language</p>
+                            <p class="setting-item__description">Select your preferred language</p>
+                        </div>
+                        <select class="select" style="width: 150px;">
+                            <option selected>English</option>
+                            <option>हिंदी (Hindi)</option>
+                            <option>ગુજરાતી (Gujarati)</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module">
+        import { initTemplates } from './js/utils/templates.js';
+        import app from './js/core/app.js';
+        
+        // Initialize templates when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initTemplates({
+                activePage: 'settings',
+                user: {
+                    name: 'Admin User',
+                    role: 'Administrator',
+                    initials: 'AU'
+                }
+            });
+            
+            // Theme toggle
+            document.querySelector('[data-theme-toggle]').addEventListener('change', (e) => {
+                app.toggleTheme();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Analytics Dashboard - Cross-module insights and reporting">
+    <title>Analytics - Adani-Fintell-Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/analytics.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar and Header will be loaded dynamically -->
+
+        <!-- Main Content -->
+        <main class="app-main" id="main-content">
+            <div class="container">
+                <!-- Page Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-block-end: var(--space-8);">
+                    <div>
+                        <h2 style="font-size: var(--font-size-3xl); margin-block-end: var(--space-2);">
+                            Analytics Dashboard
+                        </h2>
+                        <p style="color: var(--color-gray-600); font-size: var(--font-size-lg);">
+                            Cross-module insights and intelligent reporting
+                        </p>
+                    </div>
+                    
+                    <div class="analytics-controls__actions">
+                        <select class="select" data-time-range style="min-width: 150px;">
+                            <option value="7days">Last 7 Days</option>
+                            <option value="30days" selected>Last 30 Days</option>
+                            <option value="90days">Last 90 Days</option>
+                            <option value="1year">Last Year</option>
+                        </select>
+                        <button class="btn btn--outline" data-refresh-analytics>
+                            🔄 Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPIs Section -->
+                <section data-kpi-container style="margin-block-end: var(--space-8);">
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <h3 class="kpi-card__label">Total Invoices</h3>
+                            <p class="kpi-card__value">2,547</p>
+                            <span class="kpi-card__change kpi-card__change--positive">↑ 12.5%</span>
+                        </div>
+
+                        <div class="kpi-card">
+                            <h3 class="kpi-card__label">Total Value</h3>
+                            <p class="kpi-card__value">₹45.2Cr</p>
+                            <span class="kpi-card__change kpi-card__change--positive">↑ 8.3%</span>
+                        </div>
+
+                        <div class="kpi-card">
+                            <h3 class="kpi-card__label">Anomalies Detected</h3>
+                            <p class="kpi-card__value">127</p>
+                            <span class="kpi-card__change kpi-card__change--negative">↓ 15.2%</span>
+                        </div>
+
+                        <div class="kpi-card">
+                            <h3 class="kpi-card__label">Processing Time</h3>
+                            <p class="kpi-card__value">2.4s</p>
+                            <span class="kpi-card__change kpi-card__change--positive">↓ 20.1%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Grid -->
+                <div class="analytics-grid">
+                    <!-- Invoice Trend Chart -->
+                    <div class="analytics-grid__item--two-third">
+                        <div class="chart-container">
+                            <div class="chart-container__header">
+                                <h3 class="chart-container__title">Invoice Processing Trend</h3>
+                            </div>
+                            <div data-chart-invoice-trend style="height: 300px;">
+                                <p style="text-align: center; padding: var(--space-12); color: var(--color-gray-500);">
+                                    Loading chart data...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Rate -->
+                    <div class="analytics-grid__item--third">
+                        <div class="chart-container">
+                            <div class="chart-container__header">
+                                <h3 class="chart-container__title">Processing Success Rate</h3>
+                            </div>
+                            <div data-chart-success-rate style="display: flex; justify-content: center; padding: var(--space-6);">
+                                <p style="text-align: center; padding: var(--space-12); color: var(--color-gray-500);">
+                                    Loading chart data...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Distribution -->
+                    <div class="analytics-grid__item--half">
+                        <div class="chart-container">
+                            <div class="chart-container__header">
+                                <h3 class="chart-container__title">Risk Distribution</h3>
+                            </div>
+                            <div data-chart-risk-distribution style="padding: var(--space-6);">
+                                <p style="text-align: center; padding: var(--space-12); color: var(--color-gray-500);">
+                                    Loading chart data...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Vendors -->
+                    <div class="analytics-grid__item--half">
+                        <div class="chart-container">
+                            <div class="chart-container__header">
+                                <h3 class="chart-container__title">Top Vendors by Volume</h3>
+                            </div>
+                            <div data-chart-top-vendors style="height: 300px; padding: var(--space-6);">
+                                <p style="text-align: center; padding: var(--space-12); color: var(--color-gray-500);">
+                                    Loading chart data...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <section style="margin-block-start: var(--space-8);">
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Module</th>
+                                    <th>Activity</th>
+                                    <th>Status</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15 Oct 2025 14:23</td>
+                                    <td>FinGuard</td>
+                                    <td>Invoice Processed</td>
+                                    <td><span class="badge badge--success">Approved</span></td>
+                                    <td>₹2,50,000</td>
+                                </tr>
+                                <tr>
+                                    <td>15 Oct 2025 13:45</td>
+                                    <td>SheetSense</td>
+                                    <td>Trial Balance Validated</td>
+                                    <td><span class="badge badge--success">Complete</span></td>
+                                    <td>₹125.4Cr</td>
+                                </tr>
+                                <tr>
+                                    <td>15 Oct 2025 12:10</td>
+                                    <td>FinGuard</td>
+                                    <td>Anomaly Detected</td>
+                                    <td><span class="badge badge--warning">Review</span></td>
+                                    <td>₹75,000</td>
+                                </tr>
+                                <tr>
+                                    <td>15 Oct 2025 11:30</td>
+                                    <td>FinGuard</td>
+                                    <td>GST Validation</td>
+                                    <td><span class="badge badge--success">Valid</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>15 Oct 2025 10:15</td>
+                                    <td>SheetSense</td>
+                                    <td>GL Assignment</td>
+                                    <td><span class="badge badge--info">Pending</span></td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module">
+        import { initTemplates } from './js/utils/templates.js';
+        import app from './js/core/app.js';
+        import analyticsController from './js/modules/analytics.js';
+        
+        // Initialize templates and Analytics module when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initTemplates({
+                activePage: 'analytics',
+                user: {
+                    name: 'Admin User',
+                    role: 'Administrator',
+                    initials: 'AU'
+                }
+            });
+            await analyticsController.init();
+        });
+    </script>
+</body>
+</html>

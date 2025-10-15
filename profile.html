@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="User Profile - Adani-Fintell-Suite">
+    <title>Profile - Adani-Fintell-Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar and Header will be injected by templates.js -->
+        
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="content-wrapper">
+                <h2 style="font-size: var(--font-size-3xl); margin-block-end: var(--space-8);">Profile</h2>
+                
+                <!-- Profile Information Card -->
+                <section class="card" style="margin-block-end: var(--space-8);">
+                    <div class="card__header">
+                        <h3 class="card__title">Personal Information</h3>
+                    </div>
+                    
+                    <div style="padding: var(--space-6);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Full Name
+                                </label>
+                                <input type="text" value="Admin User" class="form-input" style="width: 100%;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Email Address
+                                </label>
+                                <input type="email" value="admin@adani.com" class="form-input" style="width: 100%;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Phone Number
+                                </label>
+                                <input type="tel" value="+91 98765 43210" class="form-input" style="width: 100%;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Department
+                                </label>
+                                <input type="text" value="Finance" class="form-input" style="width: 100%;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Role
+                                </label>
+                                <input type="text" value="Administrator" class="form-input" style="width: 100%;" disabled>
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; font-weight: var(--font-weight-medium); color: var(--color-gray-700); margin-block-end: var(--space-2);">
+                                    Employee ID
+                                </label>
+                                <input type="text" value="EMP12345" class="form-input" style="width: 100%;" disabled>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-block-start: var(--space-6); display: flex; gap: var(--space-4); justify-content: flex-end;">
+                            <button class="btn btn--secondary">Cancel</button>
+                            <button class="btn btn--primary">Save Changes</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Account Activity Card -->
+                <section class="card" style="margin-block-end: var(--space-8);">
+                    <div class="card__header">
+                        <h3 class="card__title">Account Activity</h3>
+                    </div>
+                    
+                    <div style="padding: var(--space-6);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6);">
+                            <div style="padding: var(--space-4); background: var(--bg-lighter); border-radius: var(--radius-md);">
+                                <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-block-end: var(--space-2);">Last Login</p>
+                                <p style="font-weight: var(--font-weight-semibold); color: var(--color-gray-900);">15 Oct 2025, 09:30 AM</p>
+                            </div>
+                            
+                            <div style="padding: var(--space-4); background: var(--bg-lighter); border-radius: var(--radius-md);">
+                                <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-block-end: var(--space-2);">Account Created</p>
+                                <p style="font-weight: var(--font-weight-semibold); color: var(--color-gray-900);">01 Jan 2025</p>
+                            </div>
+                            
+                            <div style="padding: var(--space-4); background: var(--bg-lighter); border-radius: var(--radius-md);">
+                                <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-block-end: var(--space-2);">Total Sessions</p>
+                                <p style="font-weight: var(--font-weight-semibold); color: var(--color-gray-900);">142</p>
+                            </div>
+                            
+                            <div style="padding: var(--space-4); background: var(--bg-lighter); border-radius: var(--radius-md);">
+                                <p style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-block-end: var(--space-2);">Status</p>
+                                <p style="font-weight: var(--font-weight-semibold); color: var(--color-success);">Active</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Permissions Card -->
+                <section class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Module Access & Permissions</h3>
+                    </div>
+                    
+                    <div style="padding: var(--space-6);">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--color-gray-200);">
+                                    <th style="text-align: left; padding: var(--space-3); color: var(--color-gray-700); font-weight: var(--font-weight-semibold);">Module</th>
+                                    <th style="text-align: center; padding: var(--space-3); color: var(--color-gray-700); font-weight: var(--font-weight-semibold);">View</th>
+                                    <th style="text-align: center; padding: var(--space-3); color: var(--color-gray-700); font-weight: var(--font-weight-semibold);">Edit</th>
+                                    <th style="text-align: center; padding: var(--space-3); color: var(--color-gray-700); font-weight: var(--font-weight-semibold);">Approve</th>
+                                    <th style="text-align: center; padding: var(--space-3); color: var(--color-gray-700); font-weight: var(--font-weight-semibold);">Export</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--color-gray-200);">
+                                    <td style="padding: var(--space-3); color: var(--color-gray-900);">FinGuard</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--color-gray-200);">
+                                    <td style="padding: var(--space-3); color: var(--color-gray-900);">SheetSense</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--color-gray-200);">
+                                    <td style="padding: var(--space-3); color: var(--color-gray-900);">Analytics</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-gray-400);">-</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-gray-400);">-</td>
+                                    <td style="text-align: center; padding: var(--space-3); color: var(--color-success); font-weight: var(--font-weight-semibold);">✓</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Scripts -->
+    <script type="module">
+        import { initTemplates } from './js/utils/templates.js';
+        
+        // Initialize templates
+        await initTemplates({
+            activePage: 'profile'
+        });
+    </script>
+</body>
+</html>
