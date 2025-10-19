@@ -1,178 +1,365 @@
-/**
- * Navbar/Header Styles
- * Styles for the application header/navbar component
- */
+/* ==========================================================================
+   Adani-Fintell-Suite - Navbar Styles
+   ========================================================================== */
 
-/* Header/Navbar Layout */
-.app-header {
+/* CSS Custom Properties (inherited from main theme) */
+:root {
+    --navbar-height: 64px;
+    --navbar-bg: #FFFFFF;
+    --navbar-border: #E0E0E0;
+    --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Navbar Container
+   ========================================================================== */
+
+.app-navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
-    height: var(--header-height);
+    height: var(--navbar-height);
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+    z-index: 1000;
+}
+
+.navbar-container {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding-inline: var(--space-6);
-    background-color: var(--color-white);
-    border-block-end: 1px solid var(--color-gray-200);
-    box-shadow: var(--shadow-sm);
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--spacing-lg, 2rem);
+    max-width: 100%;
 }
 
-/* Header Brand */
-.app-header__brand {
+/* ==========================================================================
+   Brand Section
+   ========================================================================== */
+
+.navbar-brand {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
 }
 
-.app-header__logo {
-    height: 36px;
+.brand-logo {
+    height: 40px;
     width: auto;
+    object-fit: contain;
 }
 
-/* Header Actions */
-.app-header__actions {
+.brand-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0B74B0 0%, #75479C 50%, #BD3861 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Navbar Right Section (Help & User Profile)
+   ========================================================================== */
+
+.navbar-right {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: 16px;
 }
 
-/* Icon Button */
-.app-header__icon-btn {
+/* ==========================================================================
+   Help Icon Section
+   ========================================================================== */
+
+.navbar-help {
+    position: relative;
+}
+
+.help-icon-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: var(--radius-md);
-    transition: background-color var(--transition-fast);
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
     background: transparent;
-    color: var(--color-gray-700);
-}
-
-.app-header__icon-btn:hover {
-    background-color: var(--color-gray-100);
-}
-
-/* Help Menu Section */
-.app-header__help-wrapper {
-    position: relative;
-}
-
-/* User Profile Section */
-.app-header__user-wrapper {
-    position: relative;
-}
-
-.app-header__user {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
-    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color, #E0E0E0);
+    border-radius: 50%;
     cursor: pointer;
-    transition: all var(--transition-fast);
-    border: 1px solid var(--color-gray-200);
+    transition: all 0.3s ease;
+    color: var(--text-secondary, #4A4A4A);
 }
 
-.app-header__user:hover {
-    background-color: var(--color-gray-50);
-    border-color: var(--color-gray-300);
+.help-icon-btn:hover {
+    background: var(--bg-lighter, #F5F5F5);
+    border-color: var(--adani-blue, #0B74B0);
+    color: var(--adani-blue, #0B74B0);
 }
 
-.app-header__user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+.help-icon-btn[aria-expanded="true"] {
+    background: var(--bg-lighter, #F5F5F5);
+    border-color: var(--adani-blue, #0B74B0);
+    color: var(--adani-blue, #0B74B0);
 }
 
-.app-header__user-name {
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-gray-900);
-    font-size: var(--font-size-sm);
-    line-height: 1.2;
-}
-
-.app-header__user-arrow {
-    flex-shrink: 0;
-    color: var(--color-gray-500);
-    transition: transform var(--transition-fast);
-}
-
-.app-header__user-wrapper:has([data-user-dropdown].is-open) .app-header__user-arrow {
-    transform: rotate(180deg);
-}
-
-.app-header__user-role {
-    font-size: var(--font-size-xs);
-    color: var(--color-gray-600);
-    line-height: 1.2;
-}
-
-/* User Profile Dropdown */
-.app-header__dropdown {
+/* Help Dropdown */
+.help-dropdown {
     position: absolute;
-    top: calc(100% + var(--space-2));
+    top: calc(100% + 8px);
     right: 0;
-    min-width: 240px;
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--color-gray-200);
-    padding: var(--space-2);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all var(--transition-normal);
-    z-index: 1000;
-}
-
-.app-header__dropdown.is-open {
+    width: 260px;
+    background: white;
+    border: 1px solid var(--border-color, #E0E0E0);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    transition: all 0.3s ease;
 }
 
-.app-header__dropdown-item {
+.help-dropdown[data-help-dropdown="hidden"] {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   User Profile Section
+   ========================================================================== */
+
+.navbar-user {
+    position: relative;
+}
+
+.user-profile-btn {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-gray-700);
+    gap: 12px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border-color, #E0E0E0);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-profile-btn:hover {
+    background: var(--bg-lighter, #F5F5F5);
+    border-color: var(--adani-blue, #0B74B0);
+}
+
+/* User Info */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.user-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary, #1A1A1A);
+    line-height: 1.2;
+}
+
+.user-email {
+    font-size: 0.8rem;
+    color: var(--text-muted, #6C757D);
+    line-height: 1.2;
+}
+
+/* Dropdown Icon */
+.dropdown-icon {
+    color: var(--text-secondary, #4A4A4A);
+    transition: transform 0.3s ease;
+}
+
+.user-profile-btn[aria-expanded="true"] .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Profile Dropdown
+   ========================================================================== */
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 280px;
+    background: white;
+    border: 1px solid var(--border-color, #E0E0E0);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.profile-dropdown[data-profile-dropdown="hidden"] {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+/* Dropdown Header */
+.dropdown-header {
+    padding: var(--spacing-md, 1.5rem);
+}
+
+.dropdown-user-info {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-user-details {
+    flex: 1;
+    overflow: hidden;
+}
+
+.dropdown-user-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary, #1A1A1A);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-user-email {
+    font-size: 0.85rem;
+    color: var(--text-muted, #6C757D);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Dropdown Divider */
+.dropdown-divider {
+    height: 1px;
+    background: var(--divider-color, #EEEEEE);
+    margin: 0;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    list-style: none;
+    padding: var(--spacing-xs, 0.5rem) 0;
+    margin: 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px var(--spacing-md, 1.5rem);
+    color: var(--text-primary, #1A1A1A);
     text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+    transition: background 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 0.95rem;
 }
 
-.app-header__dropdown-item:hover {
-    background-color: var(--color-gray-100);
-    color: var(--color-gray-900);
+.dropdown-item:hover {
+    background: var(--bg-lighter, #F5F5F5);
 }
 
-.app-header__dropdown-item--danger {
-    color: var(--color-danger);
-}
-
-.app-header__dropdown-item--danger:hover {
-    background-color: rgba(220, 38, 38, 0.1);
-    color: var(--color-danger);
-}
-
-.app-header__dropdown-icon {
-    width: 16px;
-    height: 16px;
+.dropdown-item svg {
+    color: var(--text-secondary, #4A4A4A);
     flex-shrink: 0;
 }
 
-.app-header__dropdown-divider {
-    height: 1px;
-    background-color: var(--color-gray-200);
-    margin: var(--space-2) 0;
+.logout-btn {
+    color: var(--status-error, #DC3545);
+}
+
+.logout-btn svg {
+    color: var(--status-error, #DC3545);
+}
+
+.logout-btn:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .navbar-container {
+        padding: 0 var(--spacing-md, 1.5rem);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .brand-logo {
+        height: 32px;
+    }
+    
+    .brand-text {
+        font-size: 1.2rem;
+    }
+    
+    .navbar-right {
+        gap: 12px;
+    }
+    
+    .help-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .help-icon-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+    
+    .user-profile-btn {
+        padding: 8px;
+    }
+    
+    .profile-dropdown {
+        width: 260px;
+    }
+    
+    .help-dropdown {
+        width: 240px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .navbar-container {
+        padding: 0 var(--spacing-sm, 1rem);
+    }
+    
+    .brand-logo {
+        height: 28px;
+    }
+    
+    .brand-text {
+        font-size: 1rem;
+    }
+    
+    .dropdown-icon {
+        display: none;
+    }
 }

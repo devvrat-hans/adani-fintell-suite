@@ -1,81 +1,236 @@
-/**
- * Sidebar Styles
- * Styles for the application sidebar navigation component
- */
+/* ==========================================================================
+   Adani-Fintell-Suite - Sidebar Styles
+   ========================================================================== */
 
-/* Sidebar Layout */
+/* CSS Custom Properties */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 64px;
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: #E0E0E0;
+    --sidebar-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Sidebar Container
+   ========================================================================== */
+
 .app-sidebar {
     position: fixed;
-    top: var(--header-height);
+    top: var(--navbar-height, 64px);
     left: 0;
-    bottom: 0;
     width: var(--sidebar-width);
-    z-index: 50;
-    background-color: #fafbfc;
-    border-inline-end: 1px solid var(--color-gray-200);
-    padding: var(--space-4) 0;
+    height: calc(100vh - var(--navbar-height, 64px));
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: var(--sidebar-shadow);
+    z-index: 900;
+    transition: transform 0.3s ease;
     overflow-y: auto;
-    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02);
+    overflow-x: hidden;
 }
 
 /* Sidebar Navigation */
-.app-sidebar__nav {
+.sidebar-nav {
+    padding: 0;
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Sidebar Items
+   ========================================================================== */
+
+.sidebar-item {
+    margin-bottom: 0;
+}
+
+.sidebar-link {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-}
-
-/* Sidebar Sections */
-.app-sidebar__section {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.app-sidebar__section-title {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-gray-600);
-    padding: var(--space-3) var(--space-4);
-    margin-bottom: var(--space-2);
-    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* Sidebar Links */
-.app-sidebar__link {
-    display: block;
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-gray-600);
+    align-items: center;
+    padding: 12px var(--spacing-md, 1.5rem);
+    color: var(--text-secondary, #4A4A4A);
     text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: var(--font-weight-medium);
-    font-size: 0.9375rem;
-    outline: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.sidebar-link:hover {
+    background: var(--bg-lighter, #F5F5F5);
+    color: var(--adani-blue, #0B74B0);
+}
+
+.sidebar-link.active {
+    background: rgba(11, 116, 176, 0.1);
+    color: var(--adani-blue, #0B74B0);
+    font-weight: 600;
+}
+
+/* Sidebar Text */
+.sidebar-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Sidebar Divider
+   ========================================================================== */
+
+.sidebar-divider {
+    height: 1px;
+    background: var(--border-color, #E0E0E0);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Sidebar Section Headers
+   ========================================================================== */
+
+.sidebar-section-header {
+    padding: 12px 1.5rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-lighter, #F5F5F5);
+    min-height: auto !important;
+    height: auto !important;
+}
+
+.sidebar-section-header:first-child {
+    margin-top: 0 !important;
+}
+
+.sidebar-section-header .section-title {
+    font-size: 0.813rem;
+    font-weight: 700;
+    color: var(--adani-blue, #0B74B0);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
     border: none;
-}
-
-.app-sidebar__link:focus {
     outline: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
 }
 
-.app-sidebar__link:hover {
-    background-color: var(--color-gray-100);
-    color: var(--color-gray-900);
+/* ==========================================================================
+   Sidebar Toggle Button (Mobile)
+   ========================================================================== */
+
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    bottom: var(--spacing-lg, 2rem);
+    left: var(--spacing-lg, 2rem);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: all 0.3s ease;
 }
 
-.app-sidebar__link--active {
-    background-color: #eff6ff;
-    color: var(--color-primary);
-    font-weight: var(--font-weight-semibold);
+.sidebar-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive Design */
+.sidebar-toggle svg {
+    color: white;
+}
+
+/* ==========================================================================
+   Sidebar States (Mobile)
+   ========================================================================== */
+
+.app-sidebar[data-sidebar="hidden"] {
+    transform: translateX(-100%);
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+.app-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-color, #E0E0E0);
+    border-radius: 3px;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted, #6C757D);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Tablet */
 @media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 220px;
+    }
+    
+    .sidebar-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
     .app-sidebar {
-        display: none;
+        transform: translateX(-100%);
+    }
+    
+    .app-sidebar[data-sidebar="visible"] {
+        transform: translateX(0);
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+    
+    /* Overlay when sidebar is open */
+    .app-sidebar[data-sidebar="visible"]::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: var(--sidebar-width);
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    :root {
+        --sidebar-width: 80%;
+    }
+    
+    .sidebar-toggle {
+        width: 48px;
+        height: 48px;
+        bottom: var(--spacing-md, 1.5rem);
+        left: var(--spacing-md, 1.5rem);
     }
 }

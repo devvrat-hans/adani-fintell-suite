@@ -1,299 +1,255 @@
 /**
- * Templates - HTML component templates for reusable UI elements
- * Loads sidebar and navbar from HTML template files
+ * Adani-Fintell-Suite - Templates JavaScript
+ * Dynamic template loading and rendering for shared components
  */
 
-// Cache for loaded templates
-const templateCache = {
-    sidebar: null,
-    navbar: null
+'use strict';
+
+// ==========================================================================
+// Template Configuration
+// ==========================================================================
+
+const TEMPLATE_CONFIG = {
+    navbar: {
+        path: 'templates/shared/navbar.html',
+        target: 'navbar-placeholder',
+        scripts: [],
+        styles: [
+            'css/navbar.css'
+        ]
+    },
+    sidebar: {
+        path: 'templates/shared/sidebar.html',
+        target: 'sidebar-placeholder',
+        scripts: [],
+        styles: [
+            'css/sidebar.css'
+        ]
+    }
 };
 
-/**
- * Load HTML template file
- * @param {string} templateName - Name of template ('sidebar' or 'navbar')
- * @returns {Promise<string>} HTML content of template
- */
-async function loadTemplate(templateName) {
-    // Return cached template if available
-    if (templateCache[templateName]) {
-        return templateCache[templateName];
-    }
+// ==========================================================================
+// Template Loading Functions
+// ==========================================================================
 
+/**
+ * Fetch HTML template from file
+ * @param {string} path - Path to template file
+ * @returns {Promise<string>} - Template HTML content
+ */
+async function fetchTemplate(path) {
     try {
-        const response = await fetch(`templates/shared/${templateName}.html`);
+        const response = await fetch(path);
         if (!response.ok) {
-            throw new Error(`Failed to load template: ${templateName}`);
+            throw new Error(`Failed to fetch template: ${path} (${response.status})`);
         }
-        
-        const html = await response.text();
-        templateCache[templateName] = html;
-        return html;
+        return await response.text();
     } catch (error) {
-        console.error(`Template loading error for ${templateName}:`, error);
+        console.error(`Error fetching template from ${path}:`, error);
         return '';
     }
 }
 
 /**
- * Get sidebar template HTML
- * @param {string} activePage - Current active page identifier
- * @returns {Promise<string>} HTML string for sidebar
+ * Render template HTML into target element
+ * @param {string} html - Template HTML
+ * @param {string} targetId - Target element ID
+ * @returns {boolean} - Success status
  */
-export async function getSidebarTemplate(activePage = 'home') {
-    const html = await loadTemplate('sidebar');
+function renderTemplate(html, targetId) {
+    const targetElement = document.getElementById(targetId);
     
-    // Create temporary container to parse HTML
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
+    if (!targetElement) {
+        console.error(`Target element not found: ${targetId}`);
+        return false;
+    }
     
-    // Set active page
-    const links = temp.querySelectorAll('[data-page]');
-    links.forEach(link => {
-        if (link.dataset.page === activePage) {
-            link.classList.add('app-sidebar__link--active');
-        } else {
-            link.classList.remove('app-sidebar__link--active');
-        }
-    });
-    
-    return temp.innerHTML;
+    targetElement.innerHTML = html;
+    return true;
 }
 
 /**
- * Get header/navbar template HTML
- * @param {Object} user - User information object
- * @param {string} user.name - Full name of user
- * @param {string} user.role - User role/designation
- * @param {string} user.initials - User initials for avatar
- * @returns {Promise<string>} HTML string for header
+ * Load and inject CSS file
+ * @param {string} href - Path to CSS file
  */
-export async function getHeaderTemplate(user = {}) {
-    const defaultUser = {
-        name: 'Admin User',
-        role: 'Administrator',
-        initials: 'AU'
-    };
-
-    const userData = { ...defaultUser, ...user };
-    const html = await loadTemplate('navbar');
-    
-    // Create temporary container to parse HTML
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    
-    // Update user info
-    const initialsElement = temp.querySelector('[data-user-initials]');
-    if (initialsElement) {
-        initialsElement.textContent = userData.initials;
-    }
-    
-    const nameElement = temp.querySelector('[data-user-name]');
-    if (nameElement) {
-        nameElement.textContent = userData.name;
-    }
-    
-    const roleElement = temp.querySelector('[data-user-role]');
-    if (roleElement) {
-        roleElement.textContent = userData.role;
-    }
-    
-    return temp.innerHTML;
-}
-
-/**
- * Initialize templates on a page
- * Renders sidebar and header into the app container
- * @param {Object} config - Configuration object
- * @param {string} config.activePage - Current active page identifier
- * @param {Object} config.user - User information object
- * @returns {Promise<void>}
- */
-export async function initTemplates(config = {}) {
-    const {
-        activePage = 'home',
-        user = {}
-    } = config;
-
-    // Find the app container
-    const appContainer = document.querySelector('.app-container');
-    
-    if (!appContainer) {
-        console.error('Templates: .app-container not found');
+function loadStylesheet(href) {
+    // Check if stylesheet is already loaded
+    const existingLink = document.querySelector(`link[href="${href}"]`);
+    if (existingLink) {
         return;
     }
+    
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+}
 
-    try {
-        // Generate sidebar and header HTML (async)
-        const sidebarHTML = await getSidebarTemplate(activePage);
-        const headerHTML = await getHeaderTemplate(user);
-
-        // Insert sidebar as first child
-        appContainer.insertAdjacentHTML('afterbegin', sidebarHTML);
-        
-        // Insert header after sidebar
-        const sidebar = appContainer.querySelector('.app-sidebar');
-        if (sidebar) {
-            sidebar.insertAdjacentHTML('afterend', headerHTML);
+/**
+ * Load and execute JavaScript file
+ * @param {string} src - Path to JS file
+ * @returns {Promise} - Promise that resolves when script is loaded
+ */
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        // Check if script is already loaded
+        const existingScript = document.querySelector(`script[src="${src}"]`);
+        if (existingScript) {
+            resolve();
+            return;
         }
-
-        // Initialize user menu interactions
-        initUserMenu();
         
-        // Initialize help menu interactions
-        initHelpMenu();
-    } catch (error) {
-        console.error('Templates initialization error:', error);
-    }
-}
-
-/**
- * Initialize user profile menu interactions
- * Adds click handler for dropdown menu functionality
- */
-function initUserMenu() {
-    const userMenuTrigger = document.querySelector('[data-user-menu-trigger]');
-    const dropdown = document.querySelector('[data-user-dropdown]');
-    const logoutBtn = document.querySelector('[data-logout]');
-    
-    if (userMenuTrigger && dropdown) {
-        // Toggle dropdown on user profile click
-        userMenuTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('is-open');
-            
-            // Close help menu if open
-            const helpDropdown = document.querySelector('[data-help-dropdown]');
-            if (helpDropdown) {
-                helpDropdown.classList.remove('is-open');
-            }
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!dropdown.contains(e.target) && !userMenuTrigger.contains(e.target)) {
-                dropdown.classList.remove('is-open');
-            }
-        });
-        
-        // Close dropdown when clicking on a menu item
-        dropdown.querySelectorAll('.app-header__dropdown-item').forEach(item => {
-            item.addEventListener('click', () => {
-                dropdown.classList.remove('is-open');
-            });
-        });
-    }
-    
-    // Handle logout
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Future: Implement actual logout functionality
-            if (confirm('Are you sure you want to logout?')) {
-                console.log('Logout confirmed');
-                // Redirect to login page or clear session
-                window.location.href = 'index.html';
-            }
-        });
-    }
-}
-
-/**
- * Initialize help menu interactions
- * Adds click handler for help dropdown menu functionality
- */
-function initHelpMenu() {
-    const helpMenuTrigger = document.querySelector('[data-help-menu-trigger]');
-    const helpDropdown = document.querySelector('[data-help-dropdown]');
-    
-    if (helpMenuTrigger && helpDropdown) {
-        // Toggle dropdown on help icon click
-        helpMenuTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            helpDropdown.classList.toggle('is-open');
-            
-            // Close user menu if open
-            const userDropdown = document.querySelector('[data-user-dropdown]');
-            if (userDropdown) {
-                userDropdown.classList.remove('is-open');
-            }
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!helpDropdown.contains(e.target) && !helpMenuTrigger.contains(e.target)) {
-                helpDropdown.classList.remove('is-open');
-            }
-        });
-        
-        // Close dropdown when clicking on a menu item
-        helpDropdown.querySelectorAll('.app-header__dropdown-item').forEach(item => {
-            item.addEventListener('click', () => {
-                helpDropdown.classList.remove('is-open');
-            });
-        });
-    }
-}
-
-/**
- * Update user information in the header
- * @param {Object} user - User information object
- * @param {string} user.name - Full name of user
- * @param {string} user.role - User role/designation
- * @param {string} user.initials - User initials for avatar
- */
-export function updateUserInfo(user) {
-    const userName = document.querySelector('.app-header__user-name');
-    const userRole = document.querySelector('.app-header__user-role');
-    const userAvatar = document.querySelector('.app-header__user-avatar');
-
-    if (userName && user.name) {
-        userName.textContent = user.name;
-    }
-
-    if (userRole && user.role) {
-        userRole.textContent = user.role;
-    }
-
-    if (userAvatar && user.initials) {
-        userAvatar.textContent = user.initials;
-    }
-}
-
-/**
- * Highlight active sidebar link based on current page
- * @param {string} pageId - Page identifier to activate
- */
-export function setActivePage(pageId) {
-    // Remove active class from all links
-    const allLinks = document.querySelectorAll('.app-sidebar__link');
-    allLinks.forEach(link => {
-        link.classList.remove('app-sidebar__link--active');
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+        document.body.appendChild(script);
     });
+}
 
-    // Add active class to the matching link
-    const links = [
-        { id: 'home', href: 'index.html' },
-        { id: 'finguard', href: 'finguard.html' },
-        { id: 'sheetsense', href: 'sheetsense.html' },
-        { id: 'analytics', href: 'analytics.html' },
-        { id: 'settings', href: 'settings.html' }
-    ];
+// ==========================================================================
+// Component Loading Functions
+// ==========================================================================
 
-    const matchingLink = links.find(l => l.id === pageId);
-    if (matchingLink) {
-        const linkElement = document.querySelector(`a[href="${matchingLink.href}"]`);
-        if (linkElement) {
-            linkElement.classList.add('app-sidebar__link--active');
+/**
+ * Load a specific component (navbar or sidebar)
+ * @param {string} componentName - Component name (navbar or sidebar)
+ * @returns {Promise} - Promise that resolves when component is loaded
+ */
+async function loadComponent(componentName) {
+    const config = TEMPLATE_CONFIG[componentName];
+    
+    if (!config) {
+        console.error(`Unknown component: ${componentName}`);
+        return;
+    }
+    
+    try {
+        // Load CSS files
+        if (config.styles) {
+            config.styles.forEach(loadStylesheet);
         }
+        
+        // Fetch and render template
+        const html = await fetchTemplate(config.path);
+        const rendered = renderTemplate(html, config.target);
+        
+        if (!rendered) {
+            throw new Error(`Failed to render ${componentName} template`);
+        }
+        
+        // Load JavaScript files
+        if (config.scripts) {
+            for (const script of config.scripts) {
+                await loadScript(script);
+            }
+        }
+        
+        console.log(`${componentName} component loaded successfully`);
+    } catch (error) {
+        console.error(`Error loading ${componentName} component:`, error);
     }
 }
 
-// Export default object with all functions
-export default {
-    getSidebarTemplate,
-    getHeaderTemplate,
-    initTemplates,
-    updateUserInfo,
-    setActivePage
+/**
+ * Load all shared components
+ * @returns {Promise} - Promise that resolves when all components are loaded
+ */
+async function loadAllComponents() {
+    const components = Object.keys(TEMPLATE_CONFIG);
+    
+    try {
+        await Promise.all(components.map(loadComponent));
+        console.log('All components loaded successfully');
+    } catch (error) {
+        console.error('Error loading components:', error);
+    }
+}
+
+// ==========================================================================
+// Authentication Check
+// ==========================================================================
+
+/**
+ * Check if user is authenticated
+ * @returns {boolean} - Authentication status
+ */
+function isUserAuthenticated() {
+    const isAuthenticated = sessionStorage.getItem('isAuthenticated');
+    const userData = sessionStorage.getItem('user');
+    return isAuthenticated === 'true' && userData !== null;
+}
+
+/**
+ * Redirect to signin if not authenticated
+ */
+function checkAuthenticationAndRedirect() {
+    if (!isUserAuthenticated()) {
+        console.log('User not authenticated, redirecting to signin...');
+        window.location.href = 'signin.html';
+    }
+}
+
+// ==========================================================================
+// Page Layout Setup
+// ==========================================================================
+
+/**
+ * Setup page layout with navbar and sidebar
+ * This should be called on authenticated pages
+ */
+async function setupPageLayout() {
+    // Check authentication first
+    checkAuthenticationAndRedirect();
+    
+    // Load components
+    await loadAllComponents();
+    
+    // Remove loading class after components are loaded
+    document.body.classList.remove('loading-layout');
+    
+    // Dispatch event to notify that templates are loaded
+    const event = new CustomEvent('templatesLoaded');
+    document.dispatchEvent(event);
+}
+
+// ==========================================================================
+// Public API
+// ==========================================================================
+
+const Templates = {
+    loadComponent,
+    loadAllComponents,
+    setupPageLayout,
+    isUserAuthenticated,
+    checkAuthenticationAndRedirect
 };
+
+// Make available globally
+if (typeof window !== 'undefined') {
+    window.Templates = Templates;
+}
+
+// Export for modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Templates;
+}
+
+// Auto-setup if page has placeholders
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const hasNavbar = document.getElementById('navbar-placeholder');
+        const hasSidebar = document.getElementById('sidebar-placeholder');
+        
+        if (hasNavbar || hasSidebar) {
+            setupPageLayout();
+        }
+    });
+} else {
+    const hasNavbar = document.getElementById('navbar-placeholder');
+    const hasSidebar = document.getElementById('sidebar-placeholder');
+    
+    if (hasNavbar || hasSidebar) {
+        setupPageLayout();
+    }
+}

@@ -1,0 +1,34 @@
+POST /webhook/f/signin
+
+
+Body:
+{
+  "email": "user entered email",
+  "password": "user entered password"
+}
+
+
+Response:
+
+[
+  {
+    "success": true,
+    "user": {
+      "_id": "68f38f226f948d746741c7d1",
+      "userID": "U0001",
+      "fullName": "Devvrat Hans",
+      "emailAddress": "test@adani.com",
+      "password": "test123",
+      "department": "Technology"
+    }
+  }
+]
+
+or
+
+[
+  {
+    "success": false,
+    "message": "Invalid email or password"
+  }
+]

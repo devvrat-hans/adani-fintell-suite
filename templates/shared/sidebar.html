@@ -1,28 +1,89 @@
-<!-- Sidebar Navigation Template -->
-<aside class="app-sidebar" data-template="sidebar">
-    <nav class="app-sidebar__nav">
-        <!-- Main Section -->
-        <div class="app-sidebar__section">
-            <h3 class="app-sidebar__section-title">Main</h3>
-            <a href="index.html" class="app-sidebar__link" data-page="home">
-                <span>Home</span>
-            </a>
-        </div>
+<!-- Sidebar Component -->
+<aside class="app-sidebar" role="complementary" aria-label="Side Navigation">
+    <nav class="sidebar-nav">
+        <ul class="sidebar-menu">
+            <!-- Main Section -->
+            <li class="sidebar-section-header">
+                <span class="section-title">Main</span>
+            </li>
+            
+            <!-- Dashboard -->
+            <li class="sidebar-item">
+                <a href="dashboard.html" class="sidebar-link" data-page="dashboard">
+                    <span class="sidebar-text">Dashboard</span>
+                </a>
+            </li>
 
-        <!-- Tools Section -->
-        <div class="app-sidebar__section">
-            <h3 class="app-sidebar__section-title">Tools</h3>
-            <a href="finguard.html" class="app-sidebar__link" data-page="finguard">
-                <span>FinGuard</span>
-            </a>
-            <a href="sheetsense.html" class="app-sidebar__link" data-page="sheetsense">
-                <span>SheetSense</span>
-            </a>
-            <a href="analytics.html" class="app-sidebar__link" data-page="analytics">
-                <span>Analytics</span>
-            </a>
-        </div>
+            <!-- Tools Section -->
+            <li class="sidebar-section-header">
+                <span class="section-title">Tools</span>
+            </li>
 
+            <!-- FinGuard AI -->
+            <li class="sidebar-item">
+                <a href="finguard.html" class="sidebar-link" data-page="finguard">
+                    <span class="sidebar-text">FinGuard AI</span>
+                </a>
+            </li>
 
+            <!-- SheetSense AI -->
+            <li class="sidebar-item">
+                <a href="sheetsense.html" class="sidebar-link" data-page="sheetsense">
+                    <span class="sidebar-text">SheetSense AI</span>
+                </a>
+            </li>
+
+            <!-- Analysis Section -->
+            <li class="sidebar-section-header">
+                <span class="section-title">Analysis</span>
+            </li>
+
+            <!-- Analytics -->
+            <li class="sidebar-item">
+                <a href="analytics.html" class="sidebar-link" data-page="analytics">
+                    <span class="sidebar-text">Analytics</span>
+                </a>
+            </li>
+
+            <!-- Reports -->
+            <li class="sidebar-item">
+                <a href="reports.html" class="sidebar-link" data-page="reports">
+                    <span class="sidebar-text">Reports</span>
+                </a>
+            </li>
+
+            <!-- Management Section -->
+            <li class="sidebar-section-header">
+                <span class="section-title">Management</span>
+            </li>
+
+            <!-- Entities -->
+            <li class="sidebar-item">
+                <a href="entities.html" class="sidebar-link" data-page="entities">
+                    <span class="sidebar-text">Entities</span>
+                </a>
+            </li>
+
+            <!-- User Management -->
+            <li class="sidebar-item">
+                <a href="users.html" class="sidebar-link" data-page="users">
+                    <span class="sidebar-text">User Management</span>
+                </a>
+            </li>
+
+            <!-- Roles & Permissions -->
+            <li class="sidebar-item">
+                <a href="roles.html" class="sidebar-link" data-page="roles">
+                    <span class="sidebar-text">Roles & Permissions</span>
+                </a>
+            </li>
+        </ul>
     </nav>
+
+    <!-- Sidebar Toggle Button (for mobile) -->
+    <button class="sidebar-toggle" data-action="toggle-sidebar" aria-label="Toggle sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </button>
 </aside>

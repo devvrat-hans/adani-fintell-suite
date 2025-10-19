@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Endpoint Tester - FinGuard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #0B74B0;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .endpoint-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0B74B0;
+        }
+
+        .endpoint-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+
+        .endpoint-url {
+            font-size: 0.9rem;
+            color: #6C757D;
+            font-family: monospace;
+        }
+
+        .request-section {
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #4A4A4A;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 200px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .copy-btn {
+            background: #28A745;
+        }
+
+        .clear-btn {
+            background: #DC3545;
+        }
+
+        .response-section {
+            margin-top: 20px;
+        }
+
+        .response-box {
+            background: #1A1A1A;
+            color: #00FF00;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status.success {
+            background: #28A745;
+            color: white;
+        }
+
+        .status.error {
+            background: #DC3545;
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #0B74B0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .note {
+            background: #FFF3CD;
+            padding: 12px;
+            border-left: 4px solid #FFC107;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 FinGuard API Endpoint Tester</h1>
+
+        <!-- Detect Anomaly Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <h2 class="endpoint-title">1. Detect Anomaly</h2>
+                <span class="endpoint-method">POST</span>
+            </div>
+            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-anomaly</p>
+            
+            <div class="request-section">
+                <div class="section-label">Request Body (JSON):</div>
+                <textarea id="anomaly-request">{
+  "invoice_number": "CONS-2025-789",
+  "invoice_date": "October 12, 2025",
+  "invoice_amount": "188800",
+  "vendor_gstin": "07AADCB3456H1ZP",
+  "company_gstin": "27AAACP1234M1Z1",
+  "hsn_sac_codes": ["998314"],
+  "line_items": [
+    {
+      "description": "Financial Consulting",
+      "hsn_sac": "998314",
+      "quantity": "40",
+      "rate": "2500",
+      "amount": "100000"
+    },
+    {
+      "description": "Tax Advisory",
+      "hsn_sac": "998314",
+      "quantity": "20",
+      "rate": "3000",
+      "amount": "60000"
+    }
+  ],
+  "subtotal": "160000",
+  "cgst_amount": "14400",
+  "sgst_amount": "14400",
+  "igst_amount": null,
+  "gst_rate": null
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('anomaly')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('anomaly')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('anomaly')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="anomaly-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="anomaly-status"></div>
+                <div class="response-box" id="anomaly-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint analyzes the invoice data for potential anomalies such as price inconsistencies, unusual patterns, or compliance issues.
+            </div>
+        </div>
+
+        <!-- Check Duplicate Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <h2 class="endpoint-title">2. Check Duplicate</h2>
+                <span class="endpoint-method">POST</span>
+            </div>
+            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/check-duplicate</p>
+            
+            <div class="request-section">
+                <div class="section-label">Request Body (JSON):</div>
+                <textarea id="duplicate-request">{
+  "invoice_number": "CONS-2025-789",
+  "vendor_gstin": "07AADCB3456H1ZP",
+  "invoice_amount": "188800",
+  "invoice_date": "October 12, 2025",
+  "company_gstin": "27AAACP1234M1Z1"
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('duplicate')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('duplicate')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('duplicate')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="duplicate-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="duplicate-status"></div>
+                <div class="response-box" id="duplicate-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint checks if the invoice already exists in the system to prevent duplicate entries.
+            </div>
+        </div>
+
+        <!-- Validate GST Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <h2 class="endpoint-title">3. Validate GST</h2>
+                <span class="endpoint-method">POST</span>
+            </div>
+            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst</p>
+            
+            <div class="request-section">
+                <div class="section-label">Request Body (JSON):</div>
+                <textarea id="gst-request">{
+  "vendor_gstin": "07AADCB3456H1ZP",
+  "company_gstin": "27AAACP1234M1Z1",
+  "invoice_number": "CONS-2025-789",
+  "invoice_amount": "188800",
+  "cgst_amount": "14400",
+  "sgst_amount": "14400",
+  "igst_amount": null
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('gst')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('gst')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('gst')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="gst-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="gst-status"></div>
+                <div class="response-box" id="gst-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint validates GST numbers against government databases and checks tax calculations for accuracy.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const endpoints = {
+            anomaly: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-anomaly',
+            duplicate: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/check-duplicate',
+            gst: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst'
+        };
+
+        async function sendRequest(type) {
+            const requestTextarea = document.getElementById(`${type}-request`);
+            const responseSection = document.getElementById(`${type}-response-section`);
+            const responseBox = document.getElementById(`${type}-response`);
+            const statusDiv = document.getElementById(`${type}-status`);
+
+            // Show loading state
+            responseSection.style.display = 'block';
+            statusDiv.innerHTML = '<span class="loading"><span class="spinner"></span> Sending request...</span>';
+            responseBox.textContent = 'Waiting for response...';
+
+            try {
+                // Parse request body
+                const requestBody = JSON.parse(requestTextarea.value);
+
+                // Send POST request
+                const startTime = Date.now();
+                const response = await fetch(endpoints[type], {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+
+                // Get response data
+                const data = await response.json();
+
+                // Display status
+                if (response.ok) {
+                    statusDiv.innerHTML = `<span class="status success">✓ Success (${response.status})</span> <span style="color: #6C757D;">Response time: ${duration}ms</span>`;
+                } else {
+                    statusDiv.innerHTML = `<span class="status error">✗ Error (${response.status})</span> <span style="color: #6C757D;">Response time: ${duration}ms</span>`;
+                }
+
+                // Display response
+                responseBox.textContent = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                statusDiv.innerHTML = '<span class="status error">✗ Error</span>';
+                responseBox.textContent = `Error: ${error.message}\n\nPlease check:\n1. Request body is valid JSON\n2. Network connection is active\n3. Endpoint is accessible`;
+                console.error('Request error:', error);
+            }
+        }
+
+        function copyRequest(type) {
+            const requestTextarea = document.getElementById(`${type}-request`);
+            requestTextarea.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ Copied!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+
+        function clearResponse(type) {
+            const responseSection = document.getElementById(`${type}-response-section`);
+            const responseBox = document.getElementById(`${type}-response`);
+            const statusDiv = document.getElementById(`${type}-status`);
+            
+            responseSection.style.display = 'none';
+            responseBox.textContent = '';
+            statusDiv.innerHTML = '';
+        }
+
+        // Add keyboard shortcut support
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to send request
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                const focusedElement = document.activeElement;
+                if (focusedElement.tagName === 'TEXTAREA') {
+                    const id = focusedElement.id;
+                    const type = id.split('-')[0];
+                    sendRequest(type);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

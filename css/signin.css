@@ -1,0 +1,575 @@
+/* ==========================================================================
+   Adani-Fintell-Suite - Sign In Page Styles
+   ========================================================================== */
+
+/* CSS Custom Properties */
+:root {
+    /* Core Adani Brand Colors */
+    --adani-blue: #0B74B0;
+    --adani-purple: #75479C;
+    --adani-red: #BD3861;
+    
+    /* Blue Variations */
+    --adani-blue-alt: #0680A8;
+    --adani-blue-light: #2E8BC0;
+    --adani-blue-hover: #095F94;
+    
+    /* Purple Variations */
+    --adani-purple-alt: #5D58A6;
+    --adani-purple-light: #8B6BB1;
+    --adani-purple-hover: #634080;
+    
+    /* Text Colors */
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #6C757D;
+    --text-light: #8E8E8E;
+    
+    /* Background Colors */
+    --bg-white: #FFFFFF;
+    --bg-light: #F8F9FA;
+    --bg-lighter: #F5F5F5;
+    
+    /* Border Colors */
+    --border-color: #E0E0E0;
+    --border-light: #F0F0F0;
+    
+    /* Status Colors */
+    --status-success: #28A745;
+    --status-error: #DC3545;
+    --status-warning: #FFC107;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--adani-blue) 0%, var(--adani-purple) 50%, var(--adani-red) 100%);
+    --gradient-blue-purple: linear-gradient(135deg, var(--adani-blue) 0%, var(--adani-purple) 100%);
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   Main Sign In Container
+   ========================================================================== */
+
+.signin-main {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+}
+
+.signin-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1200px;
+    width: 100%;
+    background: var(--bg-white);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    min-height: 600px;
+}
+
+/* ==========================================================================
+   Left Side - Branding
+   ========================================================================== */
+
+.signin-branding {
+    background: var(--gradient-blue-purple);
+    color: var(--bg-white);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.branding-content {
+    max-width: 400px;
+}
+
+.back-home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--bg-white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: var(--spacing-lg);
+    transition: opacity 0.3s ease;
+    opacity: 0.9;
+}
+
+.back-home-link:hover {
+    opacity: 1;
+}
+
+.back-icon {
+    display: flex;
+    align-items: center;
+}
+
+.branding-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.2;
+}
+
+.branding-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.95;
+}
+
+.branding-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.branding-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-white);
+}
+
+.feature-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.feature-text h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.feature-text p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   Right Side - Sign In Form
+   ========================================================================== */
+
+.signin-form-container {
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signin-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.form-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* ==========================================================================
+   Form Elements
+   ========================================================================== */
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--bg-white);
+    color: var(--text-primary);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--adani-blue);
+    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.1);
+}
+
+.form-input.error {
+    border-color: var(--status-error);
+}
+
+.form-input.error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.error-message {
+    color: var(--status-error);
+    font-size: 0.85rem;
+    display: none;
+}
+
+.error-message.active {
+    display: block;
+}
+
+/* Password Input with Toggle */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper .form-input {
+    flex: 1;
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: var(--spacing-sm);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.toggle-password:hover {
+    opacity: 0.7;
+}
+
+.eye-icon {
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover .eye-icon {
+    color: var(--adani-blue);
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: var(--spacing-xs);
+}
+
+.forgot-password-link {
+    font-size: 0.9rem;
+    color: var(--adani-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--adani-blue-hover);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn-submit {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--gradient-blue-purple);
+    color: var(--bg-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+    margin-top: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, var(--adani-blue-hover) 0%, var(--adani-purple-hover) 100%);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+    transform: translateY(-2px);
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-loader {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid var(--bg-white);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Divider
+   ========================================================================== */
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: var(--spacing-lg) 0;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.divider-text {
+    padding: 0 var(--spacing-sm);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Alternative Login Methods
+   ========================================================================== */
+
+.alternative-login {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.btn-alt-login {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.btn-alt-login:hover {
+    border-color: var(--adani-blue);
+    background: var(--bg-lighter);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.alt-login-icon {
+    font-size: 1.2rem;
+}
+
+/* ==========================================================================
+   Sign Up Link
+   ========================================================================== */
+
+.signup-link {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
+.signup-link p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.signup-link a {
+    color: var(--adani-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+    color: var(--adani-blue-hover);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Loading Overlay
+   ========================================================================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay[data-loading="hidden"] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--adani-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    color: var(--bg-white);
+    font-size: 1.2rem;
+    margin-top: var(--spacing-md);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .signin-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .signin-branding {
+        padding: var(--spacing-lg);
+    }
+    
+    .branding-title {
+        font-size: 2rem;
+    }
+    
+    .branding-features {
+        display: none;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .signin-main {
+        padding: var(--spacing-sm);
+    }
+    
+    .signin-container {
+        border-radius: 12px;
+    }
+    
+    .signin-branding {
+        padding: var(--spacing-lg) var(--spacing-md);
+        min-height: 200px;
+    }
+    
+    .branding-title {
+        font-size: 1.8rem;
+    }
+    
+    .branding-subtitle {
+        font-size: 1rem;
+    }
+    
+    .signin-form-container {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .form-title {
+        font-size: 1.6rem;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .branding-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-title {
+        font-size: 1.4rem;
+    }
+}
