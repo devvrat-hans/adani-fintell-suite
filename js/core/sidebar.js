@@ -205,6 +205,67 @@ function initSidebarEventListeners() {
 // Initialization
 // ==========================================================================
 
+// ==========================================================================
+// Submenu Positioning
+// ==========================================================================
+
+/**
+ * Keep submenu open for the section with the active page
+ */
+function setupSubmenuHandlers() {
+    console.log('Setting up submenu handlers');
+    
+    const sectionGroups = document.querySelectorAll('.sidebar-section-group');
+    
+    // First, check if there's a stored section from previous navigation
+    const storedSection = sessionStorage.getItem('sidebar-active-section');
+    
+    if (storedSection !== null) {
+        // Apply stored state
+        console.log('Applying stored section:', storedSection);
+        sectionGroups.forEach((group, index) => {
+            if (index === parseInt(storedSection)) {
+                group.classList.add('sidebar-section-active');
+                console.log('Set section', index, 'as active');
+            }
+        });
+    } else {
+        // Default: open the section that contains the active link
+        const activeLink = document.querySelector('.sidebar-link.active');
+        if (activeLink) {
+            const parentGroup = activeLink.closest('.sidebar-section-group');
+            if (parentGroup) {
+                const groups = Array.from(sectionGroups);
+                const index = groups.indexOf(parentGroup);
+                parentGroup.classList.add('sidebar-section-active');
+                sessionStorage.setItem('sidebar-active-section', index.toString());
+                console.log('Set section', index, 'as active (from active link)');
+            }
+        }
+    }
+    
+    // Track when user hovers over a different section
+    sectionGroups.forEach((group, index) => {
+        group.addEventListener('mouseenter', () => {
+            sessionStorage.setItem('sidebar-active-section', index.toString());
+        });
+    });
+    
+    // Store state when clicking a link to navigate
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const parentGroup = link.closest('.sidebar-section-group');
+            if (parentGroup) {
+                const groups = Array.from(sectionGroups);
+                const index = groups.indexOf(parentGroup);
+                sessionStorage.setItem('sidebar-active-section', index.toString());
+                console.log('Storing section', index, 'before navigation');
+            }
+        });
+    });
+}
+
 /**
  * Initialize sidebar functionality
  */
@@ -224,6 +285,9 @@ function initSidebar() {
     
     // Setup event listeners
     initSidebarEventListeners();
+    
+    // Setup submenu handlers
+    setupSubmenuHandlers();
 }
 
 // Auto-initialize when DOM is ready OR when templates are loaded

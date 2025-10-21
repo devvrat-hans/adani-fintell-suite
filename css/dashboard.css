@@ -26,6 +26,7 @@
     /* Layout */
     --navbar-height: 64px;
     --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
 }
 
 * {
@@ -55,14 +56,15 @@ body.loading-layout .dashboard-main {
 /* Main Dashboard Container */
 .dashboard-main {
     margin-top: var(--navbar-height);
-    margin-left: 0;
+    margin-left: var(--sidebar-collapsed-width, 80px);
     padding: 2rem;
     min-height: calc(100vh - var(--navbar-height));
+    width: calc(100% - var(--sidebar-collapsed-width, 80px));
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (min-width: 1025px) {
     .dashboard-main {
-        margin-left: var(--sidebar-width);
         padding: 2rem 4rem;
     }
 }

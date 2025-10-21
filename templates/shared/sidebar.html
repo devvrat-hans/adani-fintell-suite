@@ -2,99 +2,235 @@
 <aside class="app-sidebar" role="complementary" aria-label="Side Navigation">
     <nav class="sidebar-nav">
         <ul class="sidebar-menu">
-            <!-- Main Section -->
-            <li class="sidebar-section-header">
-                <span class="section-title">Main</span>
-            </li>
-            
-            <!-- Dashboard -->
-            <li class="sidebar-item">
-                <a href="dashboard.html" class="sidebar-link" data-page="dashboard">
-                    <span class="sidebar-text">Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Tools Section -->
-            <li class="sidebar-section-header">
-                <span class="section-title">Tools</span>
-            </li>
-
-            <!-- FinGuard -->
-            <li class="sidebar-item">
-                <a href="finguard.html" class="sidebar-link" data-page="finguard">
-                    <span class="sidebar-text">FinGuard</span>
-                </a>
-            </li>
-
-            <!-- Sheetsense -->
-            <li class="sidebar-item">
-                <a href="sheetsense.html" class="sidebar-link" data-page="sheetsense">
-                    <span class="sidebar-text">Sheetsense</span>
-                </a>
-            </li>
-
-            <!-- Analysis Section -->
-            <li class="sidebar-section-header">
-                <span class="section-title">Analysis</span>
+            <!-- Main Section Group -->
+            <li class="sidebar-section-group">
+                <div class="sidebar-section-header">
+                    <span class="section-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </span>
+                    <span class="section-title">Main</span>
+                </div>
+                
+                <!-- Submenu for Main -->
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-header">
+                        <h4 class="submenu-title">Main</h4>
+                    </div>
+                    <ul class="sidebar-submenu-items">
+                        <li class="sidebar-item">
+                            <a href="dashboard.html" class="sidebar-link" data-page="dashboard">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Dashboard</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
-            <!-- Analytics -->
-            <li class="sidebar-item">
-                <a href="analytics.html" class="sidebar-link" data-page="analytics">
-                    <span class="sidebar-text">Analytics</span>
-                </a>
+            <!-- Tools Section Group -->
+            <li class="sidebar-section-group">
+                <div class="sidebar-section-header">
+                    <span class="section-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                        </svg>
+                    </span>
+                    <span class="section-title">Tools</span>
+                </div>
+                
+                <!-- Submenu for Tools -->
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-header">
+                        <h4 class="submenu-title">Tools</h4>
+                    </div>
+                    <ul class="sidebar-submenu-items">
+                        <li class="sidebar-item">
+                            <a href="finguard.html" class="sidebar-link" data-page="finguard">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">FinGuard</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="sheetsense.html" class="sidebar-link" data-page="sheetsense">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">SheetSense</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
-            <!-- Reports -->
-            <li class="sidebar-item">
-                <a href="reports.html" class="sidebar-link" data-page="reports">
-                    <span class="sidebar-text">Reports</span>
-                </a>
+            <!-- Analysis Section Group -->
+            <li class="sidebar-section-group">
+                <div class="sidebar-section-header">
+                    <span class="section-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </span>
+                    <span class="section-title">Analysis</span>
+                </div>
+                
+                <!-- Submenu for Analysis -->
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-header">
+                        <h4 class="submenu-title">Analysis</h4>
+                    </div>
+                    <ul class="sidebar-submenu-items">
+                        <li class="sidebar-item">
+                            <a href="analytics.html" class="sidebar-link" data-page="analytics">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                        <polyline points="17 6 23 6 23 12"></polyline>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="reports.html" class="sidebar-link" data-page="reports">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Reports</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
-            <!-- Invoices Section -->
-            <li class="sidebar-section-header">
-                <span class="section-title">Invoices</span>
+            <!-- Invoices Section Group -->
+            <li class="sidebar-section-group">
+                <div class="sidebar-section-header">
+                    <span class="section-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                    </span>
+                    <span class="section-title">Invoices</span>
+                </div>
+                
+                <!-- Submenu for Invoices -->
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-header">
+                        <h4 class="submenu-title">Invoices</h4>
+                    </div>
+                    <ul class="sidebar-submenu-items">
+                        <li class="sidebar-item">
+                            <a href="invoices.html" class="sidebar-link" data-page="invoices">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">View Invoices</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="add-invoice.html" class="sidebar-link" data-page="add-invoice">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Add Invoice</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
-            <!-- View Invoices -->
-            <li class="sidebar-item">
-                <a href="invoices.html" class="sidebar-link" data-page="invoices">
-                    <span class="sidebar-text">View Invoices</span>
-                </a>
-            </li>
-
-            <!-- Add Invoice -->
-            <li class="sidebar-item">
-                <a href="add-invoice.html" class="sidebar-link" data-page="add-invoice">
-                    <span class="sidebar-text">Add Invoice</span>
-                </a>
-            </li>
-
-            <!-- Management Section -->
-            <li class="sidebar-section-header">
-                <span class="section-title">Management</span>
-            </li>
-
-            <!-- Entities -->
-            <li class="sidebar-item">
-                <a href="entities.html" class="sidebar-link" data-page="entities">
-                    <span class="sidebar-text">Entities</span>
-                </a>
-            </li>
-
-            <!-- User Management -->
-            <li class="sidebar-item">
-                <a href="users.html" class="sidebar-link" data-page="users">
-                    <span class="sidebar-text">User Management</span>
-                </a>
-            </li>
-
-            <!-- Roles & Permissions -->
-            <li class="sidebar-item">
-                <a href="roles.html" class="sidebar-link" data-page="roles">
-                    <span class="sidebar-text">Roles & Permissions</span>
-                </a>
+            <!-- Management Section Group -->
+            <li class="sidebar-section-group">
+                <div class="sidebar-section-header">
+                    <span class="section-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </span>
+                    <span class="section-title">Manage</span>
+                </div>
+                
+                <!-- Submenu for Management -->
+                <div class="sidebar-submenu">
+                    <div class="sidebar-submenu-header">
+                        <h4 class="submenu-title">Management</h4>
+                    </div>
+                    <ul class="sidebar-submenu-items">
+                        <li class="sidebar-item">
+                            <a href="entities.html" class="sidebar-link" data-page="entities">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Entities</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="users.html" class="sidebar-link" data-page="users">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="roles.html" class="sidebar-link" data-page="roles">
+                                <span class="sidebar-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                </span>
+                                <span class="sidebar-text">Roles</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </nav>

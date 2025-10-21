@@ -8,6 +8,8 @@
     --navbar-bg: #FFFFFF;
     --navbar-border: #E0E0E0;
     --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --sidebar-collapsed-width: 80px;
+    --sidebar-width: 260px;
 }
 
 /* ==========================================================================

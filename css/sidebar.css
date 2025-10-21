@@ -5,10 +5,11 @@
 /* CSS Custom Properties */
 :root {
     --sidebar-width: 260px;
-    --sidebar-collapsed-width: 64px;
+    --sidebar-collapsed-width: 80px;
     --sidebar-bg: #FFFFFF;
     --sidebar-border: #E0E0E0;
     --sidebar-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+    --submenu-width: 220px;
 }
 
 /* ==========================================================================
@@ -19,15 +20,37 @@
     position: fixed;
     top: var(--navbar-height, 64px);
     left: 0;
-    width: var(--sidebar-width);
+    width: var(--sidebar-collapsed-width);
     height: calc(100vh - var(--navbar-height, 64px));
     background: var(--sidebar-bg);
     border-right: 1px solid var(--sidebar-border);
     box-shadow: var(--sidebar-shadow);
-    z-index: 900;
-    transition: transform 0.3s ease;
+    z-index: 10000;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: visible !important;
+}
+
+/* Ensure submenu can overflow */
+.sidebar-nav,
+.sidebar-menu {
+    overflow: visible !important;
+}
+
+.app-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted, #6C757D);
 }
 
 /* Sidebar Navigation */
@@ -42,6 +65,88 @@
     margin: 0;
 }
 
+/* Sidebar Section Group - wrapper for section and its items */
+.sidebar-section-group {
+    position: relative;
+    margin-bottom: 0;
+    overflow: visible !important;
+}
+
+/* ==========================================================================
+   Sidebar Submenu
+   ========================================================================== */
+
+.sidebar-submenu {
+    position: fixed;
+    left: var(--sidebar-collapsed-width);
+    top: var(--navbar-height, 64px);
+    width: var(--submenu-width);
+    height: calc(100vh - var(--navbar-height, 64px));
+    background: var(--sidebar-bg);
+    border: 1px solid var(--sidebar-border);
+    border-left: 3px solid var(--adani-blue, #0B74B0);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-8px);
+    transition: opacity 0.12s ease-out,
+                transform 0.12s ease-out;
+    transition-delay: 0s, 0s;
+    z-index: 10003;
+    overflow-y: auto;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Delay hiding visibility to prevent gap */
+.sidebar-submenu {
+    transition-property: opacity, transform, visibility;
+    transition-duration: 0.12s, 0.12s, 0s;
+    transition-delay: 0s, 0s, 0.12s;
+}
+
+.sidebar-section-group:hover > .sidebar-submenu,
+.sidebar-section-group.sidebar-section-active > .sidebar-submenu {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+    transition-delay: 0s, 0s, 0s !important;
+}
+
+/* Active section stays visible without needing hover */
+.sidebar-section-group.sidebar-section-active {
+    background: rgba(11, 116, 176, 0.05);
+}
+
+/* Keep submenu visible when hovering over it */
+.sidebar-submenu:hover {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+.sidebar-submenu-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light, #F0F0F0);
+    background: linear-gradient(135deg, rgba(11, 116, 176, 0.05) 0%, rgba(117, 71, 156, 0.03) 100%);
+}
+
+.submenu-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--adani-blue, #0B74B0);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.sidebar-submenu-items {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+}
+
 /* ==========================================================================
    Sidebar Items
    ========================================================================== */
@@ -50,31 +155,73 @@
     margin-bottom: 0;
 }
 
-.sidebar-link {
+/* Submenu Link */
+.sidebar-submenu .sidebar-link {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 12px var(--spacing-md, 1.5rem);
+    justify-content: flex-start;
+    padding: 12px 20px;
     color: var(--text-secondary, #4A4A4A);
     text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
+    white-space: nowrap;
+    min-height: auto;
 }
 
-.sidebar-link:hover {
+.sidebar-submenu .sidebar-link:hover {
     background: var(--bg-lighter, #F5F5F5);
     color: var(--adani-blue, #0B74B0);
 }
 
-.sidebar-link.active {
+.sidebar-submenu .sidebar-link.active {
     background: rgba(11, 116, 176, 0.1);
     color: var(--adani-blue, #0B74B0);
     font-weight: 600;
+    border-left: 3px solid var(--adani-blue, #0B74B0);
+}
+
+.sidebar-submenu .sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 100%;
+    background: var(--adani-blue, #0B74B0);
+}
+
+/* Sidebar Icon */
+.sidebar-submenu .sidebar-icon {
+    min-width: 20px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-right: 12px;
+}
+
+.sidebar-submenu .sidebar-link:hover .sidebar-icon {
+    transform: scale(1.1);
+}
+
+.sidebar-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
 }
 
 /* Sidebar Text */
-.sidebar-text {
-    font-size: 0.95rem;
+.sidebar-submenu .sidebar-text {
+    font-size: 0.9rem;
     font-weight: 500;
+    text-align: left;
+    transition: all 0.3s ease;
+    line-height: 1.4;
 }
 
 /* ==========================================================================
@@ -92,12 +239,25 @@
    ========================================================================== */
 
 .sidebar-section-header {
-    padding: 12px 1.5rem !important;
-    margin-top: 0 !important;
+    padding: 20px 12px !important;
+    margin-top: 4px !important;
     margin-bottom: 0 !important;
     background: linear-gradient(135deg, rgba(11, 116, 176, 0.1) 0%, rgba(117, 71, 156, 0.08) 100%);
     min-height: auto !important;
     height: auto !important;
+    white-space: nowrap;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.sidebar-section-header:hover {
+    background: linear-gradient(135deg, rgba(11, 116, 176, 0.15) 0%, rgba(117, 71, 156, 0.12) 100%);
 }
 
 .sidebar-section-header:first-child {
@@ -105,17 +265,32 @@
 }
 
 .sidebar-section-header .section-title {
-    font-size: 0.813rem;
+    font-size: 0.65rem;
     font-weight: 700;
     color: var(--adani-blue, #0B74B0);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-decoration: none;
     border: none;
     outline: none;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
+    text-align: center;
+    transition: all 0.3s ease;
+    margin-top: 4px !important;
+}
+
+.sidebar-section-header .section-icon {
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--adani-blue, #0B74B0);
+    transition: all 0.3s ease;
 }
 
 /* ==========================================================================
@@ -180,6 +355,25 @@
 }
 
 /* ==========================================================================
+   Content Layout Adjustment
+   ========================================================================== */
+
+/* Main content area should adjust to sidebar width */
+.dashboard-main,
+.finguard-main,
+.invoices-main,
+.add-invoice-main,
+.profile-main,
+.keyboard-shortcuts-main,
+main {
+    margin-left: var(--sidebar-collapsed-width);
+    padding: 2rem;
+    min-height: calc(100vh - var(--navbar-height, 64px));
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* ==========================================================================
    Responsive Design
    ========================================================================== */
 
@@ -197,7 +391,12 @@
 /* Mobile */
 @media (max-width: 768px) {
     .app-sidebar {
+        width: var(--sidebar-width);
         transform: translateX(-100%);
+    }
+    
+    .app-sidebar:hover {
+        width: var(--sidebar-width);
     }
     
     .app-sidebar[data-sidebar="visible"] {
@@ -206,6 +405,12 @@
     
     .sidebar-toggle {
         display: flex;
+    }
+    
+    /* Always show text on mobile */
+    .sidebar-text,
+    .sidebar-section-header .section-title {
+        opacity: 1;
     }
     
     /* Overlay when sidebar is open */
@@ -218,6 +423,19 @@
         bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         z-index: -1;
+    }
+    
+    /* Adjust main content for mobile */
+    .dashboard-main,
+    .finguard-main,
+    .invoices-main,
+    .add-invoice-main,
+    .profile-main,
+    .keyboard-shortcuts-main,
+    main,
+    .main-content {
+        margin-left: 0;
+        width: 100%;
     }
 }
 
