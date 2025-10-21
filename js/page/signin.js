@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Sign In Page JavaScript
+ * Adani Fintell Suite - Sign In Page JavaScript
  * Authentication and form validation functionality
  */
 

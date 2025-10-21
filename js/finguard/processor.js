@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * Processor Module
  * Orchestrates the invoice processing and validation workflow
  */

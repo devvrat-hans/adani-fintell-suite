@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Adani-Fintell-Suite - Profile Page Styles
+   Adani Fintell Suite - Profile Page Styles
    ========================================================================== */
 
 /* Base Styles */
@@ -21,7 +21,8 @@ body {
     --adani-purple: #75479C;
     --adani-red: #BD3861;
     --adani-blue-light: #2E8BC0;
-    --gradient-primary: linear-gradient(135deg, #0B74B0 0%, #75479C 50%, #BD3861 100%);
+    --finguard-gradient: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    --gradient-primary: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
     
     /* Spacing */
     --spacing-xs: 0.5rem;

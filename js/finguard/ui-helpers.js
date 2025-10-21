@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * UI Helpers Module
  * Common UI utility functions
  */

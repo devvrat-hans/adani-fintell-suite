@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * Validation Module
  * Handles arithmetical accuracy checks and other validations
  */

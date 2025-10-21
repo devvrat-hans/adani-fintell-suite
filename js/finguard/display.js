@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * Display Module
  * Handles rendering of invoice data and validation results
  */

@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * Timeline Popup Module
  * Manages processing timeline popup UI
  */

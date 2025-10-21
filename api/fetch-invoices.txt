@@ -1,0 +1,111 @@
+GET https://n8n-n8n.j8euv3.easypanel.host/webhook/fetch-invoices
+
+response body:
+
+[
+  {
+    "_id": "68f526037f232fefb4c88791",
+    "invoice_number": "CONS-2025-789",
+    "invoice_date": "2025-10-12T00:00:00.000Z",
+    "invoice_amount": 188800,
+    "vendor_name": "Business Advisory Services LLP",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    "hsn_sac_codes": [
+      "998314"
+    ],
+    "line_items": [
+      {
+        "description": "Financial Consulting",
+        "hsn_sac": "998314",
+        "quantity": 40,
+        "rate": 2500,
+        "amount": 100000
+      },
+      {
+        "description": "Tax Advisory",
+        "hsn_sac": "998314",
+        "quantity": 20,
+        "rate": 3000,
+        "amount": 60000
+      }
+    ],
+    "subtotal": 160000,
+    "cgst_amount": 14400,
+    "sgst_amount": 14400,
+    "igst_amount": null,
+    "gst_rate": 18,
+    "upload_timestamp": "2025-10-19T17:55:04.403Z",
+    "invoice_id": "IN000000000000001"
+  },
+  {
+    "_id": "68f6583d7f232fefb4c88794",
+    "invoice_id": "IN000000000000002",
+    "invoice_number": "CONS-2025-789",
+    "invoice_date": "2025-10-12T00:00:00.000Z",
+    "invoice_amount": 188800,
+    "vendor_name": "Business Advisory Services LLP",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    "hsn_sac_codes": [
+      "998314"
+    ],
+    "line_items": [
+      {
+        "description": "Financial Consulting",
+        "hsn_sac": "998314",
+        "quantity": 40,
+        "rate": 2500,
+        "amount": 100000
+      },
+      {
+        "description": "Tax Advisory",
+        "hsn_sac": "998314",
+        "quantity": 20,
+        "rate": 3000,
+        "amount": 60000
+      }
+    ],
+    "subtotal": 160000,
+    "cgst_amount": 14400,
+    "sgst_amount": 14400,
+    "igst_amount": null,
+    "gst_rate": null,
+    "upload_timestamp": "2025-10-20T15:41:34.967Z"
+  },
+  {
+    "_id": "68f658a87f232fefb4c88795",
+    "invoice_id": "IN000000000000003",
+    "invoice_number": "CONS-2025-789",
+    "invoice_date": "2025-12-10T00:00:00.000Z",
+    "invoice_amount": 188800,
+    "vendor_name": "Business Advisory Services LLP",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    "hsn_sac_codes": [
+      "998314"
+    ],
+    "line_items": [
+      {
+        "description": "Financial Consulting",
+        "hsn_sac": "998314",
+        "quantity": 40,
+        "rate": 2500,
+        "amount": 100000
+      },
+      {
+        "description": "Tax Advisory",
+        "hsn_sac": "998314",
+        "quantity": 20,
+        "rate": 3000,
+        "amount": 60000
+      }
+    ],
+    "subtotal": 160000,
+    "cgst_amount": 14400,
+    "sgst_amount": 14400,
+    "igst_amount": null,
+    "gst_rate": 18,
+    "upload_timestamp": "2025-10-20T15:43:36.273Z"
+  }
+]

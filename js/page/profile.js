@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Profile Page JavaScript
+ * Adani Fintell Suite - Profile Page JavaScript
  * User profile display and management functionality
  */
 

@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Templates JavaScript
+ * Adani Fintell Suite - Templates JavaScript
  * Dynamic template loading and rendering for shared components
  */
 

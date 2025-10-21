@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Keyboard Shortcuts Configuration
+ * Adani Fintell Suite - Keyboard Shortcuts Configuration
  * Centralized keyboard shortcuts definitions
  */
 
@@ -21,7 +21,7 @@ export const KEYBOARD_SHORTCUTS = {
             },
             {
                 keys: ['Alt', 'F'],
-                description: 'Go to FinGuard AI',
+                description: 'Go to FinGuard',
                 action: () => window.location.href = 'finguard.html'
             },
             {
@@ -37,7 +37,7 @@ export const KEYBOARD_SHORTCUTS = {
         ]
     },
     finguard: {
-        title: 'FinGuard AI',
+        title: 'FinGuard',
         shortcuts: [
             {
                 keys: ['Ctrl', 'U'],

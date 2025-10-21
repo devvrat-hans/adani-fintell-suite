@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Sidebar JavaScript
+ * Adani Fintell Suite - Sidebar JavaScript
  * Navigation and sidebar toggle functionality
  */
 
@@ -77,16 +77,22 @@ function handleOutsideClick(e) {
 function setActiveSidebarLink() {
     const currentPage = getCurrentPageName();
     
-    if (!SidebarDOM.sidebarLinks || SidebarDOM.sidebarLinks.length === 0) {
+    // Re-query sidebar links in case they were dynamically loaded
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    
+    if (!sidebarLinks || sidebarLinks.length === 0) {
         console.warn('No sidebar links found');
         return;
     }
     
-    SidebarDOM.sidebarLinks.forEach(link => {
+    console.log('Setting active link for page:', currentPage);
+    
+    sidebarLinks.forEach(link => {
         const linkPage = link.getAttribute('data-page');
         
         if (linkPage === currentPage) {
             link.classList.add('active');
+            console.log('Active link set:', linkPage);
         } else {
             link.classList.remove('active');
         }
@@ -99,8 +105,14 @@ function setActiveSidebarLink() {
  */
 function getCurrentPageName() {
     const path = window.location.pathname;
-    const page = path.split('/').pop().replace('.html', '');
-    return page || 'dashboard';
+    let page = path.split('/').pop().replace('.html', '');
+    
+    // Handle empty page or index
+    if (!page || page === 'index') {
+        page = 'dashboard';
+    }
+    
+    return page;
 }
 
 /**

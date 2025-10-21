@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Keyboard Shortcuts - Adani-Fintell-Suite">
-    <title>Keyboard Shortcuts - Adani-Fintell-Suite</title>
+    <meta name="description" content="Keyboard Shortcuts - Adani Fintell Suite">
+    <title>Keyboard Shortcuts - Adani Fintell Suite</title>
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/navbar.css">
@@ -20,22 +20,21 @@
     
     <!-- Main Content -->
     <main class="main-content" role="main">
-        <div class="shortcuts-page">
+        <div class="page-container">
             <!-- Page Header -->
-            <header class="shortcuts-header">
-                <h1 class="shortcuts-title">⌨️ Keyboard Shortcuts</h1>
-                <p class="shortcuts-subtitle">Master these shortcuts to boost your productivity</p>
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Keyboard Shortcuts</h1>
+                    <p class="page-description">Master keyboard shortcuts to navigate and use Adani Fintell Suite efficiently</p>
+                </div>
             </header>
             
-            <!-- Shortcuts Grid -->
-            <div class="shortcuts-grid" id="shortcuts-grid">
-                <!-- Categories will be dynamically inserted here -->
-            </div>
-            
-            <!-- Platform Indicator -->
-            <div class="platform-indicator">
-                <strong>Tip:</strong> On Mac, <kbd class="key key--ctrl">Ctrl</kbd> is replaced with <kbd class="key key--cmd">⌘</kbd> (Command key)
-            </div>
+            <!-- Shortcuts Section -->
+            <section class="shortcuts-section">
+                <div class="shortcuts-grid" data-shortcuts-grid>
+                    <!-- Shortcuts will be dynamically loaded here -->
+                </div>
+            </section>
         </div>
     </main>
     
@@ -44,6 +43,6 @@
     <script src="js/utils/templates.js"></script>
     <script src="js/core/navbar.js" defer></script>
     <script src="js/core/sidebar.js" defer></script>
-    <script type="module" src="js/page/keyboard-shortcuts.js"></script>
+    <script type="module" src="js/page/keyboard-shortcuts-page.js" defer></script>
 </body>
 </html>

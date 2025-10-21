@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Navbar JavaScript
+ * Adani Fintell Suite - Navbar JavaScript
  * User profile dropdown and navigation functionality
  */
 
@@ -16,7 +16,6 @@ const NavbarDOM = {
     helpDropdown: document.querySelector('[data-help-dropdown]'),
     signoutButton: document.querySelector('[data-action="signout"]'),
     viewProfileBtn: document.querySelector('[data-action="view-profile"]'),
-    viewSettingsBtn: document.querySelector('[data-action="view-settings"]'),
     viewShortcutsBtn: document.querySelector('[data-action="view-shortcuts"]'),
     viewDocsBtn: document.querySelector('[data-action="view-docs"]'),
     userName: document.querySelector('[data-user-name]'),
@@ -222,17 +221,6 @@ function handleViewProfile(e) {
 }
 
 /**
- * Handle view settings action
- * @param {Event} e - Click event
- */
-function handleViewSettings(e) {
-    e.preventDefault();
-    console.log('View settings clicked');
-    closeProfileDropdown();
-    window.location.href = 'settings.html';
-}
-
-/**
  * Handle view keyboard shortcuts action
  * @param {Event} e - Click event
  */
@@ -240,13 +228,7 @@ function handleViewShortcuts(e) {
     e.preventDefault();
     console.log('View keyboard shortcuts clicked');
     closeHelpDropdown();
-    // TODO: Open keyboard shortcuts modal
-    alert('Keyboard Shortcuts:\n\n' +
-          'Ctrl/Cmd + K: Quick Search\n' +
-          'Ctrl/Cmd + B: Toggle Sidebar\n' +
-          'Ctrl/Cmd + ,: Settings\n' +
-          'Ctrl/Cmd + /: Help\n' +
-          'Esc: Close Dropdown');
+    window.location.href = 'keyboard-shortcuts.html';
 }
 
 /**
@@ -258,7 +240,7 @@ function handleViewDocs(e) {
     console.log('View documentation clicked');
     closeHelpDropdown();
     // TODO: Navigate to documentation page
-    window.open('https://docs.adani-fintell-suite.com', '_blank');
+    window.open('https://docs.Adani Fintell Suite.com', '_blank');
 }
 
 // ==========================================================================
@@ -287,10 +269,6 @@ function initNavbarEventListeners() {
     // Profile actions
     if (NavbarDOM.viewProfileBtn) {
         NavbarDOM.viewProfileBtn.addEventListener('click', handleViewProfile);
-    }
-    
-    if (NavbarDOM.viewSettingsBtn) {
-        NavbarDOM.viewSettingsBtn.addEventListener('click', handleViewSettings);
     }
     
     // Help actions

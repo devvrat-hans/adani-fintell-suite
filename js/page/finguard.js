@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI JavaScript
+ * Adani Fintell Suite - FinGuard JavaScript
  * Main entry point - imports and initializes all modules
  */
 

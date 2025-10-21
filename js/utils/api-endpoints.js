@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - API Endpoints Configuration
+ * Adani Fintell Suite - API Endpoints Configuration
  * Central location for all API endpoint definitions
  */
 
@@ -92,6 +92,15 @@ const ENTITY_ENDPOINTS = {
 };
 
 // ==========================================================================
+// Database Endpoints
+// ==========================================================================
+
+const DATABASE_ENDPOINTS = {
+    FETCH_INVOICES: `${API_BASE_URL}/webhook/f/database/fetch-invoices`,
+    ADD_INVOICE: `${API_BASE_URL}/webhook/f/database/add-invoice`
+};
+
+// ==========================================================================
 // Export All Endpoints
 // ==========================================================================
 
@@ -102,7 +111,8 @@ const API_ENDPOINTS = {
     SHEETSENSE: SHEETSENSE_ENDPOINTS,
     ANALYTICS: ANALYTICS_ENDPOINTS,
     USER: USER_ENDPOINTS,
-    ENTITY: ENTITY_ENDPOINTS
+    ENTITY: ENTITY_ENDPOINTS,
+    DATABASE: DATABASE_ENDPOINTS
 };
 
 // Make available globally

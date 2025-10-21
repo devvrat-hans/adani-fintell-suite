@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Index Page JavaScript
+ * Adani Fintell Suite - Index Page JavaScript
  * Main landing page interactions and animations
  */
 
@@ -335,7 +335,7 @@ function updateActiveNavOnScroll() {
  * Initialize all functionality when DOM is ready
  */
 function init() {
-    console.log('Adani-Fintell-Suite initialized');
+    console.log('Adani Fintell Suite initialized');
     
     // Initialize features
     initNavigation();

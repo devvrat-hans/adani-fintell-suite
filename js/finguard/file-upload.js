@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard AI
+ * Adani Fintell Suite - FinGuard
  * File Upload Utilities Module
  * Handles file selection, validation, and UI updates
  */

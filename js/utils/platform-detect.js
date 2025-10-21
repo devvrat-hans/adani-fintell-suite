@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - Platform Detection Utility
+ * Adani Fintell Suite - Platform Detection Utility
  * Detects the user's operating system and platform
  */
 
@@ -42,6 +42,14 @@ const detectPlatform = () => {
         
         getModifierKeyName: function() {
             return this.isMac ? 'Command' : 'Control';
+        },
+        
+        getAltKey: function() {
+            return this.isMac ? '⌥' : 'Alt';
+        },
+        
+        getAltKeyName: function() {
+            return this.isMac ? 'Option' : 'Alt';
         },
         
         getPlatformName: function() {

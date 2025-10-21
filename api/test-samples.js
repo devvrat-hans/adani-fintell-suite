@@ -1,5 +1,5 @@
 /**
- * Adani-Fintell-Suite - FinGuard API Test Samples
+ * Adani Fintell Suite - FinGuard API Test Samples
  * Sample requests for testing FinGuard endpoints
  */
 

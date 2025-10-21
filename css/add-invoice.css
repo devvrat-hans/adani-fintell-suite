@@ -1,0 +1,555 @@
+/**
+ * Adani Fintell Suite - Add Invoice Page Styles
+ * Matches FinGuard page styling and branding
+ */
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* CSS Custom Properties */
+:root {
+    /* FinGuard Module Colors */
+    --finguard-primary: #0B74B0;
+    --finguard-secondary: #2E8BC0;
+    --finguard-accent: #8B6BB1;
+    --finguard-gradient: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    /* Colors */
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #6C757D;
+    --bg-white: #FFFFFF;
+    --bg-light: #F8F9FA;
+    --bg-lighter: #F5F5F5;
+    --border-color: #E0E0E0;
+    --border-light: #F0F0F0;
+    
+    /* Status Colors */
+    --status-success: #28A745;
+    --status-warning: #FFC107;
+    --status-error: #DC3545;
+}
+
+/* ==========================================================================
+   Main Content Layout
+   ========================================================================== */
+
+/* ==========================================================================
+   Main Content Layout
+   ========================================================================== */
+
+.main-content {
+    margin-left: 260px;
+    margin-top: 64px;
+    min-height: calc(100vh - 64px);
+    background: var(--bg-light);
+    padding: var(--spacing-lg);
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Page Header
+   ========================================================================== */
+
+.page-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.header-content {
+    background: var(--finguard-gradient);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    border-radius: 12px;
+    color: var(--bg-white);
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.page-description {
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.95;
+}
+
+/* ==========================================================================
+   Form Section
+   ========================================================================== */
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.invoice-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* ==========================================================================
+   Form Cards
+   ========================================================================== */
+
+.form-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: var(--bg-lighter);
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-subtitle {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.card-body {
+    padding: var(--spacing-lg);
+}
+
+/* ==========================================================================
+   Form Grid
+   ========================================================================== */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+   Form Labels
+   ========================================================================== */
+
+.form-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.form-label.required::after {
+    content: "*";
+    color: var(--status-error);
+    font-weight: 700;
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* ==========================================================================
+   Form Inputs
+   ========================================================================== */
+
+.form-input,
+.form-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--bg-white);
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--module-primary);
+    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.1);
+}
+
+.form-input:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: var(--status-error);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Number input arrows */
+.form-input[type="number"]::-webkit-inner-spin-button,
+.form-input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+/* Date input */
+.form-input[type="date"] {
+    cursor: pointer;
+}
+
+/* Select dropdown */
+.form-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234A4A4A'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-sm) center;
+    background-size: 24px;
+    padding-right: calc(var(--spacing-md) + 24px);
+}
+
+/* ==========================================================================
+   Line Items
+   ========================================================================== */
+
+.line-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.line-item {
+    background: var(--bg-lighter);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    position: relative;
+    overflow-x: auto;
+}
+
+.line-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.line-item-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.remove-line-item-btn {
+    background: transparent;
+    border: 1px solid var(--status-error);
+    border-radius: 6px;
+    color: var(--status-error);
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.remove-line-item-btn:hover {
+    background: var(--status-error);
+    color: var(--bg-white);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.remove-line-item-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+}
+
+.remove-line-item-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.line-item-fields {
+    display: grid;
+    grid-template-columns: minmax(150px, 2fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);
+    gap: var(--spacing-sm);
+    align-items: end;
+}
+
+.line-item-fields .form-group {
+    min-width: 0;
+}
+
+.line-item-fields .form-input {
+    width: 100%;
+    min-width: 0;
+}
+
+.add-line-item-btn {
+    background: var(--bg-white);
+    border: 2px dashed var(--finguard-primary);
+    border-radius: 8px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--finguard-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    transition: all 0.3s ease;
+    outline: none;
+    margin-top: var(--spacing-md);
+}
+
+.add-line-item-btn:hover {
+    background: var(--finguard-primary);
+    color: var(--bg-white);
+    border-style: solid;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.2);
+}
+
+.add-line-item-btn:focus {
+    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.2);
+}
+
+.add-line-item-btn svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+}
+
+/* ==========================================================================
+   Form Actions
+   ========================================================================== */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0;
+    margin-top: var(--spacing-md);
+}
+
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--finguard-gradient);
+    color: var(--bg-white);
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(11, 116, 176, 0.4);
+}
+
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.2);
+}
+
+.btn-primary svg {
+    flex-shrink: 0;
+}
+
+.btn-secondary {
+    background: var(--bg-white);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-light);
+    border-color: var(--text-secondary);
+}
+
+.btn-secondary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Success Message
+   ========================================================================== */
+
+.success-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.success-content {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: var(--spacing-xl);
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.success-content svg {
+    color: var(--status-success);
+    margin-bottom: var(--spacing-md);
+}
+
+.success-content h3 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.success-content p {
+    margin: 0 0 var(--spacing-lg) 0;
+    color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media screen and (max-width: 1200px) {
+    .main-content {
+        padding: var(--spacing-lg);
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .line-item-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-md);
+    }
+    
+    .page-header {
+        padding: var(--spacing-lg);
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .page-description {
+        font-size: 0.95rem;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: var(--spacing-md);
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
