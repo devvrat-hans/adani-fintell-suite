@@ -29,9 +29,10 @@ const AUTH_ENDPOINTS = {
 const FINGUARD_ENDPOINTS = {
     OCR_PDF: `${API_BASE_URL}/webhook/f/finguard/ocr/pdf`,
     OCR_IMAGE: `${API_BASE_URL}/webhook/f/finguard/ocr/image`,
-    DETECT_ANOMALY: `${API_BASE_URL}/webhook/f/finguard/detect-anomaly`,
-    CHECK_DUPLICATE: `${API_BASE_URL}/webhook/f/finguard/check-duplicate`,
+    DETECT_DUPLICATE: `${API_BASE_URL}/webhook/f/finguard/detect-duplicate`,
     VALIDATE_GST: `${API_BASE_URL}/webhook/f/finguard/validate-gst`,
+    VALIDATE_GST_RATE: `${API_BASE_URL}/webhook/f/finguard/validate-gst-rate`,
+    PRICE_ANOMALY: `${API_BASE_URL}/webhook/price-anomaly`,
     GET_INVOICES: `${API_BASE_URL}/webhook/f/finguard/get-invoices`,
     GET_INVOICE_DETAILS: `${API_BASE_URL}/webhook/f/finguard/get-invoice-details`,
     UPDATE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/update-invoice`,

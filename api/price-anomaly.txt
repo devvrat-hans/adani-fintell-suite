@@ -1,0 +1,30 @@
+POST https://n8n-n8n.j8euv3.easypanel.host/webhook/price-anomaly
+
+request body:
+
+{
+    "line_items": [
+        {
+            "description": "Financial Consulting",
+            "hsn_sac": "998314",
+            "quantity": "40",
+            "rate": "2500",
+            "amount": "100000"
+        },
+        {
+            "description": "Tax Advisory",
+            "hsn_sac": "998314",
+            "quantity": "20",
+            "rate": "3000",
+            "amount": "60000"
+        }
+    ],
+}   
+
+response body:
+
+{ 
+    anomalies, 
+    anomalyFound: anomalies.length > 0 
+}
+

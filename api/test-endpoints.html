@@ -184,23 +184,25 @@
     <div class="container">
         <h1>🧪 FinGuard API Endpoint Tester</h1>
 
-        <!-- Detect Anomaly Endpoint -->
+        <!-- Detect Duplicate Invoice Endpoint -->
         <div class="endpoint-section">
             <div class="endpoint-header">
-                <h2 class="endpoint-title">1. Detect Anomaly</h2>
+                <h2 class="endpoint-title">1. Detect Duplicate Invoice</h2>
                 <span class="endpoint-method">POST</span>
             </div>
-            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-anomaly</p>
+            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-duplicate</p>
             
             <div class="request-section">
                 <div class="section-label">Request Body (JSON):</div>
-                <textarea id="anomaly-request">{
+                <textarea id="duplicate-request">{
   "invoice_number": "CONS-2025-789",
   "invoice_date": "October 12, 2025",
   "invoice_amount": "188800",
   "vendor_gstin": "07AADCB3456H1ZP",
   "company_gstin": "27AAACP1234M1Z1",
-  "hsn_sac_codes": ["998314"],
+  "hsn_sac_codes": [
+    "998314"
+  ],
   "line_items": [
     {
       "description": "Financial Consulting",
@@ -226,42 +228,6 @@
             </div>
 
             <div class="button-group">
-                <button onclick="sendRequest('anomaly')">Send Request</button>
-                <button class="copy-btn" onclick="copyRequest('anomaly')">Copy Request</button>
-                <button class="clear-btn" onclick="clearResponse('anomaly')">Clear Response</button>
-            </div>
-
-            <div class="response-section" id="anomaly-response-section" style="display: none;">
-                <div class="section-label">Response:</div>
-                <div id="anomaly-status"></div>
-                <div class="response-box" id="anomaly-response"></div>
-            </div>
-
-            <div class="note">
-                <strong>Note:</strong> This endpoint analyzes the invoice data for potential anomalies such as price inconsistencies, unusual patterns, or compliance issues.
-            </div>
-        </div>
-
-        <!-- Check Duplicate Endpoint -->
-        <div class="endpoint-section">
-            <div class="endpoint-header">
-                <h2 class="endpoint-title">2. Check Duplicate</h2>
-                <span class="endpoint-method">POST</span>
-            </div>
-            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/check-duplicate</p>
-            
-            <div class="request-section">
-                <div class="section-label">Request Body (JSON):</div>
-                <textarea id="duplicate-request">{
-  "invoice_number": "CONS-2025-789",
-  "vendor_gstin": "07AADCB3456H1ZP",
-  "invoice_amount": "188800",
-  "invoice_date": "October 12, 2025",
-  "company_gstin": "27AAACP1234M1Z1"
-}</textarea>
-            </div>
-
-            <div class="button-group">
                 <button onclick="sendRequest('duplicate')">Send Request</button>
                 <button class="copy-btn" onclick="copyRequest('duplicate')">Copy Request</button>
                 <button class="clear-btn" onclick="clearResponse('duplicate')">Clear Response</button>
@@ -274,14 +240,14 @@
             </div>
 
             <div class="note">
-                <strong>Note:</strong> This endpoint checks if the invoice already exists in the system to prevent duplicate entries.
+                <strong>Note:</strong> This endpoint checks if the invoice already exists in the system to prevent duplicate entries. Response includes confidence score, matched invoice IDs, duplicate type (exact_match/fuzzy_match), and reason for duplicate detection.
             </div>
         </div>
 
         <!-- Validate GST Endpoint -->
         <div class="endpoint-section">
             <div class="endpoint-header">
-                <h2 class="endpoint-title">3. Validate GST</h2>
+                <h2 class="endpoint-title">2. Validate GST</h2>
                 <span class="endpoint-method">POST</span>
             </div>
             <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst</p>
@@ -290,6 +256,7 @@
                 <div class="section-label">Request Body (JSON):</div>
                 <textarea id="gst-request">{
   "vendor_gstin": "07AADCB3456H1ZP",
+  "vendor_name": "ABC Consultancy Services Pvt Ltd",
   "company_gstin": "27AAACP1234M1Z1",
   "invoice_number": "CONS-2025-789",
   "invoice_amount": "188800",
@@ -315,13 +282,79 @@
                 <strong>Note:</strong> This endpoint validates GST numbers against government databases and checks tax calculations for accuracy.
             </div>
         </div>
+
+        <!-- Validate GST Rate Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <h2 class="endpoint-title">3. Validate GST Rate</h2>
+                <span class="endpoint-method">POST</span>
+            </div>
+            <p class="endpoint-url">https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst-rate</p>
+            
+            <div class="request-section">
+                <div class="section-label">Request Body (JSON):</div>
+                <textarea id="gst-rate-request">{
+  "invoice_number": "CONS-2025-789",
+  "invoice_date": "October 12, 2025",
+  "invoice_amount": "188800",
+  "vendor_gstin": "07AADCB3456H1ZP",
+  "company_gstin": "27AAACP1234M1Z1",
+  "hsn_sac_codes": [
+    "998314"
+  ],
+  "line_items": [
+    {
+      "description": "Financial Consulting",
+      "hsn_sac": "998314",
+      "quantity": "40",
+      "rate": "2500",
+      "amount": "100000",
+      "cgst_rate": "9",
+      "sgst_rate": "9",
+      "igst_rate": null
+    },
+    {
+      "description": "Tax Advisory",
+      "hsn_sac": "998314",
+      "quantity": "20",
+      "rate": "3000",
+      "amount": "60000",
+      "cgst_rate": "9",
+      "sgst_rate": "9",
+      "igst_rate": null
+    }
+  ],
+  "subtotal": "160000",
+  "cgst_amount": "14400",
+  "sgst_amount": "14400",
+  "igst_amount": null,
+  "gst_rate": null
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('gst-rate')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('gst-rate')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('gst-rate')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="gst-rate-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="gst-rate-status"></div>
+                <div class="response-box" id="gst-rate-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint validates GST rates applied on line items against correct rates for their HSN/SAC codes. Returns all_rates_valid (boolean) and list of invalid_items if any discrepancies are found.
+            </div>
+        </div>
     </div>
 
     <script>
         const endpoints = {
-            anomaly: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-anomaly',
-            duplicate: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/check-duplicate',
-            gst: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst'
+            duplicate: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-duplicate',
+            gst: 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst',
+            'gst-rate': 'https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/validate-gst-rate'
         };
 
         async function sendRequest(type) {

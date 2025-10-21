@@ -4,7 +4,7 @@
 
 /* CSS Custom Properties (inherited from main theme) */
 :root {
-    --navbar-height: 64px;
+    --navbar-height: 72px;
     --navbar-bg: #FFFFFF;
     --navbar-border: #E0E0E0;
     --navbar-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -32,7 +32,9 @@
     align-items: center;
     height: 100%;
     padding: 0 var(--spacing-lg, 2rem);
+    padding-left: 1rem;
     max-width: 100%;
+    width: 100%;
 }
 
 /* ==========================================================================
@@ -48,6 +50,7 @@
     height: 40px;
     width: auto;
     object-fit: contain;
+    padding-left: 0;
 }
 
 .brand-text {

@@ -1,0 +1,57 @@
+POST: https://n8n-n8n.j8euv3.easypanel.host/webhook/f/finguard/detect-duplicate
+
+request body:
+
+
+{
+    "invoice_number": "CONS-2025-789",
+    "invoice_date": "October 12, 2025",
+    "invoice_amount": "188800",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    "hsn_sac_codes": [
+    "998314"
+    ],
+    "line_items": [
+    {
+        "description": "Financial Consulting",
+        "hsn_sac": "998314",
+        "quantity": "40",
+        "rate": "2500",
+        "amount": "100000"
+    },
+    {
+        "description": "Tax Advisory",
+        "hsn_sac": "998314",
+        "quantity": "20",
+        "rate": "3000",
+        "amount": "60000"
+    }
+    ],
+    "subtotal": "160000",
+    "cgst_amount": "14400",
+    "sgst_amount": "14400",
+    "igst_amount": null,
+    "gst_rate": null
+}
+
+response body:
+
+{
+  "is_duplicate": true,
+  "confidence_score": 92,
+  "matched_invoice_ids": ["IN000000000000001"],
+  "duplicate_type": "fuzzy_match",
+  "duplicate_reason": "Same vendor, similar invoice number and amount within 3 days"
+}
+
+or 
+
+{
+  "is_duplicate": false,
+  "confidence_score": 0,
+  "matched_invoice_ids": [],
+  "duplicate_type": null,
+  "duplicate_reason": null
+}
+
