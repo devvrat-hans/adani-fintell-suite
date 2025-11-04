@@ -1,0 +1,222 @@
+/**
+ * Adani Fintell Suite - Notification System
+ * Notification styles for toast messages
+ */
+
+/* Notification Container */
+.notification-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1000000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+/* Notification Card */
+.notification {
+    background: var(--bg-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 16px 20px;
+    min-width: 320px;
+    max-width: 400px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    pointer-events: auto;
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--adani-blue);
+}
+
+/* Notification Types */
+.notification.success {
+    border-left-color: var(--status-success);
+}
+
+.notification.error {
+    border-left-color: var(--status-error);
+}
+
+.notification.warning {
+    border-left-color: var(--status-warning);
+}
+
+.notification.info {
+    border-left-color: var(--status-info);
+}
+
+/* Notification Icon */
+.notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.notification.success .notification-icon {
+    background: var(--status-success-light);
+    color: var(--status-success);
+}
+
+.notification.error .notification-icon {
+    background: var(--status-error-light);
+    color: var(--status-error);
+}
+
+.notification.warning .notification-icon {
+    background: var(--status-warning-light);
+    color: #856404;
+}
+
+.notification.info .notification-icon {
+    background: var(--status-info-light);
+    color: var(--status-info);
+}
+
+.notification-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Notification Content */
+.notification-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.notification-message {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Notification Close Button */
+.notification-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.notification-close:hover {
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+}
+
+.notification-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Progress Bar */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border-light);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+
+.notification-progress-bar {
+    height: 100%;
+    background: var(--adani-blue);
+    animation: shrinkProgress linear forwards;
+}
+
+.notification.success .notification-progress-bar {
+    background: var(--status-success);
+}
+
+.notification.error .notification-progress-bar {
+    background: var(--status-error);
+}
+
+.notification.warning .notification-progress-bar {
+    background: var(--status-warning);
+}
+
+.notification.info .notification-progress-bar {
+    background: var(--status-info);
+}
+
+/* Animations */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+}
+
+@keyframes shrinkProgress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* Notification exiting state */
+.notification.exiting {
+    animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 16px;
+        right: 16px;
+        left: 16px;
+    }
+    
+    .notification {
+        min-width: auto;
+        max-width: none;
+    }
+}

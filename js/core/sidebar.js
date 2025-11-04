@@ -142,6 +142,15 @@ function handleSidebarLinkClick(e) {
  * Handle window resize
  */
 function handleResize() {
+    // Re-query sidebar in case it was dynamically loaded
+    if (!SidebarDOM.sidebar) {
+        SidebarDOM.sidebar = document.querySelector('.app-sidebar');
+    }
+    
+    if (!SidebarDOM.sidebar) {
+        return; // Sidebar not loaded yet
+    }
+    
     const isMobile = window.innerWidth <= 768;
     
     if (isMobile) {
@@ -209,6 +218,9 @@ function initSidebarEventListeners() {
 // Submenu Positioning
 // ==========================================================================
 
+// Track currently hovered section
+let currentlyHoveredSection = null;
+
 /**
  * Keep submenu open for the section with the active page
  */
@@ -217,52 +229,179 @@ function setupSubmenuHandlers() {
     
     const sectionGroups = document.querySelectorAll('.sidebar-section-group');
     
-    // First, check if there's a stored section from previous navigation
-    const storedSection = sessionStorage.getItem('sidebar-active-section');
+    // Hide all submenus by default
+    sectionGroups.forEach(group => {
+        const submenu = group.querySelector('.sidebar-submenu');
+        if (submenu) {
+            submenu.style.display = 'none';
+        }
+    });
     
-    if (storedSection !== null) {
-        // Apply stored state
-        console.log('Applying stored section:', storedSection);
-        sectionGroups.forEach((group, index) => {
-            if (index === parseInt(storedSection)) {
-                group.classList.add('sidebar-section-active');
-                console.log('Set section', index, 'as active');
-            }
-        });
-    } else {
-        // Default: open the section that contains the active link
-        const activeLink = document.querySelector('.sidebar-link.active');
-        if (activeLink) {
-            const parentGroup = activeLink.closest('.sidebar-section-group');
-            if (parentGroup) {
-                const groups = Array.from(sectionGroups);
-                const index = groups.indexOf(parentGroup);
-                parentGroup.classList.add('sidebar-section-active');
-                sessionStorage.setItem('sidebar-active-section', index.toString());
-                console.log('Set section', index, 'as active (from active link)');
-            }
+    // Create a shared submenu container
+    const sharedSubmenu = document.createElement('div');
+    sharedSubmenu.className = 'sidebar-submenu sidebar-submenu-shared';
+    sharedSubmenu.style.position = 'fixed';
+    sharedSubmenu.style.left = 'var(--sidebar-collapsed-width)';
+    sharedSubmenu.style.top = 'var(--navbar-height, 64px)';
+    sharedSubmenu.style.width = 'var(--submenu-width)';
+    sharedSubmenu.style.height = 'calc(100vh - var(--navbar-height, 64px))';
+    sharedSubmenu.style.background = 'var(--sidebar-bg)';
+    sharedSubmenu.style.border = '1px solid var(--sidebar-border)';
+    sharedSubmenu.style.borderLeft = 'none';
+    sharedSubmenu.style.boxShadow = '2px 0 8px rgba(0, 0, 0, 0.1)';
+    sharedSubmenu.style.opacity = '0';
+    sharedSubmenu.style.visibility = 'hidden';
+    sharedSubmenu.style.pointerEvents = 'none';
+    sharedSubmenu.style.zIndex = '10003';
+    sharedSubmenu.style.overflowY = 'auto';
+    sharedSubmenu.style.borderRadius = '0';
+    sharedSubmenu.style.transition = 'none';
+    
+    document.body.appendChild(sharedSubmenu);
+    
+    // Function to update shared submenu content (instant, no fade)
+    function updateSharedSubmenu(group) {
+        const originalSubmenu = group.querySelector('.sidebar-submenu');
+        if (originalSubmenu) {
+            // Clone the content
+            const clonedContent = originalSubmenu.cloneNode(true);
+            clonedContent.style.display = 'block';
+            clonedContent.style.position = 'static';
+            clonedContent.style.width = 'auto';
+            clonedContent.style.height = 'auto';
+            clonedContent.style.opacity = '1';
+            clonedContent.style.visibility = 'visible';
+            clonedContent.style.border = 'none';
+            clonedContent.style.boxShadow = 'none';
+            clonedContent.style.transition = 'none';
+            clonedContent.style.pointerEvents = 'auto';
+            
+            // Remove all transitions from child elements and ensure pointer events
+            const allElements = clonedContent.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.transition = 'none';
+                el.style.pointerEvents = 'auto';
+            });
+            
+            // Ensure all links are clickable
+            const allLinks = clonedContent.querySelectorAll('.sidebar-link');
+            allLinks.forEach(link => {
+                link.style.pointerEvents = 'auto';
+                link.style.cursor = 'pointer';
+            });
+            
+            // Replace content instantly
+            sharedSubmenu.innerHTML = '';
+            sharedSubmenu.appendChild(clonedContent);
         }
     }
     
-    // Track when user hovers over a different section
-    sectionGroups.forEach((group, index) => {
-        group.addEventListener('mouseenter', () => {
-            sessionStorage.setItem('sidebar-active-section', index.toString());
+    // Sidebar submenu should be collapsed by default on page load
+    // No auto-opening of submenus
+    
+    // Track hover state
+    let closeTimeout = null;
+    const sidebar = document.querySelector('.app-sidebar');
+    let isOverSidebarArea = false;
+    
+    // Track sidebar and shared submenu hover
+    if (sidebar) {
+        sidebar.addEventListener('mouseenter', () => {
+            isOverSidebarArea = true;
         });
+        
+        sidebar.addEventListener('mouseleave', (e) => {
+            const relatedTarget = e.relatedTarget;
+            const movingToSubmenu = relatedTarget === sharedSubmenu || sharedSubmenu.contains(relatedTarget);
+            
+            if (!movingToSubmenu) {
+                isOverSidebarArea = false;
+                closeTimeout = setTimeout(() => {
+                    if (!isOverSidebarArea) {
+                        sharedSubmenu.style.opacity = '0';
+                        sharedSubmenu.style.visibility = 'hidden';
+                        sharedSubmenu.style.pointerEvents = 'none';
+                        sectionGroups.forEach(g => g.classList.remove('sidebar-section-active'));
+                        currentlyHoveredSection = null;
+                    }
+                }, 150);
+            }
+        });
+    }
+    
+    sharedSubmenu.addEventListener('mouseenter', () => {
+        isOverSidebarArea = true;
+        if (closeTimeout) {
+            clearTimeout(closeTimeout);
+            closeTimeout = null;
+        }
     });
     
-    // Store state when clicking a link to navigate
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
+    sharedSubmenu.addEventListener('mouseleave', (e) => {
+        const relatedTarget = e.relatedTarget;
+        const movingToSidebar = relatedTarget === sidebar || sidebar.contains(relatedTarget);
+        
+        if (!movingToSidebar) {
+            isOverSidebarArea = false;
+            closeTimeout = setTimeout(() => {
+                if (!isOverSidebarArea) {
+                    sharedSubmenu.style.opacity = '0';
+                    sharedSubmenu.style.visibility = 'hidden';
+                    sharedSubmenu.style.pointerEvents = 'none';
+                    sectionGroups.forEach(g => g.classList.remove('sidebar-section-active'));
+                    currentlyHoveredSection = null;
+                }
+            }, 150);
+        }
+    });
+    
+    // Handle section header hover
+    sectionGroups.forEach((group, index) => {
+        const sectionHeader = group.querySelector('.sidebar-section-header');
+        
+        if (sectionHeader) {
+            sectionHeader.addEventListener('mouseenter', () => {
+                if (closeTimeout) {
+                    clearTimeout(closeTimeout);
+                    closeTimeout = null;
+                }
+                
+                // Update active state
+                sectionGroups.forEach(g => g.classList.remove('sidebar-section-active'));
+                group.classList.add('sidebar-section-active');
+                currentlyHoveredSection = group;
+                
+                // Show and update shared submenu instantly (no fade)
+                sharedSubmenu.style.opacity = '1';
+                sharedSubmenu.style.visibility = 'visible';
+                sharedSubmenu.style.pointerEvents = 'auto';
+                updateSharedSubmenu(group);
+                
+                sessionStorage.setItem('sidebar-active-section', index.toString());
+            });
+        }
+    });
+    
+    // Handle link clicks for navigation
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('.sidebar-link');
+        if (link) {
             const parentGroup = link.closest('.sidebar-section-group');
-            if (parentGroup) {
+            if (!parentGroup) {
+                // Link is in shared submenu, find original group
+                const linkPage = link.getAttribute('data-page');
+                sectionGroups.forEach((group, index) => {
+                    const originalLink = group.querySelector(`[data-page="${linkPage}"]`);
+                    if (originalLink) {
+                        sessionStorage.setItem('sidebar-active-section', index.toString());
+                    }
+                });
+            } else {
                 const groups = Array.from(sectionGroups);
                 const index = groups.indexOf(parentGroup);
                 sessionStorage.setItem('sidebar-active-section', index.toString());
-                console.log('Storing section', index, 'before navigation');
             }
-        });
+        }
     });
 }
 

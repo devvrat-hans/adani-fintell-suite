@@ -1,6 +1,6 @@
 /**
- * Adani Fintell Suite - Add Invoice Page Styles
- * Matches FinGuard page styling and branding
+ * Adani Fintell Suite - Add Vendor Page Styles
+ * Matches Add Purchase Order page styling and branding
  */
 
 /* Base Styles */
@@ -99,13 +99,13 @@ body {
 .form-section {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
 }
 
-.invoice-form {
+.vendor-form {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
 }
 
 /* ==========================================================================
@@ -198,7 +198,8 @@ body {
    ========================================================================== */
 
 .form-input,
-.form-select {
+.form-select,
+.form-textarea {
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -210,10 +211,16 @@ body {
 }
 
 .form-input:focus,
-.form-select:focus {
+.form-select:focus,
+.form-textarea:focus {
     outline: none;
-    border-color: var(--module-primary);
+    border-color: var(--finguard-primary);
     box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .form-input:invalid:not(:focus):not(:placeholder-shown) {
@@ -247,122 +254,6 @@ body {
 }
 
 /* ==========================================================================
-   Line Items
-   ========================================================================== */
-
-.line-items-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-}
-
-.line-item {
-    background: var(--bg-lighter);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    padding: var(--spacing-md);
-    position: relative;
-    overflow-x: auto;
-}
-
-.line-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-}
-
-.line-item-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.remove-line-item-btn {
-    background: transparent;
-    border: 1px solid var(--status-error);
-    border-radius: 6px;
-    color: var(--status-error);
-    cursor: pointer;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.remove-line-item-btn:hover {
-    background: var(--status-error);
-    color: var(--bg-white);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-}
-
-.remove-line-item-btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
-}
-
-.remove-line-item-btn svg {
-    width: 16px;
-    height: 16px;
-}
-
-.line-item-fields {
-    display: grid;
-    grid-template-columns: minmax(150px, 2fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);
-    gap: var(--spacing-sm);
-    align-items: end;
-}
-
-.line-item-fields .form-group {
-    min-width: 0;
-}
-
-.line-item-fields .form-input {
-    width: 100%;
-    min-width: 0;
-}
-
-.add-line-item-btn {
-    background: var(--bg-white);
-    border: 2px dashed var(--finguard-primary);
-    border-radius: 8px;
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: var(--finguard-primary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
-    transition: all 0.3s ease;
-    outline: none;
-    margin-top: var(--spacing-md);
-}
-
-.add-line-item-btn:hover {
-    background: var(--finguard-primary);
-    color: var(--bg-white);
-    border-style: solid;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.2);
-}
-
-.add-line-item-btn:focus {
-    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.2);
-}
-
-.add-line-item-btn svg {
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-}
-
-/* ==========================================================================
    Form Actions
    ========================================================================== */
 
@@ -375,7 +266,8 @@ body {
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-submit {
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-sm);
@@ -388,18 +280,21 @@ body {
     transition: all 0.3s ease;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-submit {
     background: var(--finguard-gradient);
     color: var(--bg-white);
     box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-submit:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(11, 116, 176, 0.4);
 }
 
-.btn-primary:focus {
+.btn-primary:focus,
+.btn-submit:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.2);
 }
@@ -500,10 +395,6 @@ body {
     .form-grid {
         grid-template-columns: 1fr;
     }
-    
-    .line-item-fields {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media screen and (max-width: 768px) {
@@ -534,7 +425,8 @@ body {
     }
     
     .btn-primary,
-    .btn-secondary {
+    .btn-secondary,
+    .btn-submit {
         width: 100%;
         justify-content: center;
     }

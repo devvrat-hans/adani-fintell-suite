@@ -1,0 +1,81 @@
+Problem statement #1: AI Agent for Expense Anomaly & Compliance
+Background
+At Adani Finance, thousands of expense claims, vendor invoices, pay disbursements, and
+procurement spends are processed every month. Today, many of these checks are manual
+and reactive, which slows down operations and risks of missing fraud or compliance issues.
+With advances in AI, we can now imagine an autonomous finance agent that not only
+extracts scanned images and stores data in structured form but also validates the content of
+the Invoices.
+The Challenge
+Build an AI Agent (put a cool name )that solves the following:
+Uses AI-powered OCR to extract following invoice data from PDF.JPEG, etc format
+uploaded in a folder:
+a. Invoice number
+b. Invoice amount
+c. Invoice date
+d. GST registration number of vendor
+e. GST registration number of the billed company
+HSN/SAC code
+f. Description/content of items billed
+g. Achieves extraction accuracy above 80%.
+h. Identifies and flags duplicate invoices in processed sets.
+i. Validates vendor and company GST registration numbers directly from the government
+GST portal.
+j. Checks if billed GST rates match regulatory rates according to HSN/SAC codes.
+k. Checks Arithmetical accuracy of the Invoice
+l. Compares billed product prices to the average market price (using AI grounding) and flags
+outliers.
+
+Core Capabilities
+1. Ingest & Extract Data
+a. Accept invoice files (PDF, JPEG, PNG, etc.) from a designated folder.
+b. Extract structured data fields as specified, with over 80% extraction accuracy.
+c. Parse item-wise details including HSN/SAC code and description from invoice content.
+
+2. Anomaly & Compliance Checks
+- Detect duplicate invoices through document field and content matching.
+- Validate GST numbers using live checks on government portals.
+
+- Check GST rates using applicable HSN/SAC codes to ensure compliant billing.
+- Compare item prices against AI-derived market benchmarks, highlighting anomalies for
+manual review.
+- Check Arithmetical accuracy of the Invoice and highlight differences.
+
+3. Expected Output (Hackathon Prototype)
+
+a. System automatically detects, and processes uploaded invoices.
+b. Extracted invoice information is displayed with at least 80% field accuracy.
+c. The interface highlights:
+d. Duplicate invoices
+e. Any invalid or mismatched GST details
+f. Incorrect rates by HSN/SAC code
+g. Price discrepancies compared to market rates
+
+5. Flag & Visualize
+a) Provide a simple dashboard or chatbot interface showing anomalies, risk scores, etc.
+b) Allow natural language queries: “Show me top 2 anomalies observed in duplicate
+Invoice”
+
+Why It Matters
+a) Reduces manual effort and audit fatigue.
+b) Improves fraud detection and compliance monitoring.
+c) Learns continuously becoming more accurate and valuable with usage.
+d) Positions finance as data-driven, proactive, and AI-augmented.
+
+Tech Guidance (just sample – feel free to use what you
+want)
+ OCR & Document AI: Tesseract, Google Document AI, AWS Textract, Azure Form
+Recognizer.
+ Anomaly Detection: Clustering, statistical outliers, autoencoders.
+ Learning: Train on historical transaction data, update with feedback.
+ Agent Frameworks: LangChain, LlamaIndex, or similar.
+ Interfaces: Dashboards (Streamlit, Power BI) or conversational bots (Teams, Slack).
+
+
+Expected Output (Hackathon Prototype)
+ Upload invoices (images/PDFs) into the system / automatically pick them up from
+email/share drive.
+ AI Agent extracts data, runs compliance + anomaly checks.
+ Dashboard or conversational interface highlights risky transactions with explanations.
+ Evidence of learning patterns over time (e.g., reduced false positives, vendor spend
+profiles).

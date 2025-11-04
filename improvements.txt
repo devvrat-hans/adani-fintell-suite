@@ -1,0 +1,95 @@
+Implementation Plan for Flag & Visualize Features
+1. Dashboard Enhancements (finguard.html / dashboard.html)
+a) Anomaly Visualization Dashboard
+
+Create a dedicated "Anomalies Dashboard" section showing:
+Risk Score Cards: Visual cards showing high/medium/low risk invoices
+Duplicate Invoice Detection: List of flagged duplicate invoices with comparison view
+Price Anomaly Alerts: Invoices with price deviations from market rates
+GST Compliance Issues: Invoices with GST validation failures
+Charts/Graphs:
+Trend line showing anomalies over time
+Pie chart for risk distribution
+Bar chart for anomaly types
+b) Real-time Alert System
+
+Add a notification panel showing recent anomalies
+Color-coded severity indicators (red/yellow/green)
+Quick action buttons to "Review", "Approve", or "Flag for Investigation"
+2. Natural Language Query Interface (New Feature)
+Option A: Chatbot Widget (Recommended)
+
+Create a floating chatbot icon in the bottom-right corner
+Implement a chat interface that connects to Google Gemini AI
+User can type queries like:
+"Show me top 2 anomalies observed in duplicate Invoice"
+"What invoices have GST mismatches?"
+"Show me all high-risk invoices from last month"
+Option B: Search Bar with NLP
+
+Enhanced search bar at the top with natural language understanding
+Dropdown suggestions as user types
+Results displayed in a modal or dedicated results page
+3. Technical Implementation Steps
+Frontend (JavaScript)
+
+File: js/finguard/chatbot.js
+
+Build chat UI component
+Handle user input and display responses
+Format AI responses into visual elements
+File: js/finguard/anomaly-dashboard.js
+
+Fetch anomaly data from backend
+Render charts using vanilla JS (or lightweight library like Chart.js if allowed)
+Create interactive filters
+Backend Integration (n8n Workflows)
+
+Create new endpoint: /webhook/f/finguard/natural-language-query
+
+Accepts natural language query
+Passes to Gemini AI for interpretation
+Gemini extracts intent and parameters
+Backend queries database based on intent
+Returns structured data + natural language response
+Example query flow:
+
+4. Data Structure for Anomalies
+Each anomaly record should contain:
+
+5. UI/UX Considerations
+Color Coding:
+
+Red (High Risk): Score 80-100
+Orange (Medium Risk): Score 50-79
+Yellow (Low Risk): Score 30-49
+Green (No Risk): Score 0-29
+Interactive Elements:
+
+Click on anomaly to see full details
+Side-by-side comparison for duplicates
+Historical data tooltips
+Export anomaly reports as PDF/CSV
+6. Integration with Existing Pages
+FinGuard Page: Add "View Anomalies" button after invoice processing
+Invoice Database Page: Add "Risk Score" column, filter by anomaly type
+Dashboard Page: Add anomaly summary widgets
+New Page: anomaly-dashboard.html dedicated to anomaly visualization
+7. Gemini AI Prompt Engineering
+When user queries, send to Gemini with system prompt:
+
+Files to Create/Modify:
+New Files:
+
+chatbot.html (if standalone) or integrate into existing pages
+css/chatbot.css
+js/finguard/chatbot.js
+js/finguard/anomaly-dashboard.js
+anomaly-dashboard.html
+api/natural-language-query.txt
+Modify:
+
+finguard.html - Add chatbot widget
+dashboard.html - Add anomaly summary cards
+invoices.html - Add risk score column
+api-endpoints.js - Add NLP query endpoint

@@ -42,17 +42,6 @@ body {
     line-height: 1.6;
 }
 
-/* Prevent layout shift during loading */
-body.loading-layout .dashboard-main {
-    margin-left: var(--sidebar-width);
-}
-
-@media (max-width: 1024px) {
-    body.loading-layout .dashboard-main {
-        margin-left: 0;
-    }
-}
-
 /* Main Dashboard Container */
 .dashboard-main {
     margin-top: var(--navbar-height);
@@ -60,7 +49,6 @@ body.loading-layout .dashboard-main {
     padding: 2rem;
     min-height: calc(100vh - var(--navbar-height));
     width: calc(100% - var(--sidebar-collapsed-width, 80px));
-    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (min-width: 1025px) {

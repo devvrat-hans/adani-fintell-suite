@@ -3,147 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="FinGuard - Invoice OCR and GST validation for Adani Group">
-    <title>FinGuard - Adani Fintell Suite</title>
+    <title>Processing Timeline Modal - Test</title>
     
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/finguard.css">
+    <!-- CSS Variables (from themes) -->
+    <style>
+        :root {
+            /* Core Adani Brand Colors */
+            --adani-blue: #0B74B0;
+            --adani-purple: #75479C;
+            --adani-red: #BD3861;
+            
+            /* Blue Variations */
+            --adani-blue-alt: #0680A8;
+            --adani-blue-light: #2E8BC0;
+            --adani-blue-hover: #095F94;
+            
+            /* Purple Variations */
+            --adani-purple-alt: #5D58A6;
+            --adani-purple-light: #8B6BB1;
+            --adani-purple-hover: #634080;
+            
+            /* Red Variations */
+            --adani-red-alt: #BB3866;
+            --adani-red-light: #D85B7A;
+            
+            /* Text Colors */
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-muted: #6C757D;
+            --text-light: #8E8E8E;
+            
+            /* Background Colors */
+            --bg-white: #FFFFFF;
+            --bg-light: #F8F9FA;
+            --bg-lighter: #F5F5F5;
+            --bg-card: #FFFFFF;
+            
+            /* Border & Divider Colors */
+            --border-color: #E0E0E0;
+            --border-light: #F0F0F0;
+            --divider-color: #EEEEEE;
+            
+            /* Status Colors */
+            --status-success: #28A745;
+            --status-warning: #FFC107;
+            --status-error: #DC3545;
+            --status-info: #17A2B8;
+            --status-processing: #0B74B0;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--adani-blue) 0%, var(--adani-purple) 50%, var(--adani-red) 100%);
+            --gradient-blue-purple: linear-gradient(135deg, var(--adani-blue) 0%, var(--adani-purple) 100%);
+            --gradient-purple-red: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: var(--adani-blue);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: var(--gradient-blue-purple);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--adani-blue);
+            border: 1px solid var(--adani-blue);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--adani-blue);
+            color: white;
+        }
+        
+        .status-buttons {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-light);
+        }
+        
+        .status-buttons h3 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .status-label {
+            display: inline-block;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: var(--text-muted);
+        }
+    </style>
+    
+    <!-- Timeline Modal CSS -->
     <link rel="stylesheet" href="css/timeline-modal.css">
-    <link rel="stylesheet" href="css/notification.css">
 </head>
 <body>
-    <!-- Navbar Container -->
-    <div id="navbar-placeholder"></div>
-    
-    <!-- Sidebar Container -->
-    <div id="sidebar-placeholder"></div>
-    
-    <!-- Main Content -->
-    <main class="main-content" role="main">
-        <div class="page-container">
-            <!-- Page Header -->
-            <header class="page-header">
-                <div class="header-content">
-                    <h1 class="page-title">FinGuard</h1>
-                    <p class="page-description">Upload invoices for intelligent OCR processing, GST validation, and compliance checking</p>
-                </div>
-            </header>
-            
-            <!-- Upload Section -->
-            <section class="upload-section">
-                <div class="upload-card">
-                    <div class="card-header">
-                        <h2 class="card-title">Upload Invoice Document</h2>
-                        <p class="card-subtitle">Supported formats: PDF, PNG, JPEG (Max 10MB)</p>
-                    </div>
-                    
-                    <div class="card-body">
-                        <!-- File Upload Area -->
-                        <div class="upload-area" data-upload-area>
-                            <div class="upload-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
-                                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                                </svg>
-                            </div>
-                            <p class="upload-text">Drag & drop your invoice here</p>
-                            <p class="upload-subtext">or</p>
-                            <label for="fileInput" class="browse-btn" tabindex="0" role="button">Browse Files</label>
-                            <input type="file" id="fileInput" accept="application/pdf,image/png,image/jpeg,.pdf,.png,.jpg,.jpeg" hidden data-file-input>
-                        </div>
-                        
-                        <!-- File Preview -->
-                        <div class="file-preview" data-file-preview style="display: none;">
-                            <div class="preview-header">
-                                <div class="file-info">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                    </svg>
-                                    <div class="file-details">
-                                        <p class="file-name" data-file-name>document.pdf</p>
-                                        <p class="file-size" data-file-size>2.5 MB</p>
-                                    </div>
-                                </div>
-                                <button class="remove-file-btn" type="button" data-action="remove-file" aria-label="Remove file">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <div class="submit-section">
-                            <button class="submit-btn" type="button" data-action="process-file" disabled>
-                                <span class="btn-text">Process Invoice</span>
-                                <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Loading State -->
-                        <div class="loading-state" data-loading-state style="display: none;">
-                            <div class="spinner"></div>
-                            <p class="loading-text">Processing your invoice...</p>
-                            <p class="loading-subtext">This may take a few moments</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Results Section -->
-            <section class="results-section" data-results-section style="display: none;">
-                <div class="results-card">
-                    <div class="card-header">
-                        <h2 class="card-title">OCR Results</h2>
-                        <button class="copy-btn" type="button" data-action="copy-results" aria-label="Copy results">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="results-content" data-results-content>
-                            <!-- OCR results will be displayed here -->
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <div class="container">
+        <h1>🧪 Timeline Modal Test</h1>
+        <p>Test the processing timeline modal with different states and animations.</p>
+        
+        <div class="btn-group">
+            <button onclick="showModal()">Show Modal</button>
+            <button class="btn-secondary" onclick="hideModal()">Hide Modal</button>
         </div>
-    </main>
+        
+        <div class="status-buttons">
+            <h3>Change Step Status:</h3>
+            <div class="btn-group">
+                <button onclick="updateStep('ocr', 'in-progress')">OCR: In Progress</button>
+                <button onclick="updateStep('ocr', 'completed')">OCR: Completed</button>
+                <button onclick="updateStep('ocr', 'failed')">OCR: Failed</button>
+            </div>
+            <div class="btn-group" style="margin-top: 12px;">
+                <button onclick="updateStep('arithmetic', 'in-progress')">Arithmetic: In Progress</button>
+                <button onclick="updateStep('arithmetic', 'completed')">Arithmetic: Completed</button>
+                <button onclick="updateStep('arithmetic', 'failed')">Arithmetic: Failed</button>
+            </div>
+            <div class="btn-group" style="margin-top: 12px;">
+                <button onclick="updateStep('price-anomaly', 'in-progress')">Price: In Progress</button>
+                <button onclick="updateStep('price-anomaly', 'completed')">Price: Completed</button>
+            </div>
+            <div class="btn-group" style="margin-top: 12px;">
+                <button onclick="resetAllSteps()">Reset All Steps</button>
+                <button onclick="simulateProcessing()">Simulate Full Processing</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Processing Timeline Popup -->
     <div class="processing-popup" data-processing-popup style="display: none;">
-        <div class="popup-overlay" data-popup-overlay></div>
+        <div class="popup-overlay" data-popup-overlay onclick="hideModal()"></div>
         <div class="popup-content">
             <div class="popup-header">
-                <div class="popup-header-content">
-                    <h3 class="popup-title">Processing Invoice</h3>
-                    <div class="progress-indicator" data-progress-indicator>
-                        <span class="progress-percentage" data-progress-percentage>0%</span>
-                        <span class="progress-text">Complete</span>
-                    </div>
-                </div>
-                <div class="popup-header-actions">
-                    <button class="popup-close-btn" type="button" data-action="cancel-processing" aria-label="Minimize Processing">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <path d="M19 13H5v-2h14v2z"/>
-                        </svg>
-                    </button>
-                    <button class="popup-cancel-btn" type="button" onclick="cancelProcessing()" aria-label="Cancel Processing">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                        </svg>
-                    </button>
-                </div>
+                <h3 class="popup-title">Processing Invoice</h3>
             </div>
             <div class="popup-body">
                 <div class="timeline">
                     <!-- Step 1: OCR Processing -->
-                    <div class="timeline-item" data-timeline-step="ocr">
+                    <div class="timeline-item" data-timeline-step="ocr" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="ocr">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -162,12 +217,12 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">OCR Processing</h4>
-                            <p class="step-description" data-step-description="ocr">Extracting data from invoice...</p>
+                            <p class="step-description" data-step-description="ocr">Waiting to process...</p>
                         </div>
                     </div>
 
                     <!-- Step 2: Arithmetical Accuracy Check -->
-                    <div class="timeline-item" data-timeline-step="arithmetic">
+                    <div class="timeline-item" data-timeline-step="arithmetic" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="arithmetic">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -186,12 +241,12 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">Arithmetical Accuracy</h4>
-                            <p class="step-description" data-step-description="arithmetic">Verifying calculations...</p>
+                            <p class="step-description" data-step-description="arithmetic">Waiting to verify...</p>
                         </div>
                     </div>
 
                     <!-- Step 3: Price Anomaly Detection -->
-                    <div class="timeline-item" data-timeline-step="price-anomaly">
+                    <div class="timeline-item" data-timeline-step="price-anomaly" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="price-anomaly">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -210,12 +265,12 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">Price Anomaly Detection</h4>
-                            <p class="step-description" data-step-description="price-anomaly">Checking prices...</p>
+                            <p class="step-description" data-step-description="price-anomaly">Waiting to check prices...</p>
                         </div>
                     </div>
 
                     <!-- Step 4: Duplicate Detection -->
-                    <div class="timeline-item" data-timeline-step="duplicate">
+                    <div class="timeline-item" data-timeline-step="duplicate" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="duplicate">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -234,12 +289,12 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">Duplicate Detection</h4>
-                            <p class="step-description" data-step-description="duplicate">Checking for duplicate invoices...</p>
+                            <p class="step-description" data-step-description="duplicate">Waiting to check...</p>
                         </div>
                     </div>
 
                     <!-- Step 5: GST Validation -->
-                    <div class="timeline-item" data-timeline-step="gst">
+                    <div class="timeline-item" data-timeline-step="gst" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="gst">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -258,12 +313,12 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">GST Validation</h4>
-                            <p class="step-description" data-step-description="gst">Validating GST information...</p>
+                            <p class="step-description" data-step-description="gst">Waiting to validate...</p>
                         </div>
                     </div>
 
                     <!-- Step 6: GST Rate Validation -->
-                    <div class="timeline-item" data-timeline-step="gst-rate">
+                    <div class="timeline-item" data-timeline-step="gst-rate" data-status="pending">
                         <div class="timeline-marker">
                             <div class="marker-icon" data-step-icon="gst-rate">
                                 <svg class="icon-pending" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -282,7 +337,7 @@
                         </div>
                         <div class="timeline-content">
                             <h4 class="step-title">GST Rate Validation</h4>
-                            <p class="step-description" data-step-description="gst-rate">Validating GST rates...</p>
+                            <p class="step-description" data-step-description="gst-rate">Waiting to validate rates...</p>
                         </div>
                     </div>
                 </div>
@@ -290,29 +345,96 @@
         </div>
     </div>
     
-    <!-- Minimized Processing Indicator -->
-    <div class="minimized-processing" data-minimized-processing style="display: none;">
-        <div class="minimized-content" onclick="expandProcessingModal()">
-            <div class="spinner-mini"></div>
-            <div class="minimized-text">
-                <span class="minimized-title">Processing Invoice...</span>
-                <span class="minimized-subtitle" data-current-step>OCR Processing</span>
-            </div>
-        </div>
-        <button class="minimized-close" onclick="cancelProcessing()" aria-label="Stop Processing">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
-        </button>
-    </div>
-    
-    <!-- Scripts -->
-    <script src="js/utils/api-endpoints.js"></script>
-    <script src="js/utils/templates.js"></script>
-    <script src="js/utils/notification.js"></script>
-    <script src="js/core/navbar.js" defer></script>
-    <script src="js/core/sidebar.js" defer></script>
-    <script src="js/finguard/file-upload-handler.js"></script>
-    <script src="js/finguard/process-handler.js"></script>
+    <script>
+        function showModal() {
+            document.querySelector('[data-processing-popup]').style.display = 'flex';
+        }
+        
+        function hideModal() {
+            document.querySelector('[data-processing-popup]').style.display = 'none';
+        }
+        
+        function updateStep(step, status) {
+            const timelineItem = document.querySelector(`[data-timeline-step="${step}"]`);
+            if (!timelineItem) return;
+            
+            timelineItem.setAttribute('data-status', status);
+            
+            const messages = {
+                'in-progress': {
+                    'ocr': 'Extracting data from invoice...',
+                    'arithmetic': 'Verifying calculations...',
+                    'price-anomaly': 'Checking for price discrepancies...',
+                    'duplicate': 'Searching for duplicate invoices...',
+                    'gst': 'Validating GST information...',
+                    'gst-rate': 'Validating GST rates...'
+                },
+                'completed': {
+                    'ocr': 'Data extracted successfully',
+                    'arithmetic': 'Calculations verified',
+                    'price-anomaly': 'No price anomalies found',
+                    'duplicate': 'No duplicates found',
+                    'gst': 'GST validated successfully',
+                    'gst-rate': 'GST rates validated'
+                },
+                'failed': {
+                    'ocr': 'Failed to extract data',
+                    'arithmetic': 'Calculation errors found',
+                    'price-anomaly': 'Price anomalies detected',
+                    'duplicate': 'Duplicate invoice found',
+                    'gst': 'GST validation failed',
+                    'gst-rate': 'Invalid GST rates'
+                }
+            };
+            
+            const description = timelineItem.querySelector(`[data-step-description="${step}"]`);
+            if (description && messages[status] && messages[status][step]) {
+                description.textContent = messages[status][step];
+            }
+        }
+        
+        function resetAllSteps() {
+            const steps = ['ocr', 'arithmetic', 'price-anomaly', 'duplicate', 'gst', 'gst-rate'];
+            const defaultMessages = {
+                'ocr': 'Waiting to process...',
+                'arithmetic': 'Waiting to verify...',
+                'price-anomaly': 'Waiting to check prices...',
+                'duplicate': 'Waiting to check...',
+                'gst': 'Waiting to validate...',
+                'gst-rate': 'Waiting to validate rates...'
+            };
+            
+            steps.forEach(step => {
+                const timelineItem = document.querySelector(`[data-timeline-step="${step}"]`);
+                if (timelineItem) {
+                    timelineItem.setAttribute('data-status', 'pending');
+                    const description = timelineItem.querySelector(`[data-step-description="${step}"]`);
+                    if (description) {
+                        description.textContent = defaultMessages[step];
+                    }
+                }
+            });
+        }
+        
+        async function simulateProcessing() {
+            showModal();
+            resetAllSteps();
+            
+            const steps = [
+                { name: 'ocr', duration: 2000 },
+                { name: 'arithmetic', duration: 1500 },
+                { name: 'price-anomaly', duration: 1500 },
+                { name: 'duplicate', duration: 1500 },
+                { name: 'gst', duration: 1500 },
+                { name: 'gst-rate', duration: 1500 }
+            ];
+            
+            for (const step of steps) {
+                updateStep(step.name, 'in-progress');
+                await new Promise(resolve => setTimeout(resolve, step.duration));
+                updateStep(step.name, 'completed');
+            }
+        }
+    </script>
 </body>
 </html>

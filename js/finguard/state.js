@@ -22,6 +22,11 @@ export function setSelectedFile(file) {
  * @returns {File|null} - Currently selected file
  */
 export function getSelectedFile() {
+    // Check window.selectedInvoiceFile first (from file-upload-handler.js)
+    if (window.selectedInvoiceFile) {
+        return window.selectedInvoiceFile;
+    }
+    // Fallback to module state
     return selectedFile;
 }
 

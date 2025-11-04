@@ -205,7 +205,8 @@ async function setupPageLayout() {
     // Load components
     await loadAllComponents();
     
-    // Remove loading class after components are loaded
+    // Mark templates as loaded
+    document.body.classList.add('templates-loaded');
     document.body.classList.remove('loading-layout');
     
     // Dispatch event to notify that templates are loaded

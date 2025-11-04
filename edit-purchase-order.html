@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edit Purchase Order - Adani Fintell Suite">
+    <title>Edit Purchase Order - Adani Fintell Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/edit-purchase-order.css">
+</head>
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Container -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <div class="page-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Edit Purchase Order</h1>
+                    <p class="page-description">Update purchase order details and status</p>
+                </div>
+            </header>
+            
+            <!-- Form Section -->
+            <section class="form-section">
+                <form id="editPurchaseOrderForm" class="po-form">
+                    <input type="hidden" id="poId" name="po_id">
+                    
+                    <!-- Basic PO Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Purchase Order Information</h2>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="poNumber" class="form-label required">PO Number</label>
+                                    <input type="text" id="poNumber" name="po_number" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="poDate" class="form-label required">PO Date</label>
+                                    <input type="date" id="poDate" name="po_date" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="status" class="form-label required">Status</label>
+                                    <select id="status" name="status" class="form-input" required>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vendor Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Vendor Details</h2>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="vendorName" class="form-label required">Vendor Name</label>
+                                    <input type="text" id="vendorName" name="vendor_name" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorGstin" class="form-label required">Vendor GSTIN</label>
+                                    <input type="text" id="vendorGstin" name="vendor_gstin" class="form-input" maxlength="15" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorContact" class="form-label">Contact Number</label>
+                                    <input type="tel" id="vendorContact" name="vendor_contact" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Update Purchase Order</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="js/utils/api-endpoints.js"></script>
+    <script src="js/utils/templates.js"></script>
+    <script src="js/core/navbar.js"></script>
+    <script src="js/core/sidebar.js"></script>
+    <script src="js/page/edit-purchase-order.js"></script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add New Vendor - Adani Fintell Suite">
+    <title>Add New Vendor - Adani Fintell Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/add-vendor.css">
+</head>
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Container -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <div class="page-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Add New Vendor</h1>
+                    <p class="page-description">Register new vendor for procurement and supply chain management</p>
+                </div>
+            </header>
+            
+            <!-- Form Section -->
+            <section class="form-section">
+                <form id="addVendorForm" class="vendor-form">
+                    
+                    <!-- Basic Vendor Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Vendor Information</h2>
+                            <p class="card-subtitle">Basic vendor details and identifiers</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="vendorCode" class="form-label required">Vendor Code</label>
+                                    <input type="text" id="vendorCode" name="vendor_code" class="form-input" placeholder="Enter vendor code" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorName" class="form-label required">Vendor Name</label>
+                                    <input type="text" id="vendorName" name="vendor_name" class="form-input" placeholder="Enter vendor name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorType" class="form-label required">Vendor Type</label>
+                                    <select id="vendorType" name="vendor_type" class="form-select" required>
+                                        <option value="">Select type</option>
+                                        <option value="supplier">Supplier</option>
+                                        <option value="contractor">Contractor</option>
+                                        <option value="service_provider">Service Provider</option>
+                                        <option value="manufacturer">Manufacturer</option>
+                                        <option value="distributor">Distributor</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorCategory" class="form-label">Vendor Category</label>
+                                    <select id="vendorCategory" name="vendor_category" class="form-select">
+                                        <option value="">Select category</option>
+                                        <option value="raw_materials">Raw Materials</option>
+                                        <option value="equipment">Equipment</option>
+                                        <option value="services">Services</option>
+                                        <option value="utilities">Utilities</option>
+                                        <option value="logistics">Logistics</option>
+                                        <option value="it_services">IT Services</option>
+                                        <option value="consulting">Consulting</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Contact Details</h2>
+                            <p class="card-subtitle">Primary contact information</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="contactPerson" class="form-label required">Contact Person Name</label>
+                                    <input type="text" id="contactPerson" name="contact_person" class="form-input" placeholder="Enter contact person name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="designation" class="form-label">Designation</label>
+                                    <input type="text" id="designation" name="designation" class="form-input" placeholder="Enter designation">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone" class="form-label required">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" class="form-input" placeholder="Enter phone number" pattern="[0-9]{10}" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="alternatePhone" class="form-label">Alternate Phone</label>
+                                    <input type="tel" id="alternatePhone" name="alternate_phone" class="form-input" placeholder="Enter alternate phone" pattern="[0-9]{10}">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email" class="form-label required">Email Address</label>
+                                    <input type="email" id="email" name="email" class="form-input" placeholder="Enter email address" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="website" class="form-label">Website</label>
+                                    <input type="url" id="website" name="website" class="form-input" placeholder="Enter website URL">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Address Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Address Information</h2>
+                            <p class="card-subtitle">Vendor location details</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="address" class="form-label required">Address</label>
+                                    <textarea id="address" name="address" class="form-textarea" rows="2" placeholder="Enter complete address" required></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="city" class="form-label required">City</label>
+                                    <input type="text" id="city" name="city" class="form-input" placeholder="Enter city" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="state" class="form-label required">State</label>
+                                    <input type="text" id="state" name="state" class="form-input" placeholder="Enter state" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="pincode" class="form-label required">Pincode</label>
+                                    <input type="text" id="pincode" name="pincode" class="form-input" placeholder="Enter pincode" pattern="[0-9]{6}" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="country" class="form-label required">Country</label>
+                                    <input type="text" id="country" name="country" class="form-input" placeholder="Enter country" value="India" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- GST & Tax Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">GST & Tax Details</h2>
+                            <p class="card-subtitle">Tax registration information</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="gstNumber" class="form-label required">GST Number</label>
+                                    <input type="text" id="gstNumber" name="gst_number" class="form-input" placeholder="Enter 15-digit GSTIN" maxlength="15" pattern="[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}" required>
+                                    <span class="help-text">Format: 22AAAAA0000A1Z5</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="panNumber" class="form-label required">PAN Number</label>
+                                    <input type="text" id="panNumber" name="pan_number" class="form-input" placeholder="Enter 10-digit PAN" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                                    <span class="help-text">Format: AAAAA9999A</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="tanNumber" class="form-label">TAN Number</label>
+                                    <input type="text" id="tanNumber" name="tan_number" class="form-input" placeholder="Enter 10-digit TAN" maxlength="10" pattern="[A-Z]{4}[0-9]{5}[A-Z]{1}">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="msmeRegistration" class="form-label">MSME Registration</label>
+                                    <select id="msmeRegistration" name="msme_registration" class="form-select">
+                                        <option value="">Select MSME status</option>
+                                        <option value="not_registered">Not Registered</option>
+                                        <option value="micro">Micro Enterprise</option>
+                                        <option value="small">Small Enterprise</option>
+                                        <option value="medium">Medium Enterprise</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label for="msmeNumber" class="form-label">MSME Number</label>
+                                    <input type="text" id="msmeNumber" name="msme_number" class="form-input" placeholder="Enter MSME/Udyam registration number">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Banking Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Banking Details</h2>
+                            <p class="card-subtitle">Payment and banking information</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="bankName" class="form-label required">Bank Name</label>
+                                    <input type="text" id="bankName" name="bank_name" class="form-input" placeholder="Enter bank name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="accountNumber" class="form-label required">Account Number</label>
+                                    <input type="text" id="accountNumber" name="account_number" class="form-input" placeholder="Enter account number" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="ifscCode" class="form-label required">IFSC Code</label>
+                                    <input type="text" id="ifscCode" name="ifsc_code" class="form-input" placeholder="Enter IFSC code" maxlength="11" pattern="[A-Z]{4}0[A-Z0-9]{6}" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="branchName" class="form-label">Branch Name</label>
+                                    <input type="text" id="branchName" name="branch_name" class="form-input" placeholder="Enter branch name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="accountType" class="form-label required">Account Type</label>
+                                    <select id="accountType" name="account_type" class="form-select" required>
+                                        <option value="">Select account type</option>
+                                        <option value="savings">Savings</option>
+                                        <option value="current">Current</option>
+                                        <option value="cash_credit">Cash Credit</option>
+                                        <option value="overdraft">Overdraft</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="beneficiaryName" class="form-label required">Beneficiary Name</label>
+                                    <input type="text" id="beneficiaryName" name="beneficiary_name" class="form-input" placeholder="Enter beneficiary name" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Terms -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Payment Terms</h2>
+                            <p class="card-subtitle">Credit and payment conditions</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="paymentTerms" class="form-label required">Payment Terms</label>
+                                    <select id="paymentTerms" name="payment_terms" class="form-select" required>
+                                        <option value="">Select payment terms</option>
+                                        <option value="immediate">Immediate</option>
+                                        <option value="net_7">Net 7 Days</option>
+                                        <option value="net_15">Net 15 Days</option>
+                                        <option value="net_30">Net 30 Days</option>
+                                        <option value="net_45">Net 45 Days</option>
+                                        <option value="net_60">Net 60 Days</option>
+                                        <option value="net_90">Net 90 Days</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="creditLimit" class="form-label">Credit Limit (₹)</label>
+                                    <input type="number" id="creditLimit" name="credit_limit" class="form-input" placeholder="Enter credit limit" min="0" step="1000">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="currency" class="form-label required">Currency</label>
+                                    <select id="currency" name="currency" class="form-select" required>
+                                        <option value="INR">INR - Indian Rupee</option>
+                                        <option value="USD">USD - US Dollar</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="GBP">GBP - British Pound</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorStatus" class="form-label required">Vendor Status</label>
+                                    <select id="vendorStatus" name="vendor_status" class="form-select" required>
+                                        <option value="active">Active</option>
+                                        <option value="pending">Pending Approval</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="blocked">Blocked</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Additional Information</h2>
+                            <p class="card-subtitle">Other relevant details</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="remarks" class="form-label">Remarks/Notes</label>
+                                    <textarea id="remarks" name="remarks" class="form-textarea" rows="3" placeholder="Enter any additional notes or remarks"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Buttons -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Vendor</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="js/utils/api-endpoints.js"></script>
+    <script src="js/utils/templates.js"></script>
+    <script src="js/core/navbar.js"></script>
+    <script src="js/core/sidebar.js"></script>
+    <script src="js/page/add-vendor.js"></script>
+</body>
+</html>

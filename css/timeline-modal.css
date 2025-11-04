@@ -1,0 +1,650 @@
+/**
+ * Adani Fintell Suite - Processing Timeline Modal
+ * Styles for the invoice processing timeline popup
+ */
+
+/* Import variables if not already loaded */
+:root {
+    --bg-white: #FFFFFF;
+    --bg-light: #F8F9FA;
+    --bg-lighter: #F5F5F5;
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-light: #8E8E8E;
+    --border-light: #F0F0F0;
+    --adani-blue: #0B74B0;
+    --adani-blue-light: #2E8BC0;
+    --adani-blue-hover: #095F94;
+    --adani-purple: #75479C;
+    --adani-purple-light: #8B6BB1;
+    --status-success: #28A745;
+    --status-error: #DC3545;
+    --gradient-blue-purple: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+}
+
+/* ==========================================================================
+   Processing Popup
+   ========================================================================== */
+
+.processing-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.popup-content {
+    position: relative;
+    background: var(--bg-white);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 
+                0 0 1px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow: hidden;
+    z-index: 1000000;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popup-header {
+    padding: 28px 32px;
+    background: var(--gradient-blue-purple);
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.popup-header-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.popup-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--bg-white);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-percentage {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--bg-white);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.popup-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.popup-close-btn,
+.popup-cancel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--bg-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.popup-close-btn:hover,
+.popup-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.popup-cancel-btn:hover {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: var(--status-error);
+}
+
+.popup-close-btn:active,
+.popup-cancel-btn:active {
+    transform: scale(0.95);
+}
+
+.popup-close-btn svg,
+.popup-cancel-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.popup-body {
+    padding: 24px 32px 48px 32px;
+    background: var(--bg-white);
+    overflow-y: auto;
+    max-height: calc(85vh - 84px);
+}
+
+/* Popup Actions */
+.popup-actions {
+    padding: 20px 32px;
+    background: var(--bg-lighter);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-cancel-processing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: transparent;
+    border: 2px solid var(--status-error);
+    color: var(--status-error);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel-processing:hover {
+    background: var(--status-error);
+    color: var(--bg-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-cancel-processing:active {
+    transform: translateY(0);
+}
+
+.btn-cancel-processing svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ==========================================================================
+   Timeline Styles - Modern & Professional Design
+   ========================================================================== */
+
+.timeline {
+    position: relative;
+    padding: 0 0 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Vertical connecting line - positioned behind markers */
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 64px;
+    bottom: 64px;
+    width: 2px;
+    background: var(--border-color);
+    border-radius: 2px;
+    opacity: 0.5;
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 16px 0;
+    animation: slideInLeft 0.4s ease-out backwards;
+}
+
+.timeline-item:nth-child(1) { animation-delay: 0.1s; }
+.timeline-item:nth-child(2) { animation-delay: 0.15s; }
+.timeline-item:nth-child(3) { animation-delay: 0.2s; }
+.timeline-item:nth-child(4) { animation-delay: 0.25s; }
+.timeline-item:nth-child(5) { animation-delay: 0.3s; }
+.timeline-item:nth-child(6) { animation-delay: 0.35s; }
+
+/* Timeline Marker Container */
+.timeline-marker {
+    flex-shrink: 0;
+    position: relative;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Marker Icon Circle */
+.marker-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--bg-white);
+    border: 3px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 10;
+}
+
+/* ==========================================================================
+   Timeline Item States
+   ========================================================================== */
+
+/* Pending State */
+.timeline-item[data-status="pending"] .marker-icon {
+    border-color: var(--border-light);
+    background: var(--bg-lighter);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.timeline-item[data-status="pending"] .icon-pending {
+    display: block;
+    color: var(--text-light);
+}
+
+/* In Progress State */
+.timeline-item[data-status="in-progress"] .marker-icon {
+    border-color: var(--adani-blue);
+    background: linear-gradient(135deg, var(--bg-white) 0%, rgba(11, 116, 176, 0.05) 100%);
+    animation: pulseGlow 2s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(11, 116, 176, 0.4),
+                0 4px 12px rgba(11, 116, 176, 0.3);
+}
+
+.timeline-item[data-status="in-progress"] .icon-loading {
+    display: block;
+    color: var(--adani-blue);
+    animation: spin 1.2s linear infinite;
+    filter: drop-shadow(0 0 2px rgba(11, 116, 176, 0.4));
+}
+
+/* Completed State */
+.timeline-item[data-status="completed"] .marker-icon {
+    border-color: var(--status-success);
+    background: linear-gradient(135deg, var(--status-success) 0%, #22c55e 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transform: scale(1.05);
+}
+
+.timeline-item[data-status="completed"] .icon-success {
+    display: block;
+    color: var(--bg-white);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Failed State */
+.timeline-item[data-status="failed"] .marker-icon {
+    border-color: var(--status-error);
+    background: linear-gradient(135deg, var(--status-error) 0%, #ef4444 100%);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    animation: shake 0.5s ease-in-out;
+}
+
+.timeline-item[data-status="failed"] .icon-error {
+    display: block;
+    color: var(--bg-white);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Hide non-active icons */
+.timeline-item .marker-icon svg {
+    display: none;
+}
+
+/* ==========================================================================
+   Timeline Content
+   ========================================================================== */
+
+.timeline-content {
+    flex: 1;
+    padding-top: 10px;
+    padding-right: 8px;
+}
+
+.step-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.01em;
+    transition: color 0.3s ease;
+}
+
+.step-description {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+    transition: color 0.3s ease;
+}
+
+/* Status-based text colors */
+.timeline-item[data-status="pending"] .step-title {
+    color: var(--text-light);
+}
+
+.timeline-item[data-status="pending"] .step-description {
+    color: var(--text-light);
+}
+
+.timeline-item[data-status="in-progress"] .step-title {
+    color: var(--adani-blue);
+    font-weight: 800;
+}
+
+.timeline-item[data-status="in-progress"] .step-description {
+    color: var(--adani-blue-hover);
+    font-weight: 500;
+}
+
+.timeline-item[data-status="completed"] .step-title {
+    color: var(--status-success);
+}
+
+.timeline-item[data-status="completed"] .step-description {
+    color: #22c55e;
+}
+
+.timeline-item[data-status="failed"] .step-title {
+    color: var(--status-error);
+}
+
+.timeline-item[data-status="failed"] .step-description {
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(11, 116, 176, 0.4),
+                    0 4px 12px rgba(11, 116, 176, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(11, 116, 176, 0),
+                    0 4px 16px rgba(11, 116, 176, 0.4);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-6px);
+    }
+    75% {
+        transform: translateX(6px);
+    }
+}
+
+/* ==========================================================================
+   Minimized Processing Indicator
+   ========================================================================== */
+
+.minimized-processing {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+                0 0 1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    z-index: 999998;
+    animation: slideInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 360px;
+}
+
+.minimized-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    cursor: pointer;
+}
+
+.spinner-mini {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--bg-light);
+    border-top-color: var(--adani-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+.minimized-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.minimized-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.minimized-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.minimized-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg-lighter);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.minimized-close:hover {
+    background: var(--status-error);
+    border-color: var(--status-error);
+    color: var(--bg-white);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .popup-content {
+        max-width: 95%;
+        max-height: 90vh;
+        border-radius: 12px;
+    }
+    
+    .popup-header {
+        padding: 20px 24px;
+    }
+    
+    .popup-title {
+        font-size: 1.5rem;
+    }
+    
+    .popup-body {
+        padding: 24px;
+    }
+    
+    .timeline-item {
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .marker-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .timeline::before {
+        left: 19px;
+    }
+    
+    .step-title {
+        font-size: 1.05rem;
+    }
+    
+    .step-description {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .popup-content {
+        width: 95%;
+        max-height: 92vh;
+    }
+    
+    .popup-header {
+        padding: 16px 20px;
+    }
+    
+    .popup-title {
+        font-size: 1.35rem;
+    }
+    
+    .popup-body {
+        padding: 20px;
+    }
+    
+    .timeline-item {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .marker-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .timeline::before {
+        left: 17px;
+    }
+    
+    .step-title {
+        font-size: 1rem;
+    }
+    
+    .step-description {
+        font-size: 0.85rem;
+    }
+}

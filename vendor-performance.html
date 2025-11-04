@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vendor Performance - Adani Fintell Suite">
+    <title>Vendor Performance - Adani Fintell Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/vendor-performance.css">
+</head>
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Container -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <div class="page-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Vendor Performance Analytics</h1>
+                    <p class="page-description">Track and analyze vendor performance metrics across procurement activities</p>
+                </div>
+            </header>
+            
+            <!-- Search & Filter Section -->
+            <section class="search-section">
+                <div class="search-card">
+                    <div class="search-bar-container">
+                        <!-- Search Input -->
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="search-input" 
+                                class="search-input" 
+                                placeholder="Search by vendor name or code..."
+                                data-search-input
+                                aria-label="Search vendor performance"
+                            />
+                        </div>
+                        
+                        <!-- Refresh Button -->
+                        <button class="btn-refresh" id="refresh-btn" type="button" data-action="refresh" aria-label="Refresh vendor performance data">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table Section -->
+            <section class="table-section">
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="performance-table" id="performance-table">
+                            <thead>
+                                <tr>
+                                    <th>Vendor Code</th>
+                                    <th>Vendor Name</th>
+                                    <th>Total POs</th>
+                                    <th>Completed POs</th>
+                                    <th>On-Time Delivery (%)</th>
+                                    <th>Total Value (₹)</th>
+                                    <th>Avg Response Time (hrs)</th>
+                                    <th>Performance Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="performance-table-body">
+                                <!-- Table rows will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            Showing <span id="showing-start">0</span> to <span id="showing-end">0</span> of <span id="total-vendors">0</span> vendors
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="prev-page" type="button" data-action="prev-page" disabled>Previous</button>
+                            <span class="page-numbers" id="page-numbers"></span>
+                            <button class="pagination-btn" id="next-page" type="button" data-action="next-page">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Performance Details Modal -->
+    <div class="performance-modal" id="performance-modal" style="display: none;">
+        <div class="modal-overlay" onclick="closePerformanceModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-vendor-name">Vendor Performance Details</h3>
+                <button class="modal-close" type="button" onclick="closePerformanceModal()" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Performance details will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/utils/api-endpoints.js"></script>
+    <script src="js/utils/templates.js"></script>
+    <script src="js/core/navbar.js"></script>
+    <script src="js/core/sidebar.js"></script>
+    <script src="js/page/vendor-performance.js"></script>
+</body>
+</html>

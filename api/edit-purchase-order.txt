@@ -1,0 +1,53 @@
+Endpoint: Edit Purchase Order
+
+URL: https://n8n-n8n.qoezvx.easypanel.host/webhook/f/purchase-orders/update-po
+Method: PUT
+
+Request Headers:
+Content-Type: application/json
+
+Request Body:
+{
+    "po_id": "PO-2024-001",
+    "po_number": "PO/24/001",
+    "po_date": "2024-01-15",
+    "vendor_name": "ABC Suppliers Ltd",
+    "vendor_gstin": "27AABCU9603R1ZX",
+    "vendor_address": "123 Business Park, Mumbai, Maharashtra 400001",
+    "vendor_contact": "9876543210",
+    "vendor_email": "contact@abcsuppliers.com",
+    "company_gstin": "27AADCA5659F1ZV",
+    "company_name": "Adani Enterprises Ltd",
+    "company_address": "Adani House, Mumbai, Maharashtra 400001",
+    "delivery_date": "2024-02-15",
+    "delivery_address": "Warehouse 5, Adani Port, Gujarat 395003",
+    "payment_terms": "Net 30",
+    "notes": "Urgent delivery required",
+    "status": "Approved",
+    "updated_by": "John Doe"
+}
+
+Response Body (Success):
+{
+    "success": true,
+    "message": "Purchase order updated successfully",
+    "po_id": "PO-2024-001"
+}
+
+Response Body (Error):
+{
+    "success": false,
+    "error": "Error message description"
+}
+
+Field Descriptions:
+- po_id: Unique purchase order ID (required for editing)
+- status: Current status of PO ("Pending", "Approved", "Rejected", "Completed", "Cancelled")
+- updated_by: Name of user who updated the PO
+- All other fields same as add-purchase-order endpoint
+
+Notes:
+- PO ID is required to identify which order to update
+- Status can be changed during editing
+- Cannot edit PO if status is "Completed" or "Cancelled"
+- Date format must be YYYY-MM-DD

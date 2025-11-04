@@ -209,6 +209,12 @@ async function handleFormSubmit(e) {
  * @returns {Promise} - Authentication promise
  */
 async function authenticateUser(credentials) {
+    // Check if API_ENDPOINTS is available
+    if (!window.API_ENDPOINTS || !window.API_ENDPOINTS.AUTH) {
+        console.error('API_ENDPOINTS not loaded');
+        throw new Error('API configuration not loaded. Please refresh the page.');
+    }
+    
     // Get endpoint from API_ENDPOINTS configuration
     const endpoint = window.API_ENDPOINTS.AUTH.SIGNIN;
     

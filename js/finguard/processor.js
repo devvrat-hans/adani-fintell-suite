@@ -26,17 +26,29 @@ import { checkDuplicate, validateGST, validateGSTRate, checkPriceAnomaly } from 
  * Process file with OCR
  */
 export async function processFile() {
+    console.log('=== processFile called ===');
+    
     const selectedFile = getSelectedFile();
+    console.log('Selected file:', selectedFile);
     
     if (!selectedFile) {
+        console.error('No file selected!');
         alert('Please select a file first');
         return;
     }
     
+    console.log('File details:', {
+        name: selectedFile.name,
+        type: selectedFile.type,
+        size: selectedFile.size
+    });
+    
     // Show processing timeline popup
+    console.log('Showing processing popup...');
     showProcessingPopup();
     
     // Show loading state
+    console.log('Showing loading state...');
     showLoadingState();
     disableSubmitButton();
     

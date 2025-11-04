@@ -25,7 +25,7 @@
     background: var(--navbar-bg);
     border-bottom: 1px solid var(--navbar-border);
     box-shadow: var(--navbar-shadow);
-    z-index: 1000;
+    z-index: 10005;
     overflow: visible;
 }
 
@@ -83,7 +83,7 @@
     min-width: 0;
     max-width: 400px;
     position: relative;
-    z-index: 10002;
+    z-index: 10007;
 }
 
 /* ==========================================================================
@@ -92,7 +92,7 @@
 
 .navbar-help {
     position: relative;
-    z-index: 10002;
+    z-index: 10003;
 }
 
 .help-icon-btn {
@@ -151,7 +151,7 @@
 
 .navbar-user {
     position: relative;
-    z-index: 10002;
+    z-index: 10007;
 }
 
 .user-profile-btn {
@@ -233,7 +233,7 @@
     visibility: visible;
     transform: translateY(0);
     transition: all 0.3s ease;
-    z-index: 10001;
+    z-index: 10008;
 }
 
 .profile-dropdown[data-profile-dropdown="hidden"] {

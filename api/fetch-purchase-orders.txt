@@ -1,0 +1,60 @@
+Endpoint: Fetch Purchase Orders
+
+URL: https://n8n-n8n.qoezvx.easypanel.host/webhook/f/database/fetch-purchase-orders
+Method: GET
+
+Request Headers:
+Content-Type: application/json
+
+Request Parameters: None
+
+Response Body (Success):
+{
+    "success": true,
+    "data": [
+        {
+            "po_id": "PO-2024-001",
+            "po_number": "PO/24/001",
+            "po_date": "2024-01-15",
+            "vendor_name": "ABC Suppliers Ltd",
+            "vendor_gstin": "27AABCU9603R1ZX",
+            "company_gstin": "27AADCA5659F1ZV",
+            "total_amount": 150000.00,
+            "status": "Approved",
+            "delivery_date": "2024-02-15",
+            "items_count": 5,
+            "created_by": "John Doe",
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-15T10:30:00Z"
+        },
+        {
+            "po_id": "PO-2024-002",
+            "po_number": "PO/24/002",
+            "po_date": "2024-01-20",
+            "vendor_name": "XYZ Trading Co",
+            "vendor_gstin": "29AABCU9603R1ZY",
+            "company_gstin": "27AADCA5659F1ZV",
+            "total_amount": 250000.00,
+            "status": "Pending",
+            "delivery_date": "2024-02-20",
+            "items_count": 8,
+            "created_by": "Jane Smith",
+            "created_at": "2024-01-20T14:45:00Z",
+            "updated_at": "2024-01-20T14:45:00Z"
+        }
+    ],
+    "count": 2
+}
+
+Response Body (Error):
+{
+    "success": false,
+    "error": "Error message description"
+}
+
+Notes:
+- The endpoint returns all purchase orders from the database
+- Data is cached in localStorage and only refreshed when user clicks refresh button
+- Status can be: "Pending", "Approved", "Rejected", "Completed", "Cancelled"
+- All dates are in ISO 8601 format
+- Amount is in INR (Indian Rupees)

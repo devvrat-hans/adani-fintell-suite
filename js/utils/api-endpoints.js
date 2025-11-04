@@ -9,7 +9,7 @@
 // Base URLs
 // ==========================================================================
 
-const API_BASE_URL = 'https://n8n-n8n.j8euv3.easypanel.host';
+const API_BASE_URL = 'https://n8n-n8n.qoezvx.easypanel.host';
 
 // ==========================================================================
 // Authentication Endpoints
@@ -32,7 +32,7 @@ const FINGUARD_ENDPOINTS = {
     DETECT_DUPLICATE: `${API_BASE_URL}/webhook/f/finguard/detect-duplicate`,
     VALIDATE_GST: `${API_BASE_URL}/webhook/f/finguard/validate-gst`,
     VALIDATE_GST_RATE: `${API_BASE_URL}/webhook/f/finguard/validate-gst-rate`,
-    PRICE_ANOMALY: `${API_BASE_URL}/webhook/price-anomaly`,
+    PRICE_ANOMALY: `${API_BASE_URL}/webhook/f/finguard/price-anomaly`,
     GET_INVOICES: `${API_BASE_URL}/webhook/f/finguard/get-invoices`,
     GET_INVOICE_DETAILS: `${API_BASE_URL}/webhook/f/finguard/get-invoice-details`,
     UPDATE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/update-invoice`,
@@ -101,6 +101,39 @@ const DATABASE_ENDPOINTS = {
 };
 
 // ==========================================================================
+// Purchase Order Endpoints
+// ==========================================================================
+
+const PURCHASE_ORDER_ENDPOINTS = {
+    FETCH_PURCHASE_ORDERS: `${API_BASE_URL}/webhook/f/database/fetch-purchase-orders`,
+    GET_PO_DETAILS: `${API_BASE_URL}/webhook/f/purchase-orders/get-po-details`,
+    ADD_PURCHASE_ORDER: `${API_BASE_URL}/webhook/f/purchase-orders/add-po`,
+    UPDATE_PURCHASE_ORDER: `${API_BASE_URL}/webhook/f/purchase-orders/update-po`,
+    DELETE_PURCHASE_ORDER: `${API_BASE_URL}/webhook/f/purchase-orders/delete-po`,
+    APPROVE_PURCHASE_ORDER: `${API_BASE_URL}/webhook/f/purchase-orders/approve-po`,
+    REJECT_PURCHASE_ORDER: `${API_BASE_URL}/webhook/f/purchase-orders/reject-po`,
+    GET_PO_STATUS: `${API_BASE_URL}/webhook/f/purchase-orders/get-po-status`,
+    EXPORT_PO_DATA: `${API_BASE_URL}/webhook/f/purchase-orders/export-po-data`
+};
+
+// ==========================================================================
+// Vendor Management Endpoints
+// ==========================================================================
+
+const VENDOR_ENDPOINTS = {
+    FETCH_VENDORS: `${API_BASE_URL}/webhook/f/database/fetch-vendors`,
+    GET_VENDOR_DETAILS: `${API_BASE_URL}/webhook/f/vendors/get-vendor-details`,
+    ADD_VENDOR: `${API_BASE_URL}/webhook/f/finguard/add-vendor`,
+    UPDATE_VENDOR: `${API_BASE_URL}/webhook/f/vendors/update-vendor`,
+    DELETE_VENDOR: `${API_BASE_URL}/webhook/f/vendors/delete-vendor`,
+    APPROVE_VENDOR: `${API_BASE_URL}/webhook/f/vendors/approve-vendor`,
+    BLOCK_VENDOR: `${API_BASE_URL}/webhook/f/vendors/block-vendor`,
+    UNBLOCK_VENDOR: `${API_BASE_URL}/webhook/f/vendors/unblock-vendor`,
+    GET_VENDOR_POS: `${API_BASE_URL}/webhook/f/vendors/get-vendor-pos`,
+    EXPORT_VENDOR_DATA: `${API_BASE_URL}/webhook/f/vendors/export-vendor-data`
+};
+
+// ==========================================================================
 // Export All Endpoints
 // ==========================================================================
 
@@ -112,7 +145,9 @@ const API_ENDPOINTS = {
     ANALYTICS: ANALYTICS_ENDPOINTS,
     USER: USER_ENDPOINTS,
     ENTITY: ENTITY_ENDPOINTS,
-    DATABASE: DATABASE_ENDPOINTS
+    DATABASE: DATABASE_ENDPOINTS,
+    PURCHASE_ORDER: PURCHASE_ORDER_ENDPOINTS,
+    VENDOR: VENDOR_ENDPOINTS
 };
 
 // Make available globally

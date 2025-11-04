@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add Purchase Order - Adani Fintell Suite">
+    <title>Add Purchase Order - Adani Fintell Suite</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/add-purchase-order.css">
+</head>
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Container -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <div class="page-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">Add New Purchase Order</h1>
+                    <p class="page-description">Create purchase order for vendor procurement and tracking</p>
+                </div>
+            </header>
+            
+            <!-- Form Section -->
+            <section class="form-section">
+                <form id="addPurchaseOrderForm" class="po-form">
+                    
+                    <!-- Basic PO Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Purchase Order Information</h2>
+                            <p class="card-subtitle">Basic PO details and identifiers</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="poNumber" class="form-label required">PO Number</label>
+                                    <input type="text" id="poNumber" name="po_number" class="form-input" placeholder="Enter PO number" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="poDate" class="form-label required">PO Date</label>
+                                    <input type="date" id="poDate" name="po_date" class="form-input" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="deliveryDate" class="form-label required">Delivery Date</label>
+                                    <input type="date" id="deliveryDate" name="delivery_date" class="form-input" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vendor Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Vendor Details</h2>
+                            <p class="card-subtitle">Supplier information</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="vendorName" class="form-label required">Vendor Name</label>
+                                    <input type="text" id="vendorName" name="vendor_name" class="form-input" placeholder="Enter vendor name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorGstin" class="form-label required">Vendor GSTIN</label>
+                                    <input type="text" id="vendorGstin" name="vendor_gstin" class="form-input" placeholder="Enter GSTIN" maxlength="15" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="vendorContact" class="form-label">Contact Number</label>
+                                    <input type="tel" id="vendorContact" name="vendor_contact" class="form-input" placeholder="Enter contact number">
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label for="vendorEmail" class="form-label">Email</label>
+                                    <input type="email" id="vendorEmail" name="vendor_email" class="form-input" placeholder="Enter email">
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <label for="vendorAddress" class="form-label">Address</label>
+                                    <textarea id="vendorAddress" name="vendor_address" class="form-textarea" rows="2" placeholder="Enter address"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Company Information -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Company Details</h2>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="companyName" class="form-label required">Company Name</label>
+                                    <input type="text" id="companyName" name="company_name" class="form-input" placeholder="Enter company name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="companyGstin" class="form-label required">Company GSTIN</label>
+                                    <input type="text" id="companyGstin" name="company_gstin" class="form-input" placeholder="Enter GSTIN" maxlength="15" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Create Purchase Order</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="js/utils/api-endpoints.js"></script>
+    <script src="js/utils/templates.js"></script>
+    <script src="js/core/navbar.js"></script>
+    <script src="js/core/sidebar.js"></script>
+    <script src="js/page/add-purchase-order.js"></script>
+</body>
+</html>
