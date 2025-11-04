@@ -184,3 +184,17 @@ const NotificationSystem = {
 window.NotificationSystem = NotificationSystem;
 
 console.log('Notification system ready');
+
+/**
+ * Convenience function for showing notifications
+ * @param {string} type - Type of notification ('success', 'error', 'warning', 'info')
+ * @param {string} message - Notification message
+ * @param {string} title - Optional notification title
+ * @param {number} duration - Optional duration in milliseconds
+ */
+export function showNotification(type, message, title = '', duration = 5000) {
+    return NotificationSystem.show({ type, title, message, duration });
+}
+
+// Export the notification system as well
+export { NotificationSystem };

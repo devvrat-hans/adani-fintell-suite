@@ -33,7 +33,7 @@ Results displayed in a modal or dedicated results page
 3. Technical Implementation Steps
 Frontend (JavaScript)
 
-File: js/finguard/chatbot.js
+File: js/finguard/ai-assistant.js
 
 Build chat UI component
 Handle user input and display responses
@@ -81,9 +81,9 @@ When user queries, send to Gemini with system prompt:
 Files to Create/Modify:
 New Files:
 
-chatbot.html (if standalone) or integrate into existing pages
-css/chatbot.css
-js/finguard/chatbot.js
+ai-assistant.html (if standalone) or integrate into existing pages
+css/ai-assistant.css
+js/finguard/ai-assistant.js
 js/finguard/anomaly-dashboard.js
 anomaly-dashboard.html
 api/natural-language-query.txt
@@ -93,3 +93,231 @@ finguard.html - Add chatbot widget
 dashboard.html - Add anomaly summary cards
 invoices.html - Add risk score column
 api-endpoints.js - Add NLP query endpoint
+
+
+Current State Analysis
+✅ Already Implemented (Partial)
+Invoice OCR Upload System - Basic file upload interface exists on finguard.html
+Vendor Database - Complete vendor management pages
+Purchase Order Management - Full CRUD operations for POs
+Invoice Database - View and manage invoices
+Dashboard - Basic analytics display
+Vendor Performance Tracking - Performance metrics page
+❌ Missing Core Features (Priority)
+🎯 NEW PAGES NEEDED
+1. Anomaly Detection Dashboard (anomaly-dashboard.html)
+Purpose: Centralized view of all detected anomalies with risk scoring
+
+Features:
+Risk score cards (Duplicate Invoices, GST Mismatches, Price Outliers, Arithmetic Errors)
+Real-time anomaly feed with severity levels
+Filter by type: duplicates, GST issues, price anomalies, calculation errors
+Drill-down into each anomaly with supporting evidence
+Action buttons: "Mark as Resolved", "Flag for Review", "Auto-Approve"
+Trend charts showing anomaly patterns over time
+2. AI Chatbot / Natural Language Query Interface (ai-assistant.html)
+Purpose: Allow users to ask questions like "Show me top 2 anomalies in duplicate invoices"
+
+Features:
+Chat-style interface with conversation history
+Pre-defined query templates ("Show me duplicates", "Check GST compliance", "Find price outliers")
+AI-powered responses with data visualization
+Export query results to PDF/Excel
+Voice input support
+Query history and saved searches
+3. Compliance Dashboard (compliance-dashboard.html)
+Purpose: Dedicated page for GST validation and regulatory compliance
+
+Features:
+GST validation status board (Valid/Invalid/Pending)
+HSN/SAC code verification results
+Rate mismatch alerts
+Government portal integration status
+Compliance score by vendor
+Regulatory report generation
+Audit trail for all checks
+4. Price Anomaly Detection (price-anomaly-dashboard.html)
+Purpose: Market price comparison and outlier detection
+
+Features:
+Product-wise price comparison charts
+Market benchmark vs billed price visualization
+Outlier highlighting with percentage deviation
+Historical price trends per product
+Vendor price comparison matrix
+Auto-suggest alternative vendors for better pricing
+5. Duplicate Invoice Detection (duplicate-detection.html)
+Purpose: Manage and review suspected duplicate invoices
+
+Features:
+Side-by-side comparison of suspected duplicates
+Similarity score (field matching + content matching)
+Visual diff highlighting differences
+Bulk actions: "Merge", "Mark as Unique", "Flag for Review"
+Duplicate detection rules configuration
+Learning feedback loop (mark false positives)
+6. Arithmetic Validation Dashboard (arithmetic-validation.html)
+Purpose: Identify calculation errors in invoices
+
+Features:
+List of invoices with arithmetic discrepancies
+Expected vs actual amount comparison
+Line item calculation breakdown
+Tax calculation verification
+Auto-correction suggestions
+Vendor-wise error rate statistics
+7. Document Processing Queue (processing-queue.html)
+Purpose: Monitor OCR and AI processing status
+
+Features:
+Real-time processing status (Queued, Processing, Completed, Failed)
+Processing time metrics
+Error logs for failed extractions
+Retry failed documents
+Batch processing controls
+Extraction accuracy metrics per document
+Manual review queue for low-confidence extractions
+8. Learning & Training Dashboard (ai-training.html)
+Purpose: Monitor and improve AI model performance
+
+Features:
+Model accuracy metrics over time
+False positive/negative tracking
+Feedback loop management
+Re-training triggers
+Vendor spend profiles learned by AI
+Pattern detection insights
+Model versioning and rollback
+9. Audit Trail & Reporting (audit-trail.html)
+Purpose: Complete audit history for compliance
+
+Features:
+Chronological log of all system actions
+User action tracking
+AI decision explanations
+Export audit reports
+Compliance certificate generation
+Filter by date, user, action type, entity
+10. Settings & Configuration (settings.html)
+Purpose: Configure AI agent thresholds and rules
+
+Features:
+OCR confidence threshold settings
+Anomaly detection sensitivity
+GST validation API credentials
+Market price data source configuration
+Email/notification settings
+User role management
+Approval workflow configuration
+🚀 NEW FEATURES TO ADD TO EXISTING PAGES
+On finguard.html (Main OCR Upload Page)
+Batch Upload - Upload multiple invoices at once
+Email Integration - Auto-fetch invoices from designated email folders
+ShareDrive Integration - Monitor shared folders for new invoices
+Real-time Processing Status - Live progress bar with extraction confidence
+Quick Anomaly Summary - Immediate red flags after processing
+Extraction Preview - Show extracted fields with confidence scores
+Manual Correction Interface - Edit low-confidence extractions
+On invoices.html (Invoice Database)
+Risk Score Column - Color-coded risk indicators (Red/Yellow/Green)
+Anomaly Tags - Quick labels (Duplicate, GST Issue, Price Outlier)
+Quick Actions - "View Anomalies", "Validate GST", "Compare Prices"
+Advanced Filters - Filter by risk level, anomaly type, compliance status
+Bulk Actions - Approve/reject multiple invoices
+Export with Anomalies - Generate anomaly reports
+On dashboard.html (Main Dashboard)
+Anomaly Heatmap - Visual representation of risk areas
+AI Learning Progress - Show model accuracy improvement over time
+Top Anomalies Widget - Quick access to critical issues
+Compliance Score Card - Overall compliance percentage
+Processing Statistics - Documents processed, accuracy rate, time saved
+Natural Language Query Bar - Ask questions directly from dashboard
+On vendor-database.html (Vendor Management)
+Risk Rating - Vendor-wise risk score based on historical anomalies
+Compliance Badge - GST validation status
+Price Competitiveness Indicator - Above/below market average
+Anomaly History - Past issues with this vendor
+Auto-Blacklist - Flag vendors with repeated violations
+🔧 BACKEND INTEGRATION PRIORITIES
+1. OCR & Document AI Integration
+Implement actual Gemini AI Vision API calls
+Add confidence scoring for extracted fields
+Implement multi-format support (PDF, JPEG, PNG, TIFF)
+2. GST Validation API
+Integrate with Government GST portal API
+Real-time GST number verification
+HSN/SAC code validation
+3. Market Price Intelligence
+Implement AI grounding for price comparison
+Create market benchmark database
+Add price trend tracking
+4. Duplicate Detection Algorithm
+Implement fuzzy matching for invoice fields
+Content-based similarity scoring
+Image hash comparison for scanned documents
+5. Arithmetic Validation Engine
+Calculate expected totals from line items
+Verify GST calculations
+Check discount applications
+6. Learning & Feedback Loop
+Store user corrections for model improvement
+Track false positive/negative rates
+Implement periodic model retraining
+7. Natural Language Processing
+Integrate Gemini AI for natural language queries
+Create query-to-SQL/data mapping
+Implement conversational context
+📊 FEATURE PRIORITY MATRIX
+🔴 HIGH PRIORITY (Core Problem Statement Requirements)
+✅ Anomaly Detection Dashboard
+✅ AI Chatbot / NLP Query Interface
+✅ Duplicate Invoice Detection Page
+✅ GST Validation Integration
+✅ Price Anomaly Detection
+✅ Arithmetic Validation
+🟡 MEDIUM PRIORITY (Enhanced User Experience)
+Processing Queue Dashboard
+Compliance Dashboard
+AI Training Dashboard
+Enhanced Dashboard with anomaly widgets
+🟢 LOW PRIORITY (Nice to Have)
+Audit Trail
+Settings & Configuration
+Email/ShareDrive Integration
+Advanced Reporting
+💡 INNOVATION OPPORTUNITIES
+Predictive Analytics - Predict which invoices are likely to have issues before full processing
+Vendor Scoring System - AI-driven vendor reliability ratings
+Smart Routing - Auto-route suspicious invoices to specific approvers
+Mobile App - On-the-go invoice approvals with anomaly highlights
+WhatsApp/Teams Bot - Receive alerts and approve via chat
+Blockchain Integration - Immutable audit trail
+Voice Commands - "Show me today's anomalies"
+AR Invoice Scanning - Use phone camera for instant OCR
+🎯 RECOMMENDED DEVELOPMENT ROADMAP
+Phase 1: Core Anomaly Detection (Week 1-2)
+Anomaly Detection Dashboard
+Duplicate Invoice Detection
+Price Anomaly Detection
+Arithmetic Validation
+Phase 2: AI & NLP Integration (Week 2-3)
+AI Chatbot Interface
+Natural Language Query Engine
+Gemini AI Integration
+Phase 3: Compliance & Validation (Week 3-4)
+GST Validation Integration
+Compliance Dashboard
+Government Portal APIs
+Phase 4: Learning & Optimization (Week 4-5)
+AI Training Dashboard
+Feedback Loop Implementation
+Model Improvement Tracking
+Phase 5: Polish & Deploy (Week 5-6)
+Processing Queue Dashboard
+Audit Trail
+Settings & Configuration
+Testing & Bug Fixes
+This comprehensive plan addresses all requirements from the problem statement while maintaining the vanilla JavaScript architecture. Ready to start building any of these features! 🚀
+
+Claude Sonnet 4.5 • 1x
+

@@ -1,0 +1,84 @@
+## Analytics - Top Vendors by Spend API
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/analytics/top-vendors`
+
+**Method:** GET
+
+**Description:** Returns top vendors ranked by total spend amount for visualization in horizontal bar chart.
+
+**Query Parameters:**
+- `timeRange` (optional): Time range filter - "7", "30", "90", "365", or "all" (default: "30")
+- `startDate` (optional): Start date for custom range (format: YYYY-MM-DD)
+- `endDate` (optional): End date for custom range (format: YYYY-MM-DD)
+- `limit` (optional): Number of top vendors to return (default: 5, max: 20)
+
+**Response Structure:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "labels": ["Vendor A", "Vendor B", "Vendor C", "Vendor D", "Vendor E"],
+    "values": [8765400, 7654300, 6543200, 5432100, 4321000],
+    "vendorIds": ["VEN001", "VEN002", "VEN003", "VEN004", "VEN005"],
+    "invoiceCounts": [45, 38, 42, 31, 29],
+    "avgInvoiceValues": [194787, 201429, 155790, 175229, 148966],
+    "totalSpend": 32716000,
+    "period": {
+      "start": "2024-10-01",
+      "end": "2024-10-31"
+    }
+  },
+  "timestamp": "2024-11-04T10:30:00Z"
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "success": false,
+  "error": "Error message describing what went wrong",
+  "timestamp": "2024-11-04T10:30:00Z"
+}
+```
+
+**Usage Example:**
+
+```javascript
+// Fetch top vendors by spend
+async function fetchTopVendors(timeRange = '30', limit = 5) {
+    try {
+        const response = await fetch(
+            `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/analytics/top-vendors?timeRange=${timeRange}&limit=${limit}`
+        );
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const { labels, values } = result.data;
+            
+            // Update horizontal bar chart with data
+            createTopVendorsChart({
+                labels,
+                data: values,
+                color: '#75479C'
+            });
+        } else {
+            console.error('Error:', result.error);
+        }
+    } catch (error) {
+        console.error('Failed to fetch top vendors:', error);
+    }
+}
+```
+
+**n8n Workflow Notes:**
+- Query invoice database for approved invoices within specified date range
+- Group by vendor_id and vendor_name
+- Calculate total spend per vendor (SUM of invoice amounts)
+- Calculate invoice count per vendor
+- Calculate average invoice value per vendor
+- Sort by total spend descending
+- Return top N vendors based on limit parameter
+- Include vendor IDs for potential drill-down navigation

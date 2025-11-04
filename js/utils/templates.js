@@ -25,6 +25,16 @@ const TEMPLATE_CONFIG = {
         styles: [
             'css/sidebar.css'
         ]
+    },
+    chatbot: {
+        path: 'templates/shared/chatbot-widget.html',
+        target: 'chatbot-placeholder',
+        scripts: [
+            'js/utils/chatbot-widget.js'
+        ],
+        styles: [
+            'css/chatbot-widget.css'
+        ]
     }
 };
 
@@ -57,7 +67,21 @@ async function fetchTemplate(path) {
  * @returns {boolean} - Success status
  */
 function renderTemplate(html, targetId) {
-    const targetElement = document.getElementById(targetId);
+    let targetElement = document.getElementById(targetId);
+    
+    // Special handling for chatbot-placeholder - create if doesn't exist
+    // But skip on ai-assistant.html page itself
+    if (!targetElement && targetId === 'chatbot-placeholder') {
+        // Check if we're on the ai-assistant page
+        const isAIAssistantPage = window.location.pathname.includes('ai-assistant.html');
+        if (isAIAssistantPage) {
+            return false; // Skip chatbot widget on AI assistant page
+        }
+        
+        targetElement = document.createElement('div');
+        targetElement.id = targetId;
+        document.body.appendChild(targetElement);
+    }
     
     if (!targetElement) {
         console.error(`Target element not found: ${targetId}`);
@@ -101,6 +125,7 @@ function loadScript(src) {
         
         const script = document.createElement('script');
         script.src = src;
+        script.type = 'module'; // Add module type for ES6 modules
         script.onload = resolve;
         script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
         document.body.appendChild(script);
@@ -135,6 +160,11 @@ async function loadComponent(componentName) {
         const rendered = renderTemplate(html, config.target);
         
         if (!rendered) {
+            // Special case: chatbot on ai-assistant.html page is intentionally skipped
+            if (componentName === 'chatbot' && window.location.pathname.includes('ai-assistant.html')) {
+                console.log('Skipping chatbot widget on AI assistant page');
+                return;
+            }
             throw new Error(`Failed to render ${componentName} template`);
         }
         
@@ -159,8 +189,19 @@ async function loadAllComponents() {
     const components = Object.keys(TEMPLATE_CONFIG);
     
     try {
-        await Promise.all(components.map(loadComponent));
-        console.log('All components loaded successfully');
+        const results = await Promise.allSettled(components.map(loadComponent));
+        
+        // Log results
+        results.forEach((result, index) => {
+            const componentName = components[index];
+            if (result.status === 'fulfilled') {
+                console.log(`✓ ${componentName} loaded successfully`);
+            } else {
+                console.error(`✗ ${componentName} failed to load:`, result.reason);
+            }
+        });
+        
+        console.log('Component loading complete');
     } catch (error) {
         console.error('Error loading components:', error);
     }

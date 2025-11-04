@@ -24,7 +24,8 @@ body:not(.templates-loaded) .finguard-main,
 body:not(.templates-loaded) .invoices-main,
 body:not(.templates-loaded) .add-invoice-main,
 body:not(.templates-loaded) .profile-main,
-body:not(.templates-loaded) .keyboard-shortcuts-main {
+body:not(.templates-loaded) .keyboard-shortcuts-main,
+body:not(.templates-loaded) .chatbot-main {
     opacity: 0;
 }
 
@@ -36,7 +37,8 @@ body.templates-loaded .finguard-main,
 body.templates-loaded .invoices-main,
 body.templates-loaded .add-invoice-main,
 body.templates-loaded .profile-main,
-body.templates-loaded .keyboard-shortcuts-main {
+body.templates-loaded .keyboard-shortcuts-main,
+body.templates-loaded .chatbot-main {
     opacity: 1;
     transition: opacity 0.2s ease-in-out;
 }

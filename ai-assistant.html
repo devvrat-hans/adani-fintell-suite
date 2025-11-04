@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Chatbot - Adani Fintell Suite">
+    <title>AI Assistant | Adani Fintell Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/ai-assistant.css">
+    <link rel="stylesheet" href="css/notification.css">
+    
+    <!-- Template Loader -->
+    <script src="js/utils/templates.js"></script>
+</head>
+<body class="loading-layout">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="chatbot-main">
+        <div class="chatbot-layout">
+            <!-- Left Sidebar - Chat History & Tools -->
+            <aside class="chatbot-sidebar">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">Conversations</h3>
+                    <button class="btn-new-chat" id="newChatBtn" title="Start new conversation">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Chat History -->
+                <div class="chat-history" id="chatHistory">
+                    <div class="history-section">
+                        <h4 class="history-heading">Today</h4>
+                        <div class="history-item-wrapper" data-session-id="sess_today_001">
+                            <button class="history-item active">
+                                <span class="history-text">Invoice anomalies discussion</span>
+                            </button>
+                            <button class="delete-conversation-btn" aria-label="Delete conversation">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="history-section">
+                        <h4 class="history-heading">Yesterday</h4>
+                        <div class="history-item-wrapper" data-session-id="sess_today_002">
+                            <button class="history-item">
+                                <span class="history-text">GST compliance queries</span>
+                            </button>
+                            <button class="delete-conversation-btn" aria-label="Delete conversation">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="history-item-wrapper" data-session-id="sess_yesterday_001">
+                            <button class="history-item">
+                                <span class="history-text">Vendor performance analysis</span>
+                            </button>
+                            <button class="delete-conversation-btn" aria-label="Delete conversation">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Tools -->
+                <div class="sidebar-tools">
+                    <h4 class="tools-heading">Quick Tools</h4>
+                    <button class="tool-btn" data-action="export-chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        Export Chat
+                    </button>
+                </div>
+            </aside>
+            
+            <!-- Main Chat Area -->
+            <div class="chatbot-container">
+            <!-- Suggested Queries -->
+            <div class="suggested-queries" id="suggestedQueries">
+                <p class="suggested-title">Try asking me:</p>
+                <div class="query-chips">
+                    <button class="query-chip" data-query="Show me top 5 anomalies observed in duplicate invoices">
+                        Top duplicate invoice anomalies
+                    </button>
+                    <button class="query-chip" data-query="Which invoices have GST validation errors?">
+                        GST validation errors
+                    </button>
+                    <button class="query-chip" data-query="Show me all high-risk invoices from last month">
+                        High-risk invoices
+                    </button>
+                    <button class="query-chip" data-query="List invoices with price anomalies above market average">
+                        Price anomalies
+                    </button>
+                    <button class="query-chip" data-query="Show vendor performance summary">
+                        Vendor performance
+                    </button>
+                    <button class="query-chip" data-query="Which invoices have incorrect GST rates according to HSN/SAC codes?">
+                        Incorrect GST rates
+                    </button>
+                    <button class="query-chip" data-query="Show me invoices with arithmetical errors">
+                        Arithmetical errors
+                    </button>
+                    <button class="query-chip" data-query="Display compliance rate by vendor for this month">
+                        Vendor compliance rates
+                    </button>
+                    <button class="query-chip" data-query="What are the recent invoice processing trends?">
+                        Invoice processing trends
+                    </button>
+                    <button class="query-chip" data-query="Show me invoices flagged for price discrepancies">
+                        Price discrepancies
+                    </button>
+                    <button class="query-chip" data-query="List invoices with invalid GSTIN format">
+                        Invalid GSTIN
+                    </button>
+                    <button class="query-chip" data-query="Compare extracted invoice data accuracy this month vs last month">
+                        OCR extraction accuracy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                    </div>
+                    <div class="assistant-message">
+                        Hello! I'm your Fintell Suite AI Assistant. I can help you with:
+                        <ul>
+                            <li>Finding specific anomalies in invoices</li>
+                            <li>Checking GST compliance issues</li>
+                            <li>Analyzing vendor performance</li>
+                            <li>Reviewing processed invoices</li>
+                            <li>Generating insights and reports</li>
+                        </ul>
+                        What would you like to know?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chatbot-input-area">
+                <input 
+                    type="text" 
+                    class="chatbot-input" 
+                    id="chatbotInput" 
+                    placeholder="Ask me anything about your invoices..."
+                    autocomplete="off"
+                />
+                <button class="send-btn" id="sendBtn" aria-label="Send message">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/core/navbar.js"></script>
+    <script src="js/core/sidebar.js"></script>
+    <script type="module" src="js/page/ai-assistant.js"></script>
+</body>
+</html>

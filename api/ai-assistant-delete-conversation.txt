@@ -1,0 +1,93 @@
+# AI Assistant - Delete Conversation API Endpoint
+
+## Endpoint: Delete Conversation
+**URL:** `/api/ai-assistant/conversation/{session_id}`  
+**Method:** `DELETE`  
+**Description:** Delete a specific conversation session from the AI assistant history.
+
+### Request Headers
+```
+Content-Type: application/json
+Authorization: Bearer <auth_token>
+```
+
+### URL Parameters
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| session_id | string | Yes | Unique session identifier for the conversation to delete |
+
+### Request Example
+```bash
+DELETE /api/ai-assistant/conversation/sess_1234567890
+```
+
+### Response Format (Success - 200 OK)
+```json
+{
+  "success": true,
+  "message": "Conversation deleted successfully",
+  "data": {
+    "session_id": "sess_1234567890",
+    "deleted_at": "2024-01-15T10:35:00Z"
+  }
+}
+```
+
+### Response Format (Error - 404 Not Found)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "CONVERSATION_NOT_FOUND",
+    "message": "The specified conversation does not exist",
+    "session_id": "sess_1234567890"
+  }
+}
+```
+
+### Error Codes
+| Code | Status | Description |
+|------|--------|-------------|
+| CONVERSATION_NOT_FOUND | 404 | Conversation with specified session_id doesn't exist |
+| UNAUTHORIZED | 401 | User is not authorized to delete this conversation |
+| FORBIDDEN | 403 | User doesn't have permission to delete this conversation |
+| SERVER_ERROR | 500 | Internal server error occurred |
+
+### Example Request (cURL)
+```bash
+curl -X DELETE https://api.fintell-suite.adani.com/api/ai-assistant/conversation/sess_1234567890 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN"
+```
+
+### Example Request (JavaScript)
+```javascript
+const deleteConversation = async (sessionId) => {
+  const response = await fetch(`/api/ai-assistant/conversation/${sessionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    }
+  });
+  
+  const data = await response.json();
+  
+  if (data.success) {
+    console.log('Conversation deleted successfully');
+    // Remove from UI
+    removeConversationFromUI(sessionId);
+  } else {
+    console.error('Failed to delete conversation:', data.error.message);
+  }
+  
+  return data;
+};
+```
+
+### Notes
+- Deleting a conversation permanently removes all messages and cannot be undone
+- If the deleted conversation is the currently active one, the UI should switch to another conversation
+- The API should also delete all associated data (messages, metadata, etc.)
+- Consider implementing soft delete (marking as deleted rather than permanent removal) for recovery options
+- Bulk delete operations may be added in future versions

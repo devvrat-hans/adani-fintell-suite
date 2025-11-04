@@ -1,0 +1,94 @@
+=======================================================================
+Endpoint: AI Assistant - Get Conversation History
+=======================================================================
+
+Purpose: Retrieve chat history for current user
+
+URL: /api/ai-assistant/history
+Method: GET
+Authentication: Required (Session Token)
+
+-------------------------------------------------------------------
+Query Parameters
+-------------------------------------------------------------------
+- limit: number (optional, default: 20) - Number of conversations to return
+- offset: number (optional, default: 0) - Pagination offset
+- session_id: string (optional) - Get specific conversation history
+
+Example Request:
+GET /api/ai-assistant/history?limit=10&offset=0
+
+-------------------------------------------------------------------
+Response (Success - 200 OK)
+-------------------------------------------------------------------
+{
+    "success": true,
+    "data": {
+        "conversations": [
+            {
+                "session_id": string - Unique session identifier
+                "title": string - Auto-generated conversation title
+                "started_at": string - ISO 8601 timestamp
+                "last_updated": string - ISO 8601 timestamp
+                "message_count": number - Number of messages in conversation
+                "preview": string - Preview of last message
+            }
+        ],
+        "total": number - Total conversation count
+        "pagination": {
+            "limit": number,
+            "offset": number,
+            "has_more": boolean
+        }
+    }
+}
+
+Example Response:
+{
+    "success": true,
+    "data": {
+        "conversations": [
+            {
+                "session_id": "sess_abc123xyz",
+                "title": "Invoice anomalies discussion",
+                "started_at": "2024-11-04T09:15:00Z",
+                "last_updated": "2024-11-04T10:30:00Z",
+                "message_count": 8,
+                "preview": "Here are the top 5 duplicate invoice anomalies..."
+            },
+            {
+                "session_id": "sess_def456uvw",
+                "title": "GST compliance queries",
+                "started_at": "2024-11-03T14:20:00Z",
+                "last_updated": "2024-11-03T15:45:00Z",
+                "message_count": 5,
+                "preview": "The GST validation rate is currently at 94.5%..."
+            }
+        ],
+        "total": 15,
+        "pagination": {
+            "limit": 10,
+            "offset": 0,
+            "has_more": true
+        }
+    }
+}
+
+-------------------------------------------------------------------
+n8n Workflow Integration
+-------------------------------------------------------------------
+1. Workflow: ai-assistant-get-history
+2. Trigger: Webhook GET /api/ai-assistant/history
+3. Steps:
+   a. Validate authentication
+   b. Query conversation database
+   c. Format and paginate results
+   d. Return conversation list
+
+-------------------------------------------------------------------
+Notes
+-------------------------------------------------------------------
+- Conversations are ordered by last_updated (most recent first)
+- Title is auto-generated from first message or manually set
+- Preview shows last 100 characters of most recent message
+- Deleted conversations are not returned

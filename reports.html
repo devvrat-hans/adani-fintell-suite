@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reports - Adani Fintell Suite">
+    <title>Reports | Adani Fintell Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/reports.css">
+    <link rel="stylesheet" href="css/notification.css">
+    
+    <!-- Template Loader -->
+    <script src="js/utils/templates.js"></script>
+</head>
+<body class="loading-layout">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="reports-main">
+        <div class="reports-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="page-title">Reports</h1>
+                        <p class="page-subtitle">Generate and download compliance & audit reports</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button class="btn-refresh" id="refreshBtn" aria-label="Refresh data">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Pre-built Report Templates -->
+            <section class="templates-section">
+                <h2 class="section-title">Pre-built Report Templates</h2>
+                <div class="templates-grid">
+                    <!-- Monthly Invoice Summary Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">Monthly Invoice Summary</h3>
+                            <p class="template-description">Comprehensive overview of all invoices processed in a month</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="monthly-invoice">Generate Report</button>
+                        </div>
+                    </div>
+
+                    <!-- GST Compliance Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">GST Compliance Report</h3>
+                            <p class="template-description">Detailed GST validation results and compliance metrics</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="gst-compliance">Generate Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Performance Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">Vendor Performance Report</h3>
+                            <p class="template-description">Analysis of vendor reliability and performance metrics</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="vendor-performance">Generate Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Anomaly Detection Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-red">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L1 21h22L12 2zm0 3.5L19.53 19H4.47L12 5.5zM11 16v2h2v-2h-2zm0-6v4h2v-4h-2z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">Anomaly Detection Report</h3>
+                            <p class="template-description">Summary of detected anomalies and risk assessments</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="anomaly-detection">Generate Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Processed Invoices Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-3-7v-2h-2v2h-2v2h2v2h2v-2h2v-2h-2z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">Processed Invoices Report</h3>
+                            <p class="template-description">Detailed log of all processed invoices with status</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel, CSV
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="processed-invoices">Generate Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Order Status Report -->
+                    <div class="template-card">
+                        <div class="template-icon template-cyan">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.2L19 7.8V19zm-7-7c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zM6 6h9v4H6z"/>
+                            </svg>
+                        </div>
+                        <div class="template-content">
+                            <h3 class="template-title">Purchase Order Status Report</h3>
+                            <p class="template-description">Overview of purchase orders and their current status</p>
+                            <div class="template-meta">
+                                <span class="meta-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF, Excel
+                                </span>
+                            </div>
+                            <button class="btn-generate" data-template="purchase-order-status">Generate Report</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custom Report Builder -->
+            <section class="builder-section">
+                <h2 class="section-title">Custom Report Builder</h2>
+                <div class="builder-card">
+                    <form id="customReportForm" class="builder-form">
+                        <div class="form-grid">
+                            <!-- Report Name -->
+                            <div class="form-group">
+                                <label for="reportName" class="form-label">Report Name</label>
+                                <input type="text" id="reportName" class="form-input" placeholder="e.g., Q1 Financial Summary" required>
+                            </div>
+
+                            <!-- Report Type -->
+                            <div class="form-group">
+                                <label for="reportType" class="form-label">Report Type</label>
+                                <select id="reportType" class="form-select" required>
+                                    <option value="">Select report type</option>
+                                    <option value="invoice">Invoice Analysis</option>
+                                    <option value="gst">GST Compliance</option>
+                                    <option value="vendor">Vendor Performance</option>
+                                    <option value="anomaly">Anomaly Detection</option>
+                                    <option value="purchase-order">Purchase Orders</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+
+                            <!-- Date Range -->
+                            <div class="form-group">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" id="startDate" class="form-input" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" id="endDate" class="form-input" required>
+                            </div>
+
+                            <!-- Entity Filter -->
+                            <div class="form-group">
+                                <label for="entityFilter" class="form-label">Entity Filter (Optional)</label>
+                                <select id="entityFilter" class="form-select" multiple>
+                                    <option value="entity1">Adani Power Ltd</option>
+                                    <option value="entity2">Adani Green Energy Ltd</option>
+                                    <option value="entity3">Adani Ports & SEZ Ltd</option>
+                                    <option value="entity4">Adani Transmission Ltd</option>
+                                    <option value="entity5">Adani Total Gas Ltd</option>
+                                </select>
+                            </div>
+
+                            <!-- Vendor Filter -->
+                            <div class="form-group">
+                                <label for="vendorFilter" class="form-label">Vendor Filter (Optional)</label>
+                                <input type="text" id="vendorFilter" class="form-input" placeholder="Enter vendor names or IDs">
+                            </div>
+
+                            <!-- Report Format -->
+                            <div class="form-group">
+                                <label for="reportFormat" class="form-label">Report Format</label>
+                                <select id="reportFormat" class="form-select" required>
+                                    <option value="pdf">PDF</option>
+                                    <option value="excel">Excel</option>
+                                    <option value="csv">CSV</option>
+                                </select>
+                            </div>
+
+                            <!-- Schedule Option -->
+                            <div class="form-group">
+                                <label for="scheduleOption" class="form-label">Schedule Report (Optional)</label>
+                                <select id="scheduleOption" class="form-select">
+                                    <option value="">One-time generation</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="resetFormBtn">Reset</button>
+                            <button type="submit" class="btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Generate Custom Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Report History -->
+            <section class="history-section">
+                <div class="history-header">
+                    <h2 class="section-title">Report History</h2>
+                    <div class="history-controls">
+                        <input type="text" class="search-input" id="historySearch" placeholder="Search reports...">
+                        <select class="filter-select" id="historyFilter">
+                            <option value="all">All Reports</option>
+                            <option value="pdf">PDF Only</option>
+                            <option value="excel">Excel Only</option>
+                            <option value="csv">CSV Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="history-table-container">
+                    <table class="history-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Report Name</th>
+                                <th>Type</th>
+                                <th>Generated On</th>
+                                <th>Date Range</th>
+                                <th>Format</th>
+                                <th>Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Modal -->
+    <div class="loading-modal" id="loadingModal">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3 class="loading-title">Generating Report...</h3>
+            <p class="loading-text">Please wait while we prepare your report</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/page/reports.js"></script>
+    <script type="module" src="js/utils/chatbot-widget.js"></script>
+</body>
+</html>

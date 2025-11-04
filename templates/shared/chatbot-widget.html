@@ -1,0 +1,94 @@
+<!-- Floating Chatbot Widget -->
+<!-- Include this HTML snippet at the end of any page's body (before closing </body> tag) -->
+<!-- Also include: <link rel="stylesheet" href="css/chatbot-widget.css"> in <head> -->
+<!-- And: <script type="module" src="js/utils/chatbot-widget.js"></script> before closing </body> -->
+
+<div class="chatbot-widget" id="chatbotWidget">
+    <!-- Chatbot Toggle Button -->
+    <button class="chatbot-toggle-btn" id="chatbotToggleBtn" aria-label="Toggle chatbot">
+        <svg class="chatbot-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window">
+        <!-- Header -->
+        <div class="chatbot-header">
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+                <div class="chatbot-header-text">
+                    <h3 class="chatbot-title">Fintell Suite Assistant</h3>
+                    <p class="chatbot-status">
+                        <span class="status-indicator"></span>
+                        Online
+                    </p>
+                </div>
+            </div>
+            <button class="chatbot-minimize-btn" aria-label="Minimize chatbot">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Suggested Queries -->
+        <div class="suggested-queries">
+            <p class="suggested-title">Suggested queries:</p>
+            <div class="query-chips">
+                <span class="query-chip">Show me top duplicate invoices</span>
+                <span class="query-chip">What are the GST mismatches?</span>
+                <span class="query-chip">Show high-risk invoices</span>
+                <span class="query-chip">Price anomalies this month</span>
+                <span class="query-chip">Vendor performance summary</span>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="chatbot-messages">
+            <!-- Welcome Message -->
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+                <div class="message-content">
+                    <p class="message-text">👋 Hello! I'm your Fintell Suite AI Assistant. I can help you with:</p>
+                    <ul class="message-list">
+                        <li>Analyzing invoice anomalies and duplicates</li>
+                        <li>Checking GST validation issues</li>
+                        <li>Reviewing price discrepancies</li>
+                        <li>Vendor performance insights</li>
+                        <li>Invoice processing status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chatbot-input-area">
+            <button class="attach-btn" aria-label="Attach file">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                </svg>
+            </button>
+            <input type="text" class="chatbot-input" placeholder="Type your question here..." aria-label="Chat input">
+            <button class="send-btn" disabled aria-label="Send message">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+
+    </div>
+</div>

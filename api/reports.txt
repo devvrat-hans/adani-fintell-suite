@@ -1,0 +1,271 @@
+## Reports API Endpoints
+
+### 1. Generate Pre-built Report
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/generate-report`
+
+**Method:** POST
+
+**Request Body:**
+```json
+{
+  "templateType": "monthly-invoice|gst-compliance|vendor-performance|anomaly-detection|processed-invoices|purchase-order-status",
+  "format": "pdf|excel|csv",
+  "dateRange": {
+    "start": "2024-10-01",
+    "end": "2024-10-31"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "reportId": "RPT-2024-001234",
+    "reportName": "Monthly Invoice Summary - October 2024",
+    "downloadUrl": "https://cdn.example.com/reports/RPT-2024-001234.pdf",
+    "generatedAt": "2024-11-04T10:30:00Z",
+    "format": "pdf",
+    "size": "2.4 MB"
+  }
+}
+```
+
+---
+
+### 2. Generate Custom Report
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/custom-report`
+
+**Method:** POST
+
+**Request Body:**
+```json
+{
+  "reportName": "Q1 Financial Summary",
+  "reportType": "invoice|gst|vendor|anomaly|purchase-order|custom",
+  "dateRange": {
+    "start": "2024-01-01",
+    "end": "2024-03-31"
+  },
+  "filters": {
+    "entities": ["entity1", "entity2"],
+    "vendors": ["vendor123", "vendor456"],
+    "status": "processed|failed|all"
+  },
+  "format": "pdf|excel|csv",
+  "schedule": {
+    "enabled": false,
+    "frequency": "daily|weekly|monthly|quarterly"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "reportId": "CUSTOM-2024-001234",
+    "reportName": "Q1 Financial Summary",
+    "downloadUrl": "https://cdn.example.com/reports/CUSTOM-2024-001234.pdf",
+    "generatedAt": "2024-11-04T10:30:00Z",
+    "format": "pdf",
+    "size": "3.2 MB",
+    "schedule": {
+      "enabled": false
+    }
+  }
+}
+```
+
+---
+
+### 3. Get Report History
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/report-history`
+
+**Method:** GET
+
+**Query Parameters:**
+- `page` (optional): Page number for pagination (default: 1)
+- `limit` (optional): Number of reports per page (default: 20)
+- `format` (optional): Filter by format - "pdf", "excel", "csv", or "all"
+- `dateFrom` (optional): Filter reports from this date
+- `dateTo` (optional): Filter reports until this date
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "reports": [
+      {
+        "reportId": "RPT-2024-001234",
+        "reportName": "Monthly Invoice Summary - October 2024",
+        "reportType": "Monthly Invoice Summary",
+        "generatedAt": "2024-10-31T10:30:00Z",
+        "dateRange": {
+          "start": "2024-10-01",
+          "end": "2024-10-31"
+        },
+        "format": "pdf",
+        "size": "2.4 MB",
+        "downloadUrl": "https://cdn.example.com/reports/RPT-2024-001234.pdf"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 47,
+      "totalPages": 3
+    }
+  }
+}
+```
+
+---
+
+### 4. Download Report
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/download-report/{reportId}`
+
+**Method:** GET
+
+**Response:** Binary file download (PDF/Excel/CSV)
+
+---
+
+### 5. Delete Report
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/delete-report/{reportId}`
+
+**Method:** DELETE
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Report deleted successfully",
+  "reportId": "RPT-2024-001234"
+}
+```
+
+---
+
+### 6. Schedule Report
+
+**Endpoint:** `https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/schedule-report`
+
+**Method:** POST
+
+**Request Body:**
+```json
+{
+  "templateType": "monthly-invoice|gst-compliance|vendor-performance|anomaly-detection|processed-invoices|purchase-order-status",
+  "schedule": {
+    "frequency": "daily|weekly|monthly|quarterly",
+    "time": "09:00",
+    "recipients": ["user1@example.com", "user2@example.com"],
+    "format": "pdf|excel|csv"
+  },
+  "filters": {
+    "entities": ["entity1"],
+    "vendors": []
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "scheduleId": "SCH-2024-001",
+    "reportType": "monthly-invoice",
+    "frequency": "monthly",
+    "nextRun": "2024-12-01T09:00:00Z",
+    "recipients": ["user1@example.com", "user2@example.com"],
+    "status": "active"
+  }
+}
+```
+
+---
+
+### Error Response Format
+
+All endpoints return errors in the following format:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Detailed error message",
+    "details": {}
+  }
+}
+```
+
+**Common Error Codes:**
+- `INVALID_TEMPLATE`: Invalid template type specified
+- `INVALID_DATE_RANGE`: Invalid or missing date range
+- `INVALID_FORMAT`: Unsupported report format
+- `REPORT_NOT_FOUND`: Report ID not found
+- `GENERATION_FAILED`: Report generation failed
+- `UNAUTHORIZED`: User not authorized to access report
+
+---
+
+### Usage Examples
+
+**JavaScript Example - Generate Monthly Invoice Report:**
+```javascript
+const response = await fetch('https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/generate-report', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        templateType: 'monthly-invoice',
+        format: 'pdf',
+        dateRange: {
+            start: '2024-10-01',
+            end: '2024-10-31'
+        }
+    })
+});
+
+const data = await response.json();
+
+if (data.success) {
+    console.log('Report generated:', data.data.downloadUrl);
+} else {
+    console.error('Error:', data.error.message);
+}
+```
+
+**JavaScript Example - Get Report History:**
+```javascript
+const response = await fetch('https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/report-history?page=1&limit=20&format=pdf');
+const data = await response.json();
+
+if (data.success) {
+    console.log('Reports:', data.data.reports);
+    console.log('Total:', data.data.pagination.total);
+}
+```
+
+---
+
+### Notes
+
+- All dates should be in ISO 8601 format (YYYY-MM-DD)
+- Report generation is asynchronous and may take a few seconds to complete
+- Download URLs are temporary and expire after 7 days
+- Maximum report file size is 50 MB
+- Scheduled reports are generated at the specified time in UTC timezone
+- Custom reports support complex filtering and aggregation options

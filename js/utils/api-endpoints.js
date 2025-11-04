@@ -36,7 +36,8 @@ const FINGUARD_ENDPOINTS = {
     GET_INVOICES: `${API_BASE_URL}/webhook/f/finguard/get-invoices`,
     GET_INVOICE_DETAILS: `${API_BASE_URL}/webhook/f/finguard/get-invoice-details`,
     UPDATE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/update-invoice`,
-    DELETE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/delete-invoice`
+    DELETE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/delete-invoice`,
+    FETCH_ANOMALIES: `${API_BASE_URL}/webhook/f/finguard/anomalies`
 };
 
 // ==========================================================================
@@ -134,6 +135,20 @@ const VENDOR_ENDPOINTS = {
 };
 
 // ==========================================================================
+// AI Assistant Endpoints
+// ==========================================================================
+
+const AI_ASSISTANT_ENDPOINTS = {
+    SEND_MESSAGE: `${API_BASE_URL}/webhook/f/ai-assistant/chat`,
+    GET_CONVERSATIONS: `${API_BASE_URL}/webhook/f/ai-assistant/conversations`,
+    GET_CONVERSATION_MESSAGES: `${API_BASE_URL}/webhook/f/ai-assistant/conversation`,
+    DELETE_CONVERSATION: `${API_BASE_URL}/webhook/f/ai-assistant/conversation`,
+    CREATE_CONVERSATION: `${API_BASE_URL}/webhook/f/ai-assistant/conversation/new`,
+    UPDATE_CONVERSATION: `${API_BASE_URL}/webhook/f/ai-assistant/conversation/update`,
+    EXPORT_CONVERSATION: `${API_BASE_URL}/webhook/f/ai-assistant/conversation/export`
+};
+
+// ==========================================================================
 // Export All Endpoints
 // ==========================================================================
 
@@ -147,7 +162,8 @@ const API_ENDPOINTS = {
     ENTITY: ENTITY_ENDPOINTS,
     DATABASE: DATABASE_ENDPOINTS,
     PURCHASE_ORDER: PURCHASE_ORDER_ENDPOINTS,
-    VENDOR: VENDOR_ENDPOINTS
+    VENDOR: VENDOR_ENDPOINTS,
+    AI_ASSISTANT: AI_ASSISTANT_ENDPOINTS
 };
 
 // Make available globally

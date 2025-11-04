@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Analytics Dashboard - Adani Fintell Suite">
+    <title>Analytics | Adani Fintell Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/analytics.css">
+    <link rel="stylesheet" href="css/notification.css">
+    
+    <!-- Template Loader -->
+    <script src="js/utils/templates.js"></script>
+</head>
+<body class="loading-layout">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="analytics-main">
+        <div class="analytics-container">
+            <!-- Page Header -->
+                        <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="page-title">Analytics</h1>
+                        <p class="page-subtitle">Gain insights into your financial operations</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <select class="filter-select" id="timeRangeFilter" aria-label="Select time range">
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days" selected>Last 30 Days</option>
+                        <option value="90days">Last 90 Days</option>
+                        <option value="1year">Last Year</option>
+                    </select>
+                    <button class="btn-refresh" id="refreshBtn" aria-label="Refresh data">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Key Metrics Summary -->
+            <section class="metrics-summary">
+                <div class="metric-card metric-blue">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="totalInvoices">0</h3>
+                        <p class="metric-label">Total Invoices Processed</p>
+                        <span class="metric-change positive" id="invoiceChange">+0%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card metric-purple">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="totalSpend">₹0</h3>
+                        <p class="metric-label">Total Spend</p>
+                        <span class="metric-change positive" id="spendChange">+0%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card metric-green">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="complianceRate">0%</h3>
+                        <p class="metric-label">GST Compliance Rate</p>
+                        <span class="metric-change positive" id="complianceChange">+0%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card metric-red">
+                    <div class="metric-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-value" id="anomalyCount">0</h3>
+                        <p class="metric-label">Anomalies Detected</p>
+                        <span class="metric-change negative" id="anomalyChange">+0%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Invoice Trends Chart -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <h2 class="chart-title">Invoice Volume Trends</h2>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-dot legend-processed"></span> Processed</span>
+                                <span class="legend-item"><span class="legend-dot legend-failed"></span> Failed</span>
+                            </div>
+                        </div>
+                        <button class="btn-download-chart" data-chart="invoiceTrendsCanvas" title="Download Chart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="chart-container" id="invoiceTrendsChart">
+                        <canvas id="invoiceTrendsCanvas"></canvas>
+                    </div>
+                </section>
+
+                <!-- Spend Analysis Chart -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Spend by Category</h2>
+                        <button class="btn-download-chart" data-chart="spendAnalysisCanvas" title="Download Chart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="chart-container" id="spendAnalysisChart">
+                        <canvas id="spendAnalysisCanvas"></canvas>
+                    </div>
+                </section>
+
+                <!-- Top Vendors Chart -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Top 5 Vendors by Spend</h2>
+                        <button class="btn-download-chart" data-chart="topVendorsCanvas" title="Download Chart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="chart-container" id="topVendorsChart">
+                        <canvas id="topVendorsCanvas"></canvas>
+                    </div>
+                </section>
+
+                <!-- Processing Efficiency -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Processing Efficiency Metrics</h2>
+                    </div>
+                    <div class="efficiency-metrics">
+                        <div class="efficiency-item">
+                            <div class="efficiency-label">Average Processing Time</div>
+                            <div class="efficiency-value" id="avgProcessingTime">0s</div>
+                            <div class="efficiency-bar">
+                                <div class="efficiency-progress" id="avgTimeProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="efficiency-item">
+                            <div class="efficiency-label">Success Rate</div>
+                            <div class="efficiency-value" id="successRate">0%</div>
+                            <div class="efficiency-bar">
+                                <div class="efficiency-progress success" id="successRateProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="efficiency-item">
+                            <div class="efficiency-label">OCR Accuracy</div>
+                            <div class="efficiency-value" id="ocrAccuracy">0%</div>
+                            <div class="efficiency-bar">
+                                <div class="efficiency-progress" id="ocrAccuracyProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="efficiency-item">
+                            <div class="efficiency-label">Validation Success</div>
+                            <div class="efficiency-value" id="validationSuccess">0%</div>
+                            <div class="efficiency-bar">
+                                <div class="efficiency-progress" id="validationSuccessProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anomaly Trends Chart -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <h2 class="chart-title">Anomaly Detection Trends</h2>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-dot legend-duplicate"></span> Duplicate</span>
+                                <span class="legend-item"><span class="legend-dot legend-price"></span> Price</span>
+                                <span class="legend-item"><span class="legend-dot legend-gst"></span> GST</span>
+                                <span class="legend-item"><span class="legend-dot legend-risk"></span> Risk</span>
+                            </div>
+                        </div>
+                        <button class="btn-download-chart" data-chart="anomalyTrendsCanvas" title="Download Chart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="chart-container" id="anomalyTrendsChart">
+                        <canvas id="anomalyTrendsCanvas"></canvas>
+                    </div>
+                </section>
+
+                <!-- Risk Assessment -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Risk Score Distribution</h2>
+                    </div>
+                    <div class="risk-distribution">
+                        <div class="risk-item risk-low">
+                            <div class="risk-header">
+                                <span class="risk-label">Low Risk</span>
+                                <span class="risk-count" id="lowRiskCount">0</span>
+                            </div>
+                            <div class="risk-bar">
+                                <div class="risk-progress" id="lowRiskProgress" style="width: 0%"></div>
+                            </div>
+                            <div class="risk-percentage" id="lowRiskPercentage">0%</div>
+                        </div>
+                        <div class="risk-item risk-medium">
+                            <div class="risk-header">
+                                <span class="risk-label">Medium Risk</span>
+                                <span class="risk-count" id="mediumRiskCount">0</span>
+                            </div>
+                            <div class="risk-bar">
+                                <div class="risk-progress" id="mediumRiskProgress" style="width: 0%"></div>
+                            </div>
+                            <div class="risk-percentage" id="mediumRiskPercentage">0%</div>
+                        </div>
+                        <div class="risk-item risk-high">
+                            <div class="risk-header">
+                                <span class="risk-label">High Risk</span>
+                                <span class="risk-count" id="highRiskCount">0</span>
+                            </div>
+                            <div class="risk-bar">
+                                <div class="risk-progress" id="highRiskProgress" style="width: 0%"></div>
+                            </div>
+                            <div class="risk-percentage" id="highRiskPercentage">0%</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vendor Analytics -->
+                <section class="chart-card chart-card-wide">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Vendor Analytics</h2>
+                    </div>
+                    <div class="vendor-analytics">
+                        <div class="vendor-stat">
+                            <div class="vendor-stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                </svg>
+                            </div>
+                            <div class="vendor-stat-content">
+                                <h3 class="vendor-stat-value" id="totalVendors">0</h3>
+                                <p class="vendor-stat-label">Active Vendors</p>
+                            </div>
+                        </div>
+                        <div class="vendor-stat">
+                            <div class="vendor-stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                                </svg>
+                            </div>
+                            <div class="vendor-stat-content">
+                                <h3 class="vendor-stat-value" id="avgVendorSpend">₹0</h3>
+                                <p class="vendor-stat-label">Avg Spend per Vendor</p>
+                            </div>
+                        </div>
+                        <div class="vendor-stat">
+                            <div class="vendor-stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                                </svg>
+                            </div>
+                            <div class="vendor-stat-content">
+                                <h3 class="vendor-stat-value" id="avgPaymentDays">0</h3>
+                                <p class="vendor-stat-label">Avg Payment Days</p>
+                            </div>
+                        </div>
+                        <div class="vendor-stat">
+                            <div class="vendor-stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                            </div>
+                            <div class="vendor-stat-content">
+                                <h3 class="vendor-stat-value" id="onTimePayments">0%</h3>
+                                <p class="vendor-stat-label">On-time Payments</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GST Compliance Metrics -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">GST Compliance Overview</h2>
+                    </div>
+                    <div class="compliance-metrics">
+                        <div class="compliance-item">
+                            <div class="compliance-circle" id="gstValidationCircle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="circle-progress" cx="50" cy="50" r="45" id="gstValidationProgress"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <span class="circle-value" id="gstValidationValue">0%</span>
+                                    <span class="circle-label">GST Validation</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-circle" id="hsnSacCircle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="circle-progress" cx="50" cy="50" r="45" id="hsnSacProgress"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <span class="circle-value" id="hsnSacValue">0%</span>
+                                    <span class="circle-label">HSN/SAC Match</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <div class="compliance-circle" id="gstRateCircle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="circle-progress" cx="50" cy="50" r="45" id="gstRateProgress"></circle>
+                                </svg>
+                                <div class="circle-text">
+                                    <span class="circle-value" id="gstRateValue">0%</span>
+                                    <span class="circle-label">GST Rate Accuracy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payment Patterns -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Payment Patterns</h2>
+                        <button class="btn-download-chart" data-chart="paymentPatternsCanvas" title="Download Chart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="chart-container" id="paymentPatternsChart">
+                        <canvas id="paymentPatternsCanvas"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+   
+    <!-- Scripts -->
+    <script type="module" src="js/page/analytics.js"></script>
+    <script type="module" src="js/utils/chatbot-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+# AI Assistant - Get Conversation Messages API Endpoint
+
+## Endpoint: Get Conversation Messages
+**URL:** `/api/ai-assistant/conversation/{session_id}/messages`  
+**Method:** `GET`  
+**Description:** Retrieve all messages for a specific conversation session.
+
+### Request Headers
+```
+Content-Type: application/json
+Authorization: Bearer <auth_token>
+```
+
+### URL Parameters
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| session_id | string | Yes | Unique session identifier for the conversation |
+
+### Query Parameters
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| limit | integer | No | Maximum number of messages to return (default: 100) |
+| offset | integer | No | Number of messages to skip for pagination (default: 0) |
+| order | string | No | Sort order: 'asc' or 'desc' (default: 'asc') |
+
+### Request Example
+```bash
+GET /api/ai-assistant/conversation/sess_1234567890/messages?limit=50&offset=0&order=asc
+```
+
+### Response Format (Success - 200 OK)
+```json
+{
+  "success": true,
+  "data": {
+    "session_id": "sess_1234567890",
+    "conversation_title": "Invoice anomalies discussion",
+    "messages": [
+      {
+        "message_id": "msg_001",
+        "role": "user",
+        "content": "Show me top 5 duplicate invoice anomalies",
+        "timestamp": "2024-01-15T10:30:00Z",
+        "metadata": {
+          "user_id": "user_123",
+          "user_name": "John Doe"
+        }
+      },
+      {
+        "message_id": "msg_002",
+        "role": "assistant",
+        "content": "I found 3 duplicate invoice anomalies:\n- Invoice #INV-2024-1234 (₹45,000) - Duplicate of INV-2024-1200\n- Invoice #INV-2024-1456 (₹32,500) - Duplicate of INV-2024-1430\n- Invoice #INV-2024-1678 (₹28,000) - Duplicate of INV-2024-1650\n\nAll duplicates were detected using content-based matching with 95%+ similarity scores.",
+        "timestamp": "2024-01-15T10:30:05Z",
+        "metadata": {
+          "confidence_score": 0.95,
+          "sources": ["anomalies_database"],
+          "processing_time_ms": 1200
+        }
+      },
+      {
+        "message_id": "msg_003",
+        "role": "user",
+        "content": "Can you provide more details on INV-2024-1234?",
+        "timestamp": "2024-01-15T10:31:00Z",
+        "metadata": {
+          "user_id": "user_123",
+          "user_name": "John Doe"
+        }
+      },
+      {
+        "message_id": "msg_004",
+        "role": "assistant",
+        "content": "Details for Invoice #INV-2024-1234:\n- Vendor: ABC Suppliers Ltd\n- Amount: ₹45,000\n- Date: 2024-01-10\n- Status: Flagged as Duplicate\n- Original Invoice: INV-2024-1200\n- Match Confidence: 97%\n- Recommended Action: Review and reject duplicate",
+        "timestamp": "2024-01-15T10:31:03Z",
+        "metadata": {
+          "invoice_id": "INV-2024-1234",
+          "confidence_score": 0.97
+        }
+      }
+    ],
+    "pagination": {
+      "total_messages": 8,
+      "returned_messages": 4,
+      "limit": 50,
+      "offset": 0,
+      "has_more": true
+    },
+    "conversation_metadata": {
+      "started_at": "2024-01-15T10:30:00Z",
+      "last_updated": "2024-01-15T10:32:00Z",
+      "total_messages": 8,
+      "participants": ["user_123", "ai_assistant"]
+    }
+  }
+}
+```
+
+### Response Fields
+| Field | Type | Description |
+|-------|------|-------------|
+| success | boolean | Whether the request was successful |
+| data.session_id | string | Conversation session identifier |
+| data.conversation_title | string | Title/name of the conversation |
+| data.messages | array | Array of message objects |
+| data.messages[].message_id | string | Unique message identifier |
+| data.messages[].role | string | Message sender role ('user' or 'assistant') |
+| data.messages[].content | string | Message content/text |
+| data.messages[].timestamp | string | ISO 8601 timestamp of message |
+| data.messages[].metadata | object | Additional message metadata |
+| data.pagination | object | Pagination information |
+| data.conversation_metadata | object | Overall conversation information |
+
+### Response Format (Error - 404 Not Found)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "CONVERSATION_NOT_FOUND",
+    "message": "The specified conversation does not exist",
+    "session_id": "sess_1234567890"
+  }
+}
+```
+
+### Error Codes
+| Code | Status | Description |
+|------|--------|-------------|
+| CONVERSATION_NOT_FOUND | 404 | Conversation with specified session_id doesn't exist |
+| UNAUTHORIZED | 401 | User is not authorized to access this conversation |
+| FORBIDDEN | 403 | User doesn't have permission to view this conversation |
+| INVALID_PARAMETERS | 400 | Invalid query parameters provided |
+| SERVER_ERROR | 500 | Internal server error occurred |
+
+### Example Request (cURL)
+```bash
+curl -X GET "https://api.fintell-suite.adani.com/api/ai-assistant/conversation/sess_1234567890/messages?limit=50&order=asc" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_AUTH_TOKEN"
+```
+
+### Example Request (JavaScript)
+```javascript
+const getConversationMessages = async (sessionId, limit = 100, offset = 0) => {
+  const response = await fetch(`/api/ai-assistant/conversation/${sessionId}/messages?limit=${limit}&offset=${offset}&order=asc`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${authToken}`
+    }
+  });
+  
+  const data = await response.json();
+  
+  if (data.success) {
+    return data.data.messages;
+  } else {
+    throw new Error(data.error.message);
+  }
+};
+
+// Usage
+try {
+  const messages = await getConversationMessages('sess_1234567890');
+  console.log(`Loaded ${messages.length} messages`);
+  messages.forEach(msg => {
+    console.log(`[${msg.role}]: ${msg.content}`);
+  });
+} catch (error) {
+  console.error('Failed to load messages:', error);
+}
+```
+
+### Notes
+- Messages are returned in chronological order by default (oldest first)
+- Use `order=desc` to get newest messages first
+- Pagination is recommended for conversations with many messages
+- Message content supports markdown formatting
+- Metadata may vary based on message type and context
+- System messages (if any) will have role='system'

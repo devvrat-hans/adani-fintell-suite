@@ -1,0 +1,155 @@
+GET https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/anomalies
+
+Description:
+Fetches all detected anomalies from processed invoices including duplicate invoices, price anomalies, GST compliance issues, and risk scores.
+
+Request:
+GET request with optional query parameters for filtering:
+- type: Filter by anomaly type (duplicate, price_anomaly, gst_compliance, high_risk)
+- severity: Filter by severity (high, medium, low)
+- date_from: Filter anomalies from this date (ISO format)
+- date_to: Filter anomalies to this date (ISO format)
+- limit: Number of results to return (default: 50)
+- offset: Pagination offset (default: 0)
+
+Response Body:
+
+{
+  "success": true,
+  "total_count": 145,
+  "anomalies": [
+    {
+      "id": "ANO-2025-001",
+      "invoice_id": "IN000000000000001",
+      "invoice_number": "CONS-2025-789",
+      "vendor_name": "ABC Consulting Pvt Ltd",
+      "vendor_gstin": "07AADCB3456H1ZP",
+      "invoice_date": "2025-10-12",
+      "invoice_amount": 188800,
+      "anomaly_type": "duplicate",
+      "severity": "high",
+      "risk_score": 92,
+      "detected_date": "2025-10-15T14:30:00Z",
+      "status": "flagged",
+      "details": {
+        "duplicate_type": "fuzzy_match",
+        "matched_invoice_ids": ["IN000000000000023"],
+        "duplicate_reason": "Same vendor, similar invoice number and amount within 3 days",
+        "confidence_score": 92
+      }
+    },
+    {
+      "id": "ANO-2025-002",
+      "invoice_id": "IN000000000000015",
+      "invoice_number": "INV-2025-456",
+      "vendor_name": "XYZ Trading Co",
+      "vendor_gstin": "29AABCT1332L1ZG",
+      "invoice_date": "2025-10-20",
+      "invoice_amount": 245000,
+      "anomaly_type": "price_anomaly",
+      "severity": "medium",
+      "risk_score": 68,
+      "detected_date": "2025-10-21T09:15:00Z",
+      "status": "under_review",
+      "details": {
+        "anomalies": [
+          {
+            "hsn_sac": "998314",
+            "description": "Financial Consulting",
+            "invoiced_rate": 3500,
+            "market_rate": 2500,
+            "deviation_percentage": 40,
+            "severity": "medium"
+          }
+        ],
+        "total_anomalies": 1
+      }
+    },
+    {
+      "id": "ANO-2025-003",
+      "invoice_id": "IN000000000000027",
+      "invoice_number": "BILL-2025-789",
+      "vendor_name": "PQR Services Ltd",
+      "vendor_gstin": "24AACCP1234M1Z5",
+      "invoice_date": "2025-10-22",
+      "invoice_amount": 125000,
+      "anomaly_type": "gst_compliance",
+      "severity": "high",
+      "risk_score": 85,
+      "detected_date": "2025-10-23T11:45:00Z",
+      "status": "flagged",
+      "details": {
+        "issue_type": "invalid_gst_rate",
+        "expected_rate": 18,
+        "applied_rate": 12,
+        "hsn_sac_codes": ["998314"],
+        "reason": "Incorrect GST rate applied for services"
+      }
+    },
+    {
+      "id": "ANO-2025-004",
+      "invoice_id": "IN000000000000035",
+      "invoice_number": "SRV-2025-123",
+      "vendor_name": "LMN Enterprises",
+      "vendor_gstin": "09AADCL1234M1ZX",
+      "invoice_date": "2025-10-25",
+      "invoice_amount": 450000,
+      "anomaly_type": "high_risk",
+      "severity": "high",
+      "risk_score": 88,
+      "detected_date": "2025-10-26T16:20:00Z",
+      "status": "flagged",
+      "details": {
+        "risk_factors": [
+          "New vendor (less than 30 days)",
+          "High invoice amount (>400000)",
+          "Multiple GST issues detected"
+        ],
+        "recommendation": "Manual verification required before processing"
+      }
+    }
+  ],
+  "summary": {
+    "total_anomalies": 145,
+    "by_type": {
+      "duplicate": 42,
+      "price_anomaly": 56,
+      "gst_compliance": 31,
+      "high_risk": 16
+    },
+    "by_severity": {
+      "high": 48,
+      "medium": 67,
+      "low": 30
+    },
+    "by_status": {
+      "flagged": 89,
+      "under_review": 34,
+      "resolved": 22
+    }
+  }
+}
+
+Error Response:
+
+{
+  "success": false,
+  "error": "Failed to fetch anomalies",
+  "message": "Database connection error"
+}
+
+Anomaly Types:
+1. duplicate - Duplicate invoice detection
+2. price_anomaly - Price deviations from market rates
+3. gst_compliance - GST validation failures
+4. high_risk - High-risk invoices based on multiple factors
+
+Severity Levels:
+1. high - Immediate attention required (risk score 80-100)
+2. medium - Review recommended (risk score 50-79)
+3. low - Minor issues (risk score 0-49)
+
+Status Types:
+1. flagged - Anomaly detected and flagged for review
+2. under_review - Being reviewed by compliance team
+3. resolved - Anomaly resolved or false positive confirmed
