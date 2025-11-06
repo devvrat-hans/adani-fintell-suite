@@ -8,69 +8,99 @@ Content-Type: application/json
 
 Request Body:
 {
-    "po_number": "PO/24/001",
     "po_date": "2024-01-15",
-    "vendor_name": "ABC Suppliers Ltd",
-    "vendor_gstin": "27AABCU9603R1ZX",
-    "vendor_address": "123 Business Park, Mumbai, Maharashtra 400001",
-    "vendor_contact": "9876543210",
-    "vendor_email": "contact@abcsuppliers.com",
-    "company_gstin": "27AADCA5659F1ZV",
-    "company_name": "Adani Enterprises Ltd",
-    "company_address": "Adani House, Mumbai, Maharashtra 400001",
-    "delivery_date": "2024-02-15",
-    "delivery_address": "Warehouse 5, Adani Port, Gujarat 395003",
-    "payment_terms": "Net 30",
-    "notes": "Urgent delivery required",
+    "po_status": "draft",
+    "vendor_reference": {
+        "vendor_code": "690c99d4c0d7d24c6849d224",
+        "vendor_name": "ABC Suppliers Ltd",
+        "vendor_gst_number": "27AABCU9603R1ZX"
+    },
+    "delivery_details": {
+        "ship_to_address": {
+            "address_line1": "Warehouse 5, Adani Port",
+            "city": "Ahmedabad",
+            "state": "Gujarat",
+            "pin_code": "395003"
+        },
+        "requested_delivery_date": "2024-02-15",
+        "shipping_method": "road_transport",
+        "special_instructions": "Urgent delivery required"
+    },
     "line_items": [
         {
-            "item_number": 1,
+            "line_number": 1,
             "item_description": "Steel Rods - Grade A",
             "hsn_code": "72142000",
             "quantity": 1000,
-            "unit": "KG",
+            "unit_of_measurement": "KG",
             "unit_price": 50.00,
-            "discount": 0.00,
-            "taxable_amount": 50000.00,
-            "gst_rate": 18.00,
-            "cgst": 4500.00,
-            "sgst": 4500.00,
-            "igst": 0.00,
-            "total_amount": 59000.00
+            "line_total": 50000.00,
+            "tax_rate": 18.00,
+            "tax_amount": 9000.00,
+            "line_total_with_tax": 59000.00
         },
         {
-            "item_number": 2,
+            "line_number": 2,
             "item_description": "Cement Bags - 50KG",
             "hsn_code": "25232900",
             "quantity": 500,
-            "unit": "BAG",
+            "unit_of_measurement": "BAG",
             "unit_price": 400.00,
-            "discount": 5000.00,
-            "taxable_amount": 195000.00,
-            "gst_rate": 18.00,
-            "cgst": 17550.00,
-            "sgst": 17550.00,
-            "igst": 0.00,
-            "total_amount": 230100.00
+            "line_total": 200000.00,
+            "tax_rate": 18.00,
+            "tax_amount": 36000.00,
+            "line_total_with_tax": 236000.00
         }
     ],
-    "subtotal": 245000.00,
-    "total_discount": 5000.00,
-    "total_taxable_amount": 245000.00,
-    "total_cgst": 22050.00,
-    "total_sgst": 22050.00,
-    "total_igst": 0.00,
-    "total_gst": 44100.00,
-    "total_amount": 289100.00,
-    "created_by": "John Doe"
+    "financial_summary": {
+        "subtotal": 250000.00,
+        "total_tax_amount": 45000.00,
+        "other_charges": {
+            "freight_charges": 2000.00,
+            "packaging_charges": 500.00,
+            "handling_charges": 500.00
+        },
+        "total_other_charges": 3000.00,
+        "grand_total": 298000.00,
+        "currency": "INR"
+    },
+    "payment_terms": {
+        "payment_method": "bank_transfer",
+        "payment_due_days": 30,
+        "advance_payment_percentage": 0,
+        "payment_schedule": "net_30"
+    },
+    "approval_workflow": {
+        "created_by": "John Doe",
+        "approver_name": "Jane Smith",
+        "approval_status": "pending",
+        "approval_notes": ""
+    },
+    "budget_allocation": {
+        "department": "Operations",
+        "cost_center": "CC-OPS-001",
+        "project_code": "PROJ-2024-001",
+        "budget_year": "2024-2025"
+    },
+    "contract_reference": {
+        "contract_number": "CNT-2024-001",
+        "contract_date": "2023-12-01",
+        "contract_validity": "2024-12-31"
+    },
+    "metadata": {
+        "priority": "high",
+        "business_unit": "Adani Ports & SEZ",
+        "tags": ["urgent", "infrastructure"],
+        "internal_notes": "Part of Q1 2024 procurement plan"
+    }
 }
 
 Response Body (Success):
 {
     "success": true,
     "message": "Purchase order added successfully",
-    "po_id": "PO-2024-001",
-    "po_number": "PO/24/001"
+    "po_id": "690d1234c0d7d24c6849d567",
+    "po_number": "PO-2024-001"
 }
 
 Response Body (Error):
@@ -80,24 +110,84 @@ Response Body (Error):
 }
 
 Field Descriptions:
-- po_number: Unique purchase order number (alphanumeric)
-- po_date: Date when PO is created (YYYY-MM-DD format)
-- vendor_name: Name of the vendor/supplier
-- vendor_gstin: Vendor's GST identification number (15 characters)
-- vendor_address: Complete address of vendor
-- vendor_contact: Vendor's contact phone number
-- vendor_email: Vendor's email address
-- company_gstin: Company's GST identification number
-- company_name: Name of the company
-- company_address: Complete address of company
-- delivery_date: Expected delivery date (YYYY-MM-DD format)
-- delivery_address: Address where goods will be delivered
-- payment_terms: Payment terms (e.g., "Net 30", "COD", "Advance")
-- notes: Additional notes or special instructions
-- line_items: Array of items in the purchase order
-  - item_number: Sequential item number
-  - item_description: Description of the item
-  - hsn_code: HSN/SAC code for the item
+
+Basic Information:
+- po_date: Date when PO is created (YYYY-MM-DD format) [REQUIRED]
+- po_status: Current status of PO (draft/pending_approval/approved/sent_to_vendor/acknowledged/in_progress/received/completed/cancelled) [REQUIRED]
+
+Vendor Reference:
+- vendor_code: MongoDB _id of the vendor from vendor database [REQUIRED]
+- vendor_name: Name of the vendor/supplier [REQUIRED]
+- vendor_gst_number: Vendor's GST identification number
+
+Delivery Details:
+- ship_to_address: Delivery address details
+  - address_line1: Primary address line [REQUIRED]
+  - city: City name [REQUIRED]
+  - state: State name [REQUIRED]
+  - pin_code: PIN/ZIP code [REQUIRED]
+- requested_delivery_date: Expected delivery date (YYYY-MM-DD format) [REQUIRED]
+- shipping_method: Method of shipping (road_transport/rail_transport/air_freight/sea_freight/courier)
+- special_instructions: Additional delivery instructions
+
+Line Items:
+- line_number: Sequential item number [REQUIRED]
+- item_description: Description of the item [REQUIRED]
+- hsn_code: HSN/SAC code for the item [REQUIRED]
+- quantity: Quantity ordered [REQUIRED]
+- unit_of_measurement: Unit of measurement (KG/BAG/PCS/LITRE/METRE/TON/SET/BOX) [REQUIRED]
+- unit_price: Price per unit [REQUIRED]
+- line_total: Total before tax (quantity × unit_price) [AUTO-CALCULATED]
+- tax_rate: Tax rate percentage [REQUIRED]
+- tax_amount: Tax amount (line_total × tax_rate / 100) [AUTO-CALCULATED]
+- line_total_with_tax: Total including tax [AUTO-CALCULATED]
+
+Financial Summary:
+- subtotal: Sum of all line_total values [AUTO-CALCULATED]
+- total_tax_amount: Sum of all tax_amount values [AUTO-CALCULATED]
+- other_charges: Additional charges object
+  - freight_charges: Freight/transportation charges
+  - packaging_charges: Packaging charges
+  - handling_charges: Handling charges
+- total_other_charges: Sum of all other charges [AUTO-CALCULATED]
+- grand_total: subtotal + total_tax_amount + total_other_charges [AUTO-CALCULATED]
+- currency: Currency code (default: INR)
+
+Payment Terms:
+- payment_method: Method of payment (bank_transfer/cheque/cash/credit_card/online_payment)
+- payment_due_days: Number of days for payment
+- advance_payment_percentage: Percentage of advance payment required
+- payment_schedule: Payment schedule description (net_30/net_45/net_60/advance/cod)
+
+Approval Workflow:
+- created_by: Name of person creating the PO [REQUIRED]
+- approver_name: Name of approver
+- approval_status: Current approval status (pending/approved/rejected)
+- approval_notes: Notes from approver
+
+Budget Allocation:
+- department: Department name
+- cost_center: Cost center code
+- project_code: Project code for budget tracking
+- budget_year: Budget year
+
+Contract Reference:
+- contract_number: Reference contract number
+- contract_date: Contract date (YYYY-MM-DD format)
+- contract_validity: Contract validity end date (YYYY-MM-DD format)
+
+Metadata:
+- priority: Priority level (low/medium/high/urgent)
+- business_unit: Business unit name
+- tags: Array of tags for categorization
+- internal_notes: Internal notes/comments
+
+Notes:
+- po_number is auto-generated by the backend (MongoDB _id)
+- All monetary values should be in decimal format
+- Dates should be in YYYY-MM-DD format
+- Required fields are marked with [REQUIRED]
+- AUTO-CALCULATED fields are computed on frontend before submission
   - quantity: Quantity ordered
   - unit: Unit of measurement (KG, BAG, PC, etc.)
   - unit_price: Price per unit

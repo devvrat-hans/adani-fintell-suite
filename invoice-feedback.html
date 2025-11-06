@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Invoice Feedback - Adani Fintell Suite">
+    <title>Invoice Feedback | Adani Fintell Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/invoice-feedback.css">
+    
+    <!-- Template Loader -->
+    <script src="js/utils/templates.js"></script>
+</head>
+<body class="loading-layout">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="invoice-feedback-main">
+        <div class="invoice-feedback-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="page-title">Invoice Processing Feedback</h1>
+                        <p class="page-subtitle">Report processing issues or errors for processed invoices</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Feedback Form Card -->
+            <section class="feedback-form-section">
+                <div class="feedback-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Submit Feedback</h2>
+                        <p class="card-description">Select an invoice and provide feedback on processing issues</p>
+                    </div>
+
+                    <form class="feedback-form" id="feedbackForm" data-form="feedback">
+                        <!-- Invoice Selection -->
+                        <div class="form-section">
+                            <h3 class="section-title">Invoice Selection</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="invoiceSelect" class="form-label">Select Invoice</label>
+                                    <select 
+                                        id="invoiceSelect" 
+                                        name="invoice_id" 
+                                        class="form-input form-select"
+                                        required
+                                        data-field="invoice-select">
+                                        <option value="">-- Select an Invoice --</option>
+                                    </select>
+                                    <span class="form-help-text">Choose from processed invoices in the database</span>
+                                </div>
+                            </div>
+
+                            <!-- Invoice Details Display (Dynamically populated) -->
+                            <div class="invoice-details-preview" id="invoicePreview" style="display: none;">
+                                <div class="details-grid">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Invoice Number:</span>
+                                        <span class="detail-value" data-field="invoice-number">-</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Invoice Date:</span>
+                                        <span class="detail-value" data-field="invoice-date">-</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Vendor Name:</span>
+                                        <span class="detail-value" data-field="vendor-name">-</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Invoice Amount:</span>
+                                        <span class="detail-value" data-field="invoice-amount">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Type -->
+                        <div class="form-section">
+                            <h3 class="section-title">Feedback Type</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="feedbackType" class="form-label">Issue Category</label>
+                                    <select 
+                                        id="feedbackType" 
+                                        name="feedback_type" 
+                                        class="form-input form-select"
+                                        required
+                                        data-field="feedback-type">
+                                        <option value="">-- Select Issue Type --</option>
+                                        <option value="ocr_error">OCR Extraction Error</option>
+                                        <option value="data_mismatch">Data Mismatch</option>
+                                        <option value="gst_validation_error">GST Validation Error</option>
+                                        <option value="duplicate_detection_error">Duplicate Detection Error</option>
+                                        <option value="amount_calculation_error">Amount Calculation Error</option>
+                                        <option value="hsn_sac_error">HSN/SAC Code Error</option>
+                                        <option value="vendor_details_error">Vendor Details Error</option>
+                                        <option value="line_items_error">Line Items Error</option>
+                                        <option value="other">Other Issue</option>
+                                    </select>
+                                    <span class="form-help-text">Select the type of processing issue encountered</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Severity Level -->
+                        <div class="form-section">
+                            <h3 class="section-title">Issue Severity</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label class="form-label">Severity Level</label>
+                                    <div class="radio-group">
+                                        <label class="radio-option">
+                                            <input 
+                                                type="radio" 
+                                                name="severity" 
+                                                value="critical" 
+                                                class="radio-input"
+                                                data-field="severity">
+                                            <span class="radio-label">
+                                                <span class="radio-title">Critical</span>
+                                                <span class="radio-description">Processing completely failed or incorrect</span>
+                                            </span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input 
+                                                type="radio" 
+                                                name="severity" 
+                                                value="major" 
+                                                class="radio-input"
+                                                checked
+                                                data-field="severity">
+                                            <span class="radio-label">
+                                                <span class="radio-title">Major</span>
+                                                <span class="radio-description">Significant errors requiring attention</span>
+                                            </span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input 
+                                                type="radio" 
+                                                name="severity" 
+                                                value="minor" 
+                                                class="radio-input"
+                                                data-field="severity">
+                                            <span class="radio-label">
+                                                <span class="radio-title">Minor</span>
+                                                <span class="radio-description">Small errors or formatting issues</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Details -->
+                        <div class="form-section">
+                            <h3 class="section-title">Issue Details</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="feedbackTitle" class="form-label">Issue Summary</label>
+                                    <input 
+                                        type="text" 
+                                        id="feedbackTitle" 
+                                        name="title" 
+                                        class="form-input"
+                                        placeholder="Brief summary of the issue"
+                                        required
+                                        maxlength="200"
+                                        data-field="feedback-title">
+                                    <span class="form-help-text">Provide a concise title for the issue</span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="feedbackDescription" class="form-label">Detailed Description</label>
+                                    <textarea 
+                                        id="feedbackDescription" 
+                                        name="description" 
+                                        class="form-input form-textarea"
+                                        placeholder="Describe the issue in detail, including expected vs actual results..."
+                                        required
+                                        rows="6"
+                                        data-field="feedback-description"></textarea>
+                                    <span class="form-help-text">Provide complete details about what went wrong</span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="expectedResult" class="form-label">Expected Result (Optional)</label>
+                                    <textarea 
+                                        id="expectedResult" 
+                                        name="expected_result" 
+                                        class="form-input form-textarea"
+                                        placeholder="What was the expected result?"
+                                        rows="3"
+                                        data-field="expected-result"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="actualResult" class="form-label">Actual Result (Optional)</label>
+                                    <textarea 
+                                        id="actualResult" 
+                                        name="actual_result" 
+                                        class="form-input form-textarea"
+                                        placeholder="What was the actual result?"
+                                        rows="3"
+                                        data-field="actual-result"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="form-section">
+                            <h3 class="section-title">Additional Information</h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="affectedFields" class="form-label">Affected Fields (Optional)</label>
+                                    <input 
+                                        type="text" 
+                                        id="affectedFields" 
+                                        name="affected_fields" 
+                                        class="form-input"
+                                        placeholder="e.g., invoice_number, gst_amount, line_items"
+                                        data-field="affected-fields">
+                                    <span class="form-help-text">Comma-separated list of fields with errors</span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label for="suggestedFix" class="form-label">Suggested Fix (Optional)</label>
+                                    <textarea 
+                                        id="suggestedFix" 
+                                        name="suggested_fix" 
+                                        class="form-input form-textarea"
+                                        placeholder="If you have suggestions on how to fix this issue..."
+                                        rows="3"
+                                        data-field="suggested-fix"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button 
+                                type="button" 
+                                class="btn btn-secondary" 
+                                id="resetBtn"
+                                data-action="reset">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="1 4 1 10 7 10"></polyline>
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                </svg>
+                                <span>Reset Form</span>
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="btn btn-primary" 
+                                id="submitBtn"
+                                data-action="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 2L11 13"></path>
+                                    <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                                </svg>
+                                <span>Submit Feedback</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p class="loading-text">Submitting feedback...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/core/navbar.js" defer></script>
+    <script src="js/core/sidebar.js" defer></script>
+    <script src="js/page/invoice-feedback.js" defer></script>
+</body>
+</html>

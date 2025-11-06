@@ -43,8 +43,9 @@
                         <div class="card-body">
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label for="poNumber" class="form-label required">PO Number</label>
-                                    <input type="text" id="poNumber" name="po_number" class="form-input" placeholder="Enter PO number" required>
+                                    <label for="poNumber" class="form-label">PO Number</label>
+                                    <input type="text" id="poNumber" name="po_number" class="form-input" placeholder="Auto-generated" readonly disabled>
+                                    <small class="form-hint">PO Number will be automatically generated</small>
                                 </div>
                                 
                                 <div class="form-group">
@@ -53,8 +54,14 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="deliveryDate" class="form-label required">Delivery Date</label>
-                                    <input type="date" id="deliveryDate" name="delivery_date" class="form-input" required>
+                                    <label for="poStatus" class="form-label required">PO Status</label>
+                                    <select id="poStatus" name="po_status" class="form-input" required>
+                                        <option value="">Select Status</option>
+                                        <option value="Draft">Draft</option>
+                                        <option value="Approved" selected>Approved</option>
+                                        <option value="Closed">Closed</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -69,50 +76,281 @@
                         
                         <div class="card-body">
                             <div class="form-grid">
-                                <div class="form-group full-width">
-                                    <label for="vendorName" class="form-label required">Vendor Name</label>
-                                    <input type="text" id="vendorName" name="vendor_name" class="form-input" placeholder="Enter vendor name" required>
+                                <div class="form-group full-width vendor-search-container">
+                                    <label for="vendorSearch" class="form-label required">Search Vendor</label>
+                                    <div class="vendor-search-wrapper">
+                                        <input type="text" id="vendorSearch" class="form-input" placeholder="Search by vendor name, code, or GST number..." autocomplete="off">
+                                        <div id="vendorDropdownList" class="vendor-dropdown-list" style="display: none;"></div>
+                                    </div>
+                                    <small class="form-hint">Type to search from existing vendor database</small>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label for="vendorGstin" class="form-label required">Vendor GSTIN</label>
-                                    <input type="text" id="vendorGstin" name="vendor_gstin" class="form-input" placeholder="Enter GSTIN" maxlength="15" required>
+                                <div class="form-group" id="vendorCodeDisplay" style="display: none;">
+                                    <label for="vendorCode" class="form-label">Vendor Code</label>
+                                    <input type="text" id="vendorCode" name="vendor_code" class="form-input" readonly disabled>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label for="vendorContact" class="form-label">Contact Number</label>
-                                    <input type="tel" id="vendorContact" name="vendor_contact" class="form-input" placeholder="Enter contact number">
+                                <div class="form-group" id="vendorNameDisplay" style="display: none;">
+                                    <label for="vendorName" class="form-label">Vendor Name</label>
+                                    <input type="text" id="vendorName" name="vendor_name" class="form-input" readonly disabled>
                                 </div>
                                 
-                                <div class="form-group full-width">
-                                    <label for="vendorEmail" class="form-label">Email</label>
-                                    <input type="email" id="vendorEmail" name="vendor_email" class="form-input" placeholder="Enter email">
-                                </div>
-                                
-                                <div class="form-group full-width">
-                                    <label for="vendorAddress" class="form-label">Address</label>
-                                    <textarea id="vendorAddress" name="vendor_address" class="form-textarea" rows="2" placeholder="Enter address"></textarea>
+                                <div class="form-group" id="vendorGstDisplay" style="display: none;">
+                                    <label for="vendorGstin" class="form-label">Vendor GSTIN</label>
+                                    <input type="text" id="vendorGstin" name="vendor_gst_number" class="form-input" readonly disabled>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Company Information -->
+                    <!-- Delivery Details -->
                     <div class="form-card">
                         <div class="card-header">
-                            <h2 class="card-title">Company Details</h2>
+                            <h2 class="card-title">Delivery Details</h2>
+                            <p class="card-subtitle">Shipping and delivery information</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="shipToAddress" class="form-label required">Ship To Address</label>
+                                    <input type="text" id="shipToAddress" name="ship_to_address" class="form-input" placeholder="Enter address line" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="shipToCity" class="form-label required">City</label>
+                                    <input type="text" id="shipToCity" name="ship_to_city" class="form-input" placeholder="Enter city" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="shipToState" class="form-label required">State</label>
+                                    <input type="text" id="shipToState" name="ship_to_state" class="form-input" placeholder="Enter state" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="shipToPinCode" class="form-label required">Pin Code</label>
+                                    <input type="text" id="shipToPinCode" name="ship_to_pin_code" class="form-input" placeholder="Enter pin code" maxlength="6" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="expectedDeliveryDate" class="form-label required">Expected Delivery Date</label>
+                                    <input type="date" id="expectedDeliveryDate" name="expected_delivery_date" class="form-input" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Line Items -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Line Items</h2>
+                            <p class="card-subtitle">Purchase order items and pricing</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div id="lineItemsContainer">
+                                <!-- Line items will be added dynamically -->
+                            </div>
+                            <button type="button" class="btn-add-item" data-action="add-line-item">
+                                + Add Line Item
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Financial Summary -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Financial Summary</h2>
+                            <p class="card-subtitle">Pricing and charges</p>
                         </div>
                         
                         <div class="card-body">
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label for="companyName" class="form-label required">Company Name</label>
-                                    <input type="text" id="companyName" name="company_name" class="form-input" placeholder="Enter company name" required>
+                                    <label for="freightCharges" class="form-label">Freight Charges</label>
+                                    <input type="number" id="freightCharges" name="freight_charges" class="form-input" placeholder="0.00" step="0.01" min="0" value="0">
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="companyGstin" class="form-label required">Company GSTIN</label>
-                                    <input type="text" id="companyGstin" name="company_gstin" class="form-input" placeholder="Enter GSTIN" maxlength="15" required>
+                                    <label for="packagingCharges" class="form-label">Packaging Charges</label>
+                                    <input type="number" id="packagingCharges" name="packaging_charges" class="form-input" placeholder="0.00" step="0.01" min="0" value="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="handlingCharges" class="form-label">Handling Charges</label>
+                                    <input type="number" id="handlingCharges" name="handling_charges" class="form-input" placeholder="0.00" step="0.01" min="0" value="0">
+                                </div>
+                                
+                                <div class="form-group full-width">
+                                    <div class="summary-display">
+                                        <div class="summary-row">
+                                            <span>Subtotal:</span>
+                                            <span id="displaySubtotal">₹0.00</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span>Total Tax:</span>
+                                            <span id="displayTotalTax">₹0.00</span>
+                                        </div>
+                                        <div class="summary-row">
+                                            <span>Other Charges:</span>
+                                            <span id="displayOtherCharges">₹0.00</span>
+                                        </div>
+                                        <div class="summary-row total">
+                                            <span>Grand Total:</span>
+                                            <span id="displayGrandTotal">₹0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Terms -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Payment Terms</h2>
+                            <p class="card-subtitle">Payment cycle and conditions</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="paymentCycle" class="form-label required">Payment Cycle</label>
+                                    <select id="paymentCycle" name="payment_cycle" class="form-input" required>
+                                        <option value="">Select Payment Cycle</option>
+                                        <option value="Net 15">Net 15</option>
+                                        <option value="Net 30" selected>Net 30</option>
+                                        <option value="Net 45">Net 45</option>
+                                        <option value="Net 60">Net 60</option>
+                                        <option value="Net 90">Net 90</option>
+                                        <option value="COD">Cash on Delivery</option>
+                                        <option value="Advance">Advance Payment</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="advancePayment" class="form-label">Advance Payment</label>
+                                    <input type="number" id="advancePayment" name="advance_payment" class="form-input" placeholder="0.00" step="0.01" min="0" value="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="retentionPercentage" class="form-label">Retention %</label>
+                                    <input type="number" id="retentionPercentage" name="retention_percentage" class="form-input" placeholder="0" step="0.01" min="0" max="100" value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Approval Workflow -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Approval Workflow</h2>
+                            <p class="card-subtitle">Requester and approver details</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="requesterName" class="form-label required">Requester Name</label>
+                                    <input type="text" id="requesterName" name="requester_name" class="form-input" placeholder="Enter name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="requesterDepartment" class="form-label required">Department</label>
+                                    <input type="text" id="requesterDepartment" name="requester_department" class="form-input" placeholder="Enter department" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="requesterEmployeeId" class="form-label required">Employee ID</label>
+                                    <input type="text" id="requesterEmployeeId" name="requester_employee_id" class="form-input" placeholder="Enter employee ID" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="approverName" class="form-label">Approver Name</label>
+                                    <input type="text" id="approverName" name="approver_name" class="form-input" placeholder="Enter name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="approverDesignation" class="form-label">Approver Designation</label>
+                                    <input type="text" id="approverDesignation" name="approver_designation" class="form-input" placeholder="Enter designation">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="approverEmployeeId" class="form-label">Approver Employee ID</label>
+                                    <input type="text" id="approverEmployeeId" name="approver_employee_id" class="form-input" placeholder="Enter employee ID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Budget Allocation -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Budget Allocation</h2>
+                            <p class="card-subtitle">Cost center and project codes</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="costCenter" class="form-label">Cost Center</label>
+                                    <input type="text" id="costCenter" name="cost_center" class="form-input" placeholder="e.g., CC-PROD-001">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="projectCode" class="form-label">Project Code</label>
+                                    <input type="text" id="projectCode" name="project_code" class="form-input" placeholder="e.g., PRJ-2025-45">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="budgetCode" class="form-label">Budget Code</label>
+                                    <input type="text" id="budgetCode" name="budget_code" class="form-input" placeholder="e.g., BUD-RAW-MAT">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contract Reference -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Contract Reference</h2>
+                            <p class="card-subtitle">Associated contract details</p>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="hasContract" class="form-label">Has Contract?</label>
+                                    <select id="hasContract" name="has_contract" class="form-input">
+                                        <option value="false">No</option>
+                                        <option value="true">Yes</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="contractNumber" class="form-label">Contract Number</label>
+                                    <input type="text" id="contractNumber" name="contract_number" class="form-input" placeholder="e.g., CONT-2025-012">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="contractValidUntil" class="form-label">Valid Until</label>
+                                    <input type="date" id="contractValidUntil" name="contract_valid_until" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Notes -->
+                    <div class="form-card">
+                        <div class="card-header">
+                            <h2 class="card-title">Additional Information</h2>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="notes" class="form-label">Notes</label>
+                                    <textarea id="notes" name="notes" class="form-textarea" rows="3" placeholder="Enter any additional notes or special instructions"></textarea>
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View Feedback - Adani Fintell Suite">
+    <title>View Feedback | Adani Fintell Suite</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/view-feedback.css">
+    
+    <!-- Template Loader -->
+    <script src="js/utils/templates.js"></script>
+</head>
+<body class="loading-layout">
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+    
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+    
+    <!-- Main Content -->
+    <main class="view-feedback-main">
+        <div class="view-feedback-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="page-title">All Feedback</h1>
+                        <p class="page-subtitle">Review and manage submitted feedback for processed invoices</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Summary Cards -->
+            <section class="summary-section">
+                <div class="summary-card summary-card-total">
+                    <div class="summary-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3 class="summary-label">Total Feedback</h3>
+                        <p class="summary-value" data-summary="total">0</p>
+                    </div>
+                </div>
+
+                <div class="summary-card summary-card-critical">
+                    <div class="summary-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L1 21h22L12 2z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3 class="summary-label">Critical Issues</h3>
+                        <p class="summary-value" data-summary="critical">0</p>
+                    </div>
+                </div>
+
+                <div class="summary-card summary-card-major">
+                    <div class="summary-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3 class="summary-label">Major Issues</h3>
+                        <p class="summary-value" data-summary="major">0</p>
+                    </div>
+                </div>
+
+                <div class="summary-card summary-card-minor">
+                    <div class="summary-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                    <div class="summary-content">
+                        <h3 class="summary-label">Minor Issues</h3>
+                        <p class="summary-value" data-summary="minor">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filters-card">
+                    <div class="filters-header">
+                        <h3 class="filters-title">Filters</h3>
+                        <button class="btn-refresh" id="refreshBtn" aria-label="Refresh data">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="filterType" class="filter-label">Issue Type</label>
+                            <select id="filterType" class="filter-select" data-filter="type">
+                                <option value="">All Types</option>
+                                <option value="ocr_error">OCR Error</option>
+                                <option value="data_mismatch">Data Mismatch</option>
+                                <option value="gst_validation_error">GST Validation Error</option>
+                                <option value="duplicate_detection_error">Duplicate Detection Error</option>
+                                <option value="amount_calculation_error">Amount Calculation Error</option>
+                                <option value="hsn_sac_error">HSN/SAC Code Error</option>
+                                <option value="vendor_details_error">Vendor Details Error</option>
+                                <option value="line_items_error">Line Items Error</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterSeverity" class="filter-label">Severity</label>
+                            <select id="filterSeverity" class="filter-select" data-filter="severity">
+                                <option value="">All Severities</option>
+                                <option value="critical">Critical</option>
+                                <option value="major">Major</option>
+                                <option value="minor">Minor</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filterInvoice" class="filter-label">Invoice Number</label>
+                            <input 
+                                type="text" 
+                                id="filterInvoice" 
+                                class="filter-input" 
+                                placeholder="Search by invoice number"
+                                data-filter="invoice">
+                        </div>
+
+                        <div class="filter-actions">
+                            <button class="btn-filter-reset" id="resetFiltersBtn">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="1 4 1 10 7 10"></polyline>
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                </svg>
+                                Reset Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feedback List -->
+            <section class="feedback-list-section">
+                <div class="feedback-list-header">
+                    <h2 class="section-title">Feedback Entries</h2>
+                    <div class="list-info">
+                        <span class="result-count" data-count="results">Showing 0 entries</span>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Loading feedback...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                        <line x1="9" y1="14" x2="15" y2="14"></line>
+                    </svg>
+                    <h3>No Feedback Found</h3>
+                    <p>No feedback entries match your current filters.</p>
+                    <a href="invoice-feedback.html" class="btn btn-primary">
+                        <span>Submit New Feedback</span>
+                    </a>
+                </div>
+
+                <!-- Feedback List Container -->
+                <div class="feedback-list" id="feedbackList">
+                    <!-- Dynamically populated with feedback cards -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Feedback Detail Modal -->
+    <div class="modal" id="feedbackDetailModal" style="display: none;">
+        <div class="modal-overlay" data-action="close-modal"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Feedback Details</h2>
+                <button class="modal-close" data-action="close-modal" aria-label="Close modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamically populated with feedback details -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/core/navbar.js" defer></script>
+    <script src="js/core/sidebar.js" defer></script>
+    <script src="js/page/view-feedback.js" defer></script>
+</body>
+</html>

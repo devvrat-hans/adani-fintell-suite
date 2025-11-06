@@ -59,155 +59,117 @@ body {
 .coming-soon-section {
     background: var(--bg-white);
     border-radius: 16px;
-    padding: 4rem 3rem;
+    padding: 3rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    text-align: center;
     max-width: 1400px;
     width: 100%;
 }
 
-.coming-soon-icon {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 2rem;
-    background: linear-gradient(135deg, rgba(11, 116, 176, 0.1) 0%, rgba(117, 71, 156, 0.1) 100%);
+.coming-soon-content {
+    text-align: center;
+}
+
+.icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(117, 71, 156, 0.1) 0%, rgba(189, 56, 97, 0.1) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.coming-soon-icon svg {
-    width: 64px;
-    height: 64px;
+.icon-wrapper svg {
+    width: 40px;
+    height: 40px;
     color: var(--adani-purple);
 }
 
-.coming-soon-title {
-    font-size: 3rem;
+.section-title {
+    font-size: 2.25rem;
     font-weight: 700;
+    color: var(--adani-purple);
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-.coming-soon-subtitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-}
-
-.coming-soon-description {
+.section-subtitle {
     font-size: 1.125rem;
     color: var(--text-secondary);
-    max-width: 700px;
-    margin: 0 auto 3rem;
-    line-height: 1.8;
-}
-
-/* Feature Preview */
-.feature-preview {
-    margin: 3rem 0;
-}
-
-.preview-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 2rem;
-}
-
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    text-align: left;
-    margin-bottom: 3rem;
-}
-
-@media (max-width: 1024px) {
-    .feature-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.feature-card {
-    background: var(--bg-lighter);
-    border-radius: 12px;
-    padding: 2rem;
-    transition: all 0.3s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.feature-icon {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin-bottom: 1.5rem;
-}
-
-.feature-icon svg {
-    width: 28px;
-    height: 28px;
-    color: var(--bg-white);
-}
-
-.feature-name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.75rem;
-}
-
-.feature-desc {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-}
-
-/* Status Indicator */
-.status-indicator {
-    background: linear-gradient(135deg, rgba(117, 71, 156, 0.05) 0%, rgba(189, 56, 97, 0.05) 100%);
-    border: 2px solid;
-    border-image: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%) 1;
-    border-radius: 12px;
-    padding: 2.5rem 3rem;
-    margin-top: 3rem;
-    text-align: center;
+    font-weight: 500;
 }
 
 .status-badge {
     display: inline-block;
-    padding: 0.625rem 1.5rem;
+    padding: 0.4rem 1rem;
     background: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%);
     color: var(--bg-white);
-    border-radius: 24px;
-    font-size: 0.875rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin-bottom: 1.25rem;
+}
+
+.section-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto 2.5rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.feature-item {
+    background: var(--bg-lighter);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--adani-purple) 0%, var(--adani-red) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 1rem;
 }
 
-.status-text {
-    font-size: 1.0625rem;
+.feature-icon svg {
+    width: 22px;
+    height: 22px;
+    color: var(--bg-white);
+}
+
+.feature-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.feature-item p {
+    font-size: 0.875rem;
     color: var(--text-secondary);
+    line-height: 1.5;
     margin: 0;
-    line-height: 1.7;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* Responsive Design */
@@ -217,7 +179,7 @@ body {
     }
     
     .coming-soon-section {
-        padding: 3rem 2rem;
+        padding: 2.5rem 2rem;
     }
 }
 
@@ -231,62 +193,52 @@ body {
         padding: 2rem 1.5rem;
     }
 
-    .coming-soon-icon {
-        width: 100px;
-        height: 100px;
-        margin-bottom: 1.5rem;
+    .icon-wrapper {
+        width: 70px;
+        height: 70px;
     }
 
-    .coming-soon-icon svg {
-        width: 52px;
-        height: 52px;
+    .icon-wrapper svg {
+        width: 35px;
+        height: 35px;
     }
 
-    .coming-soon-title {
-        font-size: 2rem;
+    .section-title {
+        font-size: 1.875rem;
     }
 
-    .coming-soon-subtitle {
-        font-size: 1.25rem;
-    }
-
-    .coming-soon-description {
+    .section-subtitle {
         font-size: 1rem;
-        margin-bottom: 2rem;
     }
 
-    .preview-title {
-        font-size: 1.5rem;
+    .section-description {
+        font-size: 0.9375rem;
     }
 
-    .feature-grid {
+    .features-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
 
-    .feature-card {
-        padding: 1.5rem;
-    }
-
-    .status-indicator {
-        padding: 1.5rem;
+    .feature-item {
+        padding: 1.25rem;
     }
 }
 
 @media (max-width: 480px) {
-    .coming-soon-title {
-        font-size: 1.75rem;
+    .section-title {
+        font-size: 1.625rem;
     }
 
-    .coming-soon-subtitle {
-        font-size: 1.125rem;
+    .section-subtitle {
+        font-size: 0.9375rem;
     }
 
-    .feature-name {
-        font-size: 1rem;
+    .feature-item h3 {
+        font-size: 0.9375rem;
     }
 
-    .feature-desc {
-        font-size: 0.875rem;
+    .feature-item p {
+        font-size: 0.8125rem;
     }
 }

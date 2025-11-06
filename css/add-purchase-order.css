@@ -248,6 +248,97 @@ body {
     cursor: pointer;
 }
 
+/* ==========================================================================
+   Vendor Search Dropdown
+   ========================================================================== */
+
+.vendor-search-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+.vendor-search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.vendor-search-wrapper .form-input {
+    width: 100%;
+}
+
+.vendor-dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    margin-top: -8px;
+}
+
+.vendor-dropdown-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.vendor-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.vendor-dropdown-item:hover {
+    background-color: rgba(11, 116, 176, 0.08);
+}
+
+.vendor-dropdown-item.active {
+    background-color: rgba(11, 116, 176, 0.12);
+}
+
+.vendor-dropdown-item .vendor-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.vendor-dropdown-item .vendor-details {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.vendor-dropdown-empty {
+    padding: var(--spacing-md);
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Disabled inputs */
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+    background: var(--bg-lighter);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Form hints */
+.form-hint {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
 /* Select dropdown */
 .form-select {
     cursor: pointer;
@@ -506,6 +597,172 @@ body {
 }
 
 /* ==========================================================================
+   Line Items Styling
+   ========================================================================== */
+
+.line-item {
+    background: var(--bg-lighter);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    transition: all 0.3s ease;
+}
+
+.line-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.line-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.line-item-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--finguard-primary);
+    margin: 0;
+}
+
+.btn-remove-item {
+    background: var(--status-error);
+    color: var(--bg-white);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-item:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-add-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--finguard-gradient);
+    color: var(--bg-white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: var(--spacing-md);
+    width: 100%;
+}
+
+.btn-add-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.3);
+}
+
+.calculated-field {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.calculated-field.total {
+    background: var(--finguard-primary);
+    color: var(--bg-white);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+/* ==========================================================================
+   Financial Summary
+   ========================================================================== */
+
+.summary-display {
+    background: var(--bg-white);
+    border: 2px solid var(--finguard-primary);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+}
+
+.summary-row:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.summary-row.total {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--finguard-primary);
+    padding-top: var(--spacing-md);
+    margin-top: 0.5rem;
+    border-top: 2px solid var(--finguard-primary);
+}
+
+.summary-row span:first-child {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.summary-row span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.summary-row.total span {
+    color: var(--finguard-primary);
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
    Responsive Design
    ========================================================================== */
 
@@ -554,6 +811,16 @@ body {
     .btn-secondary {
         width: 100%;
         justify-content: center;
+    }
+    
+    .line-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .btn-remove-item {
+        width: 100%;
     }
 }
 

@@ -98,91 +98,6 @@ function attachEventListeners() {
  */
 async function loadPurchaseOrders() {
     try {
-        // Use mock data for now (until API is ready)
-        const mockData = [
-            {
-                "po_id": "PO-2024-001",
-                "po_number": "PO/24/001",
-                "po_date": "2024-01-15",
-                "vendor_name": "ABC Suppliers Ltd",
-                "vendor_gstin": "27AABCU9603R1ZX",
-                "company_gstin": "27AADCA5659F1ZV",
-                "total_amount": 150000.00,
-                "status": "Approved",
-                "delivery_date": "2024-02-15",
-                "items_count": 5,
-                "created_by": "John Doe",
-                "created_at": "2024-01-15T10:30:00Z",
-                "updated_at": "2024-01-15T10:30:00Z"
-            },
-            {
-                "po_id": "PO-2024-002",
-                "po_number": "PO/24/002",
-                "po_date": "2024-01-20",
-                "vendor_name": "XYZ Trading Co",
-                "vendor_gstin": "29AABCU9603R1ZY",
-                "company_gstin": "27AADCA5659F1ZV",
-                "total_amount": 250000.00,
-                "status": "Pending",
-                "delivery_date": "2024-02-20",
-                "items_count": 8,
-                "created_by": "Jane Smith",
-                "created_at": "2024-01-20T14:45:00Z",
-                "updated_at": "2024-01-20T14:45:00Z"
-            },
-            {
-                "po_id": "PO-2024-003",
-                "po_number": "PO/24/003",
-                "po_date": "2024-01-25",
-                "vendor_name": "Tech Solutions Inc",
-                "vendor_gstin": "24AABCU9603R1ZW",
-                "company_gstin": "27AADCA5659F1ZV",
-                "total_amount": 350000.00,
-                "status": "Completed",
-                "delivery_date": "2024-02-25",
-                "items_count": 12,
-                "created_by": "Mike Johnson",
-                "created_at": "2024-01-25T09:15:00Z",
-                "updated_at": "2024-01-25T09:15:00Z"
-            },
-            {
-                "po_id": "PO-2024-004",
-                "po_number": "PO/24/004",
-                "po_date": "2024-02-01",
-                "vendor_name": "Global Enterprises",
-                "vendor_gstin": "27AABCU9603R1ZZ",
-                "company_gstin": "27AADCA5659F1ZV",
-                "total_amount": 180000.00,
-                "status": "Rejected",
-                "delivery_date": "2024-03-01",
-                "items_count": 6,
-                "created_by": "Sarah Davis",
-                "created_at": "2024-02-01T11:30:00Z",
-                "updated_at": "2024-02-01T11:30:00Z"
-            },
-            {
-                "po_id": "PO-2024-005",
-                "po_number": "PO/24/005",
-                "po_date": "2024-02-05",
-                "vendor_name": "Industrial Supplies Co",
-                "vendor_gstin": "29AABCU9603R1ZQ",
-                "company_gstin": "27AADCA5659F1ZV",
-                "total_amount": 220000.00,
-                "status": "Cancelled",
-                "delivery_date": "2024-03-05",
-                "items_count": 9,
-                "created_by": "David Wilson",
-                "created_at": "2024-02-05T14:20:00Z",
-                "updated_at": "2024-02-05T14:20:00Z"
-            }
-        ];
-        
-        state.purchaseOrders = mockData;
-        state.filteredPurchaseOrders = [...mockData];
-        renderPurchaseOrders();
-        
-        // Uncomment below to use API instead of mock data
-        /*
         // Check if we have cached data
         const cachedData = getCachedPurchaseOrders();
         
@@ -195,7 +110,6 @@ async function loadPurchaseOrders() {
         
         // Fetch from API
         await fetchPurchaseOrders();
-        */
     } catch (error) {
         console.error('Error loading purchase orders:', error);
         showError('Failed to load purchase orders. Please try again.');
@@ -386,15 +300,285 @@ function renderTableRows(purchaseOrders) {
             <td><strong>${escapeHtml(po.po_number)}</strong></td>
             <td>${formatDate(po.po_date)}</td>
             <td>${escapeHtml(po.vendor_name)}</td>
-            <td><code>${escapeHtml(po.vendor_gstin)}</code></td>
-            <td><code>${escapeHtml(po.company_gstin)}</code></td>
-            <td><span class="amount">₹${formatAmount(po.total_amount)}</span></td>
-            <td>${getStatusBadge(po.status)}</td>
-            <td>${formatDate(po.delivery_date)}</td>
-            <td>${po.items_count}</td>
-            <td>${escapeHtml(po.created_by)}</td>
+            <td><code>${escapeHtml(po.vendor_gstin || po.vendor_gst_number || '')}</code></td>
+            <td><code>${escapeHtml(po.company_gstin || '')}</code></td>
+            <td><span class="amount">₹${formatAmount(po.total_amount || po.grand_total || 0)}</span></td>
+            <td>${getStatusBadge(po.status || po.po_status || 'Pending')}</td>
+            <td>${formatDate(po.delivery_date || po.expected_delivery_date)}</td>
+            <td>${po.items_count || (po.line_items ? po.line_items.length : 0)}</td>
+            <td>
+                <button class="btn-action btn-view" data-action="view-details" data-po-id="${escapeHtml(po.po_id)}">
+                    View Details
+                </button>
+                <button class="btn-action btn-edit" data-action="edit-po" data-po-id="${escapeHtml(po.po_id)}">
+                    Edit
+                </button>
+            </td>
         </tr>
     `).join('');
+    
+    // Add event listeners to action buttons
+    attachActionButtonListeners();
+}
+
+/**
+ * Attach event listeners to action buttons
+ */
+function attachActionButtonListeners() {
+    const viewButtons = document.querySelectorAll('[data-action="view-details"]');
+    viewButtons.forEach(btn => {
+        btn.addEventListener('click', handleViewDetails);
+    });
+    
+    const editButtons = document.querySelectorAll('[data-action="edit-po"]');
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', handleEditPO);
+    });
+}
+
+/**
+ * Handle view details button click
+ */
+async function handleViewDetails(event) {
+    const poId = event.target.dataset.poId;
+    if (!poId) return;
+    
+    try {
+        // Show loading state
+        showNotification('Loading purchase order details...', 'info');
+        
+        // Fetch PO details from API
+        const response = await fetch(API_ENDPOINTS.PURCHASE_ORDER.GET_PO_DETAILS, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ po_id: poId })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            showPODetailsModal(result.data);
+        } else {
+            showNotification('Failed to load purchase order details', 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching PO details:', error);
+        showNotification('Error loading purchase order details', 'error');
+    }
+}
+
+/**
+ * Handle edit PO button click
+ */
+function handleEditPO(event) {
+    const poId = event.target.dataset.poId;
+    if (!poId) return;
+    
+    // Redirect to edit page with PO ID
+    window.location.href = `edit-purchase-order.html?po_id=${encodeURIComponent(poId)}`;
+}
+
+/**
+ * Show PO details in a modal
+ */
+function showPODetailsModal(poData) {
+    // Create modal HTML
+    const modalHTML = `
+        <div class="modal-overlay" id="poDetailsModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2 class="modal-title">Purchase Order Details</h2>
+                    <button class="modal-close" data-action="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="details-section">
+                        <h3>Basic Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">PO Number:</span>
+                                <span class="detail-value">${escapeHtml(poData.po_number)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">PO Date:</span>
+                                <span class="detail-value">${formatDate(poData.po_date)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">${getStatusBadge(poData.po_status)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Vendor Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Vendor Code:</span>
+                                <span class="detail-value">${escapeHtml(poData.vendor_reference?.vendor_code || '')}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vendor Name:</span>
+                                <span class="detail-value">${escapeHtml(poData.vendor_reference?.vendor_name || '')}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">GST Number:</span>
+                                <span class="detail-value"><code>${escapeHtml(poData.vendor_reference?.vendor_gst_number || '')}</code></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Delivery Details</h3>
+                        <div class="details-grid">
+                            <div class="detail-item full-width">
+                                <span class="detail-label">Ship To:</span>
+                                <span class="detail-value">${formatAddress(poData.delivery_details?.ship_to_address)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Expected Delivery:</span>
+                                <span class="detail-value">${formatDate(poData.delivery_details?.expected_delivery_date)}</span>
+                            </div>
+                            ${poData.delivery_details?.actual_delivery_date ? `
+                            <div class="detail-item">
+                                <span class="detail-label">Actual Delivery:</span>
+                                <span class="detail-value">${formatDate(poData.delivery_details.actual_delivery_date)}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Line Items</h3>
+                        <div class="line-items-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Description</th>
+                                        <th>HSN</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
+                                        <th>Price</th>
+                                        <th>Tax %</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${poData.line_items?.map(item => `
+                                        <tr>
+                                            <td>${item.line_number}</td>
+                                            <td>${escapeHtml(item.item_description)}</td>
+                                            <td><code>${escapeHtml(item.hsn_code)}</code></td>
+                                            <td>${item.quantity}</td>
+                                            <td>${escapeHtml(item.unit_of_measurement)}</td>
+                                            <td>₹${formatAmount(item.unit_price)}</td>
+                                            <td>${item.tax_rate}%</td>
+                                            <td>₹${formatAmount(item.line_total_with_tax)}</td>
+                                        </tr>
+                                    `).join('') || '<tr><td colspan="8">No line items</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Financial Summary</h3>
+                        <div class="financial-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span>₹${formatAmount(poData.financial_summary?.subtotal || 0)}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Total Tax:</span>
+                                <span>₹${formatAmount(poData.financial_summary?.total_tax_amount || 0)}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Other Charges:</span>
+                                <span>₹${formatAmount(poData.financial_summary?.total_other_charges || 0)}</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Grand Total:</span>
+                                <span>₹${formatAmount(poData.financial_summary?.grand_total || 0)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${poData.metadata?.notes ? `
+                    <div class="details-section">
+                        <h3>Notes</h3>
+                        <p>${escapeHtml(poData.metadata.notes)}</p>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" data-action="close-modal">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Insert modal into DOM
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Add event listeners
+    const modal = document.getElementById('poDetailsModal');
+    const closeButtons = modal.querySelectorAll('[data-action="close-modal"]');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => modal.remove());
+    });
+    
+    // Close on overlay click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+/**
+ * Format address object
+ */
+function formatAddress(address) {
+    if (!address) return 'N/A';
+    
+    const parts = [
+        address.address_line1,
+        address.city,
+        address.state,
+        address.pin_code
+    ].filter(Boolean);
+    
+    return escapeHtml(parts.join(', '));
+}
+
+/**
+ * Show notification
+ */
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        padding: 16px 24px;
+        background: ${type === 'success' ? '#28A745' : type === 'error' ? '#DC3545' : '#0B74B0'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 /**

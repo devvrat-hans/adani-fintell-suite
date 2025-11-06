@@ -612,7 +612,6 @@ async function handleFormSubmit(event) {
             showNotification('success', {
                 title: 'Vendor Updated Successfully!',
                 message: message,
-                vendorCode: vendorCode,
                 onConfirm: () => {
                     window.location.href = 'vendor-database.html';
                 }
