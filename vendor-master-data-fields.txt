@@ -1,0 +1,113 @@
+Essential Vendor Identifiers
+Vendor Code/ID: Unique identifier for the vendor in your system
+
+Legal Vendor Name: Full registered business name as it appears on official documents
+
+GST Registration Number: Critical for tax validation and compliance checks​
+
+PAN Number: For Indian tax compliance and vendor verification
+
+TAN Number: Tax deduction account number
+
+Contact & Address Information
+Registered Business Address: Complete address with PIN code
+
+Billing Address: If different from registered address
+
+Phone Number: Primary contact number
+
+Email Address: For invoice correspondence​
+
+Banking & Payment Details
+Bank Account Number: For payment processing
+
+IFSC Code: Bank branch identifier
+
+Payment Terms: Standard payment cycles (e.g., Net 30, Net 60)
+
+Preferred Payment Method: NEFT, RTGS, cheque, etc.​
+
+Business Classification
+Vendor Category/Type: Services, goods, utilities, etc.
+
+HSN/SAC Codes: For the types of goods/services they typically supply​
+
+Tax Registration Status: Whether registered under GST, composition scheme, etc.
+
+Compliance & Verification
+MSME Registration: If applicable for compliance
+
+Registration Certificates: Copy of GST certificate, incorporation certificate
+
+Average Market Pricing: Historical pricing data for anomaly detection​
+
+
+how it will be stores later on:
+
+{
+  _id: ObjectId(),
+  vendorCode: "VEN-00123", // Unique, indexed
+  vendorDetails: {
+    legalName: "ABC Enterprises Pvt Ltd",
+    tradeName: "ABC Traders",
+    vendorType: "Goods Supplier",
+    category: "Raw Materials"
+  },
+  taxInformation: {
+    gstNumber: "29ABCDE1234F1Z5", // Indexed for quick lookup
+    panNumber: "ABCDE1234F",
+    tanNumber: "DELM12345E",
+    gstRegistrationStatus: "Regular",
+    isCompositionDealer: false
+  },
+  contactDetails: {
+    registeredAddress: {
+      addressLine1: "123 Industrial Area",
+      addressLine2: "Sector 5",
+      city: "Mumbai",
+      state: "Maharashtra",
+      pinCode: "400001",
+      country: "India"
+    },
+    billingAddress: { /* same structure */ },
+    phone: "+91-9876543210",
+    email: "billing@abctraders.com",
+    contactPerson: "John Doe"
+  },
+  bankingDetails: {
+    accountNumber: "1234567890",
+    ifscCode: "HDFC0001234",
+    bankName: "HDFC Bank",
+    branchName: "Mumbai Main",
+    accountType: "Current"
+  },
+  paymentTerms: {
+    standardPaymentCycle: "Net 30",
+    preferredPaymentMethod: "NEFT",
+    creditLimit: 500000,
+    currency: "INR"
+  },
+  businessClassification: {
+    msmeRegistered: true,
+    msmeNumber: "UDYAM-MH-12-1234567",
+    typicalHsnSacCodes: ["8517", "8471"] // Array for multiple codes
+  },
+  complianceDocuments: {
+    gstCertificateUrl: "/documents/gst_cert_123.pdf",
+    incorporationCertUrl: "/documents/incorp_123.pdf",
+    lastVerifiedDate: ISODate("2025-10-15")
+  },
+  pricingHistory: {
+    averageMarketPricing: {
+      "Item-A": 150.00,
+      "Item-B": 200.00
+    },
+    lastUpdated: ISODate("2025-11-01")
+  },
+  metadata: {
+    createdAt: ISODate("2024-01-15"),
+    updatedAt: ISODate("2025-11-06"),
+    isActive: true,
+    blacklisted: false
+  }
+}

@@ -119,7 +119,7 @@ async function handleFormSubmit(event) {
         submitBtn.disabled = true;
         
         // Submit to API
-        const response = await fetch(API_ENDPOINTS.VENDOR.ADD_VENDOR, {
+        const response = await fetch(API_ENDPOINTS.VENDOR_MASTER.ADD_VENDOR, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -127,27 +127,54 @@ async function handleFormSubmit(event) {
             body: JSON.stringify(vendorData)
         });
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const result = await response.json();
         
         if (result.success) {
-            // Show success message
-            showSuccessMessage();
-            
-            // Reset form after delay
-            setTimeout(() => {
-                window.location.href = 'vendor-database.html';
-            }, 2000);
+            // Show success notification
+            showNotification('success', {
+                title: 'Vendor Added Successfully!',
+                message: 'The vendor has been added to the database.',
+                vendorCode: result.data && result.data.vendor_code ? result.data.vendor_code : null,
+                onConfirm: () => {
+                    window.location.href = 'vendor-database.html';
+                }
+            });
         } else {
             throw new Error(result.message || 'Failed to add vendor');
         }
     } catch (error) {
         console.error('Error adding vendor:', error);
-        alert('Error adding vendor: ' + error.message);
+        
+        // More detailed error message
+        let errorMessage = '';
+        
+        if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Unable to connect to the server. Please check your network connection or try again later.';
+        } else if (error.message.includes('HTTP error')) {
+            errorMessage = 'Server error occurred. Please contact support if the issue persists.';
+        } else {
+            errorMessage = error.message;
+        }
+        
+        // Show error notification
+        showNotification('error', {
+            title: 'Failed to Add Vendor',
+            message: errorMessage,
+            onConfirm: () => {
+                // Just close the notification
+            }
+        });
         
         // Re-enable submit button
         const submitBtn = event.target.querySelector('.btn-submit');
-        submitBtn.textContent = 'Add Vendor';
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.textContent = 'Add Vendor';
+            submitBtn.disabled = false;
+        }
     }
 }
 
@@ -161,21 +188,77 @@ function handleCancel() {
 }
 
 /**
- * Show success message
+ * Show notification popup
  */
-function showSuccessMessage() {
-    const successDiv = document.createElement('div');
-    successDiv.className = 'success-message';
-    successDiv.innerHTML = `
-        <div class="success-content">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <h3>Vendor Added Successfully!</h3>
-            <p>Redirecting to vendor database...</p>
+function showNotification(type, options) {
+    const { title, message, vendorCode, onConfirm } = options;
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'notification-overlay';
+    
+    // Success or error icon SVG
+    const successIcon = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+    `;
+    
+    const errorIcon = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+    `;
+    
+    const icon = type === 'success' ? successIcon : errorIcon;
+    
+    // Create notification HTML
+    overlay.innerHTML = `
+        <div class="notification-popup ${type}">
+            <div class="notification-icon ${type}">
+                ${icon}
+            </div>
+            <h3 class="notification-title">${title}</h3>
+            <p class="notification-message">${message}</p>
+            ${vendorCode ? `<div class="notification-vendor-code">Vendor Code: ${vendorCode}</div>` : ''}
+            <div class="notification-actions">
+                <button class="notification-btn primary" data-action="confirm">
+                    ${type === 'success' ? 'Go to Vendor Database' : 'Close'}
+                </button>
+                ${type === 'success' ? '<button class="notification-btn secondary" data-action="add-another">Add Another Vendor</button>' : ''}
+            </div>
         </div>
     `;
     
-    document.body.appendChild(successDiv);
+    // Add event listeners
+    const confirmBtn = overlay.querySelector('[data-action="confirm"]');
+    const addAnotherBtn = overlay.querySelector('[data-action="add-another"]');
+    
+    confirmBtn.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        if (onConfirm) onConfirm();
+    });
+    
+    if (addAnotherBtn) {
+        addAnotherBtn.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+            // Reset form
+            const form = document.getElementById('addVendorForm');
+            if (form) form.reset();
+        });
+    }
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            document.body.removeChild(overlay);
+            if (type === 'error' && onConfirm) onConfirm();
+        }
+    });
+    
+    // Add to page
+    document.body.appendChild(overlay);
 }

@@ -1,0 +1,76 @@
+API Name: Update Vendor
+API Type: POST
+Endpoint: /webhook/f/vendor-master/update-vendor
+
+Description:
+Updates existing vendor information in the system. Allows modification of vendor details, contact information, banking details, payment terms, and compliance documents.
+
+
+Request Body:
+{
+  "vendorCode": "VEN-00123",  // Required - Identifies which vendor to update
+  "vendorDetails": {
+    "legalName": "ABC Enterprises Pvt Ltd",
+    "tradeName": "ABC Traders",
+    "vendorType": "Goods Supplier",
+    "category": "Raw Materials"
+  },
+  "taxInformation": {
+    "gstNumber": "29ABCDE1234F1Z5",
+    "panNumber": "ABCDE1234F",
+    "tanNumber": "DELM12345E",
+    "gstRegistrationStatus": "Regular",
+    "isCompositionDealer": false
+  },
+  "contactDetails": {
+    "registeredAddress": {
+      "addressLine1": "123 Industrial Area",
+      "addressLine2": "Sector 5",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pinCode": "400001",
+      "country": "India"
+    },
+    "billingAddress": {
+      "addressLine1": "123 Industrial Area",
+      "addressLine2": "Sector 5",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pinCode": "400001",
+      "country": "India"
+    },
+    "phone": "+91-9876543210",
+    "email": "billing@abctraders.com",
+    "contactPerson": "John Doe"
+  },
+  "bankingDetails": {
+    "accountNumber": "1234567890",
+    "ifscCode": "HDFC0001234",
+    "bankName": "HDFC Bank",
+    "branchName": "Mumbai Main",
+    "accountType": "Current"
+  },
+  "paymentTerms": {
+    "standardPaymentCycle": "Net 30",
+    "preferredPaymentMethod": "NEFT",
+    "creditLimit": 500000,
+    "currency": "INR"
+  },
+  "businessClassification": {
+    "msmeRegistered": true,
+    "msmeNumber": "UDYAM-MH-12-1234567",
+    "typicalHsnSacCodes": ["8517", "8471"]
+  },
+  "complianceDocuments": {
+    "gstCertificateUrl": "/documents/gst_cert_123.pdf",
+    "incorporationCertUrl": "/documents/incorp_123.pdf"
+  },
+  "status": "Active"  // Active, Inactive, Suspended
+}
+
+Response Body (Success - 200):
+[
+  {
+    "success": true
+  }
+]

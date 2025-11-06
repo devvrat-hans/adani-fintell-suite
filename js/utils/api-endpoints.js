@@ -118,6 +118,19 @@ const PURCHASE_ORDER_ENDPOINTS = {
 };
 
 // ==========================================================================
+// Vendor Master Endpoints
+// ==========================================================================
+
+const VENDOR_MASTER_ENDPOINTS = {
+    ADD_VENDOR: `${API_BASE_URL}/webhook/f/vendor-master/add-vendor`,
+    FETCH_VENDORS: `${API_BASE_URL}/webhook/f/vendor-master/fetch-vendors`,
+    GET_VENDOR_DETAILS: `${API_BASE_URL}/webhook/f/vendor-master/get-vendor-details`,
+    UPDATE_VENDOR: `${API_BASE_URL}/webhook/f/vendor-master/update-vendor`,
+    GET_VENDOR_POS: `${API_BASE_URL}/webhook/f/vendor-master/get-vendor-purchase-orders`,
+    GET_VENDOR_PERFORMANCE: `${API_BASE_URL}/webhook/f/vendor-master/get-vendor-performance`
+};
+
+// ==========================================================================
 // Vendor Management Endpoints
 // ==========================================================================
 
@@ -162,6 +175,7 @@ const API_ENDPOINTS = {
     ENTITY: ENTITY_ENDPOINTS,
     DATABASE: DATABASE_ENDPOINTS,
     PURCHASE_ORDER: PURCHASE_ORDER_ENDPOINTS,
+    VENDOR_MASTER: VENDOR_MASTER_ENDPOINTS,
     VENDOR: VENDOR_ENDPOINTS,
     AI_ASSISTANT: AI_ASSISTANT_ENDPOINTS
 };

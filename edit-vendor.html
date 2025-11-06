@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Add New Vendor - Adani Fintell Suite">
-    <title>Add New Vendor - Adani Fintell Suite</title>
+    <meta name="description" content="Edit Vendor - Adani Fintell Suite">
+    <title>Edit Vendor - Adani Fintell Suite</title>
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/add-vendor.css">
+    <link rel="stylesheet" href="css/edit-vendor.css">
 </head>
 <body>
     <!-- Navbar Container -->
@@ -24,14 +24,53 @@
             <!-- Page Header -->
             <header class="page-header">
                 <div class="header-content">
-                    <h1 class="page-title">Add New Vendor</h1>
-                    <p class="page-description">Register new vendor for procurement and supply chain management</p>
+                    <h1 class="page-title">Edit Vendor</h1>
+                    <p class="page-description">Update vendor information and compliance details</p>
                 </div>
             </header>
             
-            <!-- Form Section -->
-            <section class="form-section">
-                <form id="addVendorForm" class="vendor-form">
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Find Vendor</h2>
+                        <p class="card-subtitle">Search by vendor code or name to edit details</p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="search-container">
+                            <div class="search-group">
+                                <label for="searchInput" class="form-label">Search Vendor</label>
+                                <div class="search-input-wrapper">
+                                    <input type="text" 
+                                           id="searchInput" 
+                                           class="search-input" 
+                                           placeholder="Search by name, GST, PAN, email, phone, city, bank..." 
+                                           data-vendor-search>
+                                    <button type="button" class="search-btn" id="searchBtn" data-search-trigger>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <path d="m21 21-4.35-4.35"></path>
+                                        </svg>
+                                        Search
+                                    </button>
+                                </div>
+                                <span class="help-text">You can search by vendor name, GST number, PAN, email, phone, city, state, bank name, or IFSC code</span>
+                            </div>
+                            
+                            <!-- Search Results Dropdown -->
+                            <div class="search-results" id="searchResults" data-search-results hidden></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Form Section (Initially Hidden) -->
+            <section class="form-section" id="formSection" hidden>
+                <form id="editVendorForm" class="vendor-form">
+                    
+                    <!-- Hidden field for vendor code -->
+                    <input type="hidden" id="vendorCode" name="vendor_code">
                     
                     <!-- Basic Vendor Information -->
                     <div class="form-card">
@@ -258,13 +297,6 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="isCompositionDealer" name="is_composition_dealer">
-                                        <span>Is Composition Dealer</span>
-                                    </label>
-                                </div>
-                                
-                                <div class="form-group">
                                     <label for="msmeRegistration" class="form-label">MSME Registration</label>
                                     <select id="msmeRegistration" name="msme_registration" class="form-select">
                                         <option value="">Select MSME status</option>
@@ -413,42 +445,6 @@
                         </div>
                     </div>
                     
-                    <!-- Compliance Documents -->
-                    <div class="form-card">
-                        <div class="card-header">
-                            <h2 class="card-title">Compliance & Registration Certificates</h2>
-                            <p class="card-subtitle">Upload vendor compliance documents</p>
-                        </div>
-                        
-                        <div class="card-body">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="gstCertificate" class="form-label">GST Certificate</label>
-                                    <input type="file" id="gstCertificate" name="gst_certificate" class="form-input" accept=".pdf,.jpg,.jpeg,.png">
-                                    <span class="help-text">Upload GST registration certificate</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="incorporationCert" class="form-label">Incorporation Certificate</label>
-                                    <input type="file" id="incorporationCert" name="incorporation_certificate" class="form-input" accept=".pdf,.jpg,.jpeg,.png">
-                                    <span class="help-text">Upload company incorporation certificate</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="panCard" class="form-label">PAN Card</label>
-                                    <input type="file" id="panCard" name="pan_card" class="form-input" accept=".pdf,.jpg,.jpeg,.png">
-                                    <span class="help-text">Upload PAN card copy</span>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="msmeCertificate" class="form-label">MSME Certificate</label>
-                                    <input type="file" id="msmeCertificate" name="msme_certificate" class="form-input" accept=".pdf,.jpg,.jpeg,.png">
-                                    <span class="help-text">Upload MSME/Udyam certificate (if applicable)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Average Market Pricing -->
                     <div class="form-card">
                         <div class="card-header">
@@ -487,7 +483,7 @@
                     <!-- Submit Buttons -->
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                        <button type="submit" class="btn-submit">Add Vendor</button>
+                        <button type="submit" class="btn-submit">Update Vendor</button>
                     </div>
                 </form>
             </section>
@@ -499,6 +495,6 @@
     <script src="js/utils/templates.js"></script>
     <script src="js/core/navbar.js"></script>
     <script src="js/core/sidebar.js"></script>
-    <script src="js/page/add-vendor.js"></script>
+    <script src="js/page/edit-vendor.js"></script>
 </body>
 </html>

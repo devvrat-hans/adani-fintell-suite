@@ -1,0 +1,73 @@
+API Name: Get Vendor Details
+API Type: GET
+Endpoint: /webhook/f/vendor-master/get-vendor-details
+
+Description:
+Retrieves complete details of a specific vendor by vendor code/ID. Used for viewing vendor information, editing vendor data, and vendor performance analysis.
+
+Request Parameters:
+{
+  "vendorCode": "VEN-00123"  // Unique vendor identifier
+}
+
+
+Response Body (Success - 200):
+[
+  {
+    "_id": "690c99d4c0d7d24c6849d224",
+    "legal_name": "ac433qcw",
+    "trade_name": "",
+    "vendor_type": "service_provider",
+    "vendor_category": "services",
+    "contact_person": "afe2cq23cqeraccare",
+    "designation": "",
+    "phone": "8368149927",
+    "alternate_phone": "",
+    "email": "aback.automations@gmail.com",
+    "website": "",
+    "registered_address_line1": "faceqa4wqwarfwqa",
+    "registered_address_line2": "",
+    "registered_city": "awfc4wae f",
+    "registered_state": "cawercr",
+    "registered_pincode": "121006",
+    "registered_country": "India",
+    "billing_address_line1": "",
+    "billing_address_line2": "",
+    "billing_city": "",
+    "billing_state": "",
+    "billing_pincode": "",
+    "billing_country": "India",
+    "gst_number": "22AAAAA0000A1Z5",
+    "gst_status": "composition",
+    "pan_number": "AAAAA9999A",
+    "tan_number": "",
+    "msme_registration": "",
+    "msme_number": "",
+    "hsn_sac_codes": "",
+    "bank_name": "dcarewqfc",
+    "account_number": "2341243214`",
+    "ifsc_code": "SBIN0001067",
+    "branch_name": "",
+    "account_type": "overdraft",
+    "beneficiary_name": "dfweqwcare wa fwesarf dz",
+    "payment_terms": "net_30",
+    "preferred_payment_method": "imps",
+    "credit_limit": "",
+    "currency": "INR",
+    "vendor_status": "active",
+    "gst_certificate": {},
+    "incorporation_certificate": {},
+    "pan_card": {},
+    "msme_certificate": {},
+    "market_pricing": "",
+    "remarks": "",
+    "created_at": "2025-11-06T12:49:14.853Z",
+    "created_by": "Current User"
+  }
+]
+
+Usage Notes:
+- Vendor code is mandatory
+- Returns full vendor profile including all sections
+- Used in vendor database view details, edit vendor page, and vendor performance analysis
+- All dates are in ISO 8601 format

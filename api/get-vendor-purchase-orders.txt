@@ -1,0 +1,143 @@
+API Name: Get Vendor Purchase Orders
+API Type: GET
+Endpoint: /webhook/f/vendor-master/get-vendor-purchase-orders
+
+Description:
+Retrieves all purchase orders associated with a specific vendor. Used in the vendor purchase orders page to display PO history and track vendor transactions.
+
+Request Parameters:
+{
+  "vendorCode": "VEN-00123",     // Required - Unique vendor identifier
+  "status": "All",                // Optional - Filter by status: All, Pending, Approved, Completed, Cancelled
+  "startDate": "2025-01-01",      // Optional - Filter POs from this date (YYYY-MM-DD)
+  "endDate": "2025-12-31",        // Optional - Filter POs until this date (YYYY-MM-DD)
+  "page": 1,                      // Optional - Page number for pagination (default: 1)
+  "limit": 20,                    // Optional - Number of records per page (default: 20)
+  "sortBy": "poDate",             // Optional - Sort field: poDate, poNumber, amount
+  "sortOrder": "desc"             // Optional - Sort order: asc, desc (default: desc)
+}
+
+Request Headers:
+{
+  "Content-Type": "application/json",
+  "Authorization": "Bearer <token>"
+}
+
+Response Body (Success - 200):
+{
+  "success": true,
+  "message": "Vendor purchase orders retrieved successfully",
+  "data": {
+    "vendorCode": "VEN-00123",
+    "vendorName": "ABC Enterprises Pvt Ltd",
+    "totalPOs": 45,
+    "totalPages": 3,
+    "currentPage": 1,
+    "purchaseOrders": [
+      {
+        "poNumber": "PO-2025-001234",
+        "poDate": "2025-10-15",
+        "poAmount": 250000,
+        "currency": "INR",
+        "status": "Approved",
+        "deliveryDate": "2025-11-15",
+        "itemsCount": 5,
+        "createdBy": "user@adani.com",
+        "approvedBy": "manager@adani.com",
+        "approvedDate": "2025-10-16",
+        "items": [
+          {
+            "itemCode": "ITEM-001",
+            "description": "Industrial Equipment",
+            "quantity": 10,
+            "unitPrice": 20000,
+            "totalPrice": 200000,
+            "hsnCode": "8517"
+          },
+          {
+            "itemCode": "ITEM-002",
+            "description": "Spare Parts",
+            "quantity": 25,
+            "unitPrice": 2000,
+            "totalPrice": 50000,
+            "hsnCode": "8471"
+          }
+        ],
+        "paymentTerms": "Net 30",
+        "deliveryAddress": {
+          "addressLine1": "Adani Warehouse",
+          "city": "Mumbai",
+          "state": "Maharashtra",
+          "pinCode": "400001"
+        }
+      },
+      {
+        "poNumber": "PO-2025-001156",
+        "poDate": "2025-09-20",
+        "poAmount": 180000,
+        "currency": "INR",
+        "status": "Completed",
+        "deliveryDate": "2025-10-20",
+        "itemsCount": 3,
+        "createdBy": "user2@adani.com",
+        "approvedBy": "manager@adani.com",
+        "approvedDate": "2025-09-21",
+        "completedDate": "2025-10-18",
+        "items": [
+          {
+            "itemCode": "ITEM-003",
+            "description": "Office Supplies",
+            "quantity": 100,
+            "unitPrice": 1800,
+            "totalPrice": 180000,
+            "hsnCode": "4820"
+          }
+        ],
+        "paymentTerms": "Net 45",
+        "deliveryAddress": {
+          "addressLine1": "Adani Office",
+          "city": "Ahmedabad",
+          "state": "Gujarat",
+          "pinCode": "380001"
+        }
+      }
+    ],
+    "summary": {
+      "totalPOValue": 8500000,
+      "pendingPOs": 5,
+      "approvedPOs": 15,
+      "completedPOs": 20,
+      "cancelledPOs": 5
+    }
+  }
+}
+
+Response Body (Error - 404):
+{
+  "success": false,
+  "message": "Vendor not found",
+  "error": "No vendor exists with the provided vendor code"
+}
+
+Response Body (Error - 400):
+{
+  "success": false,
+  "message": "Invalid request",
+  "error": "Vendor code is required"
+}
+
+Response Body (Error - 500):
+{
+  "success": false,
+  "message": "Internal server error",
+  "error": "Failed to retrieve purchase orders"
+}
+
+Usage Notes:
+- Vendor code is mandatory
+- Supports filtering by status, date range
+- Supports pagination for large datasets
+- Returns summary statistics for all POs of the vendor
+- POs are sorted by date (most recent first) by default
+- All amounts are in the specified currency
+- Dates are in YYYY-MM-DD format
