@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Edit Purchase Order - Adani Fintell Suite">
     <title>Edit Purchase Order - Adani Fintell Suite</title>
+    <link rel="icon" type="image/png" href="assets/images/logos/favicon.png">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/navbar.css">
@@ -25,9 +26,31 @@
             <header class="page-header">
                 <div class="header-content">
                     <h1 class="page-title">Edit Purchase Order</h1>
-                    <p class="page-description">Update purchase order details and status</p>
+                    <p class="page-description">Search and update purchase order details</p>
                 </div>
             </header>
+            
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-card">
+                    <h2 class="search-title">Find Purchase Order</h2>
+                    <div class="search-container" data-search-container>
+                        <div class="search-input-wrapper">
+                            <input 
+                                type="text" 
+                                id="poSearch" 
+                                class="search-input" 
+                                placeholder="Search by PO Number, Vendor Name, or Vendor Code"
+                                data-search-input
+                            >
+                            <button type="button" class="search-button" data-search-button>
+                                <span>Search</span>
+                            </button>
+                        </div>
+                        <div class="search-results" data-search-results></div>
+                    </div>
+                </div>
+            </section>
             
             <!-- Form Section -->
             <section class="form-section">
@@ -94,7 +117,7 @@
                     
                     <!-- Submit Button -->
                     <div class="form-actions">
-                        <button type="submit" class="btn-submit">Update Purchase Order</button>
+                        <button type="submit" class="btn-submit" data-submit-button>Update Purchase Order</button>
                     </div>
                 </form>
             </section>

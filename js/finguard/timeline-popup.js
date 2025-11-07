@@ -62,31 +62,73 @@ export function getDefaultStepMessage(step) {
  * @param {string} message - Status message
  */
 export function updateTimelineStep(step, status, message) {
+    console.log(`=== UPDATE TIMELINE STEP ===`);
+    console.log(`Step: ${step}`);
+    console.log(`Status: ${status}`);
+    console.log(`Message: ${message}`);
+    
     const timelineItem = document.querySelector(`[data-timeline-step="${step}"]`);
-    if (!timelineItem) return;
+    if (!timelineItem) {
+        console.warn(`Timeline item not found for step: ${step}`);
+        return;
+    }
+    
+    console.log(`Timeline item found:`, timelineItem);
+    console.log(`Current data-status:`, timelineItem.getAttribute('data-status'));
     
     // Update status attribute
     timelineItem.setAttribute('data-status', status);
+    console.log(`New data-status set to: ${status}`);
     
     // Update description message
     const description = timelineItem.querySelector(`[data-step-description="${step}"]`);
     if (description && message) {
         description.textContent = message;
+        console.log(`Description updated for step ${step}`);
     }
     
     // Update icon visibility
     const iconContainer = timelineItem.querySelector(`[data-step-icon="${step}"]`);
     if (iconContainer) {
-        // Hide all icons
-        iconContainer.querySelectorAll('svg').forEach(icon => {
+        // First, hide all icons in this specific icon container
+        const allIcons = iconContainer.querySelectorAll('svg');
+        console.log(`Found ${allIcons.length} icons in container for step ${step}`);
+        allIcons.forEach(icon => {
             icon.style.display = 'none';
         });
         
-        // Show appropriate icon
-        const iconClass = `.icon-${status === 'in-progress' ? 'loading' : status === 'completed' ? 'success' : status === 'failed' ? 'error' : 'pending'}`;
-        const activeIcon = iconContainer.querySelector(iconClass);
+        // Determine which icon class to show based on status
+        let iconClass;
+        switch (status) {
+            case 'in-progress':
+                iconClass = 'icon-loading';
+                break;
+            case 'completed':
+                iconClass = 'icon-success';
+                break;
+            case 'failed':
+                iconClass = 'icon-error';
+                break;
+            case 'pending':
+            default:
+                iconClass = 'icon-pending';
+                break;
+        }
+        
+        console.log(`Determined icon class: ${iconClass}`);
+        
+        // Show the appropriate icon
+        const activeIcon = iconContainer.querySelector(`.${iconClass}`);
         if (activeIcon) {
             activeIcon.style.display = 'block';
+            console.log(`Successfully set ${iconClass} to display:block for step ${step}`);
+        } else {
+            console.warn(`Icon ${iconClass} not found for step ${step}`);
         }
+    } else {
+        console.warn(`Icon container not found for step: ${step}`);
     }
+    
+    console.log(`=== TIMELINE STEP UPDATE COMPLETE ===\n`);
 }
+

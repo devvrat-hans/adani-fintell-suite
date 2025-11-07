@@ -212,3 +212,59 @@ export async function checkPriceAnomaly(invoiceData) {
         return { anomalyFound: false, anomalies: [] };
     }
 }
+
+/**
+ * Store processed invoice with all validation results
+ * @param {Object} invoiceData - Complete invoice data
+ * @param {Object} processingStatus - Status of all validation steps
+ * @param {string} overallStatus - Overall processing status (completed, completed_with_warnings, failed)
+ * @param {string} fileName - Original file name
+ * @param {string} fileType - File type (pdf, png, jpeg)
+ * @returns {Object} - Store invoice response with invoice_id
+ */
+export async function storeProcessedInvoice(invoiceData, processingStatus, overallStatus, fileName, fileType) {
+    try {
+        console.log('Storing processed invoice...');
+        
+        // Prepare request body
+        const requestBody = {
+            invoice_data: invoiceData,
+            processing_status: processingStatus,
+            overall_status: overallStatus,
+            processed_at: new Date().toISOString(),
+            file_name: fileName,
+            file_type: fileType
+        };
+        
+        console.log('Store invoice request:', requestBody);
+        
+        // Send POST request
+        const response = await fetch(API_ENDPOINTS.FINGUARD.STORE_PROCESSED_INVOICE, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const storeResponse = await response.json();
+        console.log('Store invoice response:', storeResponse);
+        
+        // Parse response
+        let storeData = storeResponse;
+        if (Array.isArray(storeResponse) && storeResponse.length > 0) {
+            storeData = storeResponse[0];
+        }
+        
+        return storeData;
+        
+    } catch (error) {
+        console.error('Error storing processed invoice:', error);
+        return { success: false, error: error.message };
+    }
+}
+

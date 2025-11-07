@@ -1,6 +1,7 @@
-/* ==========================================================================
-   Adani Fintell Suite - Invoice Feedback Styles
-   ========================================================================== */
+/**
+ * Adani Fintell Suite - Invoice Feedback Page Styles
+ * Consistent with other pages of the website
+ */
 
 /* Base Styles */
 * {
@@ -16,11 +17,22 @@ body {
 
 /* CSS Custom Properties */
 :root {
-    /* Module Colors */
+    /* FinGuard Module Colors */
+    --finguard-primary: #0B74B0;
+    --finguard-secondary: #2E8BC0;
+    --finguard-accent: #8B6BB1;
+    --finguard-gradient: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    
+    /* Module Colors (for compatibility) */
     --module-primary: #0B74B0;
     --module-secondary: #2E8BC0;
     --module-accent: #8B6BB1;
     --module-gradient: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    
+    /* Adani Brand Colors */
+    --adani-blue: #0B74B0;
+    --adani-purple: #75479C;
+    --adani-blue-hover: #095F94;
     
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -76,7 +88,7 @@ body {
 }
 
 .header-content {
-    background: var(--module-gradient);
+    background: var(--finguard-gradient);
     padding: var(--spacing-xl) var(--spacing-lg);
     border-radius: 12px;
     color: var(--bg-white);
@@ -109,14 +121,20 @@ body {
 
 .feedback-card {
     background: var(--bg-white);
+    border: 1px solid var(--border-light);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.feedback-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
     background: var(--bg-lighter);
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-lg);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -128,7 +146,7 @@ body {
 }
 
 .card-description {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
     margin: 0;
 }
@@ -202,7 +220,7 @@ body {
 
 .form-input:focus {
     outline: none;
-    border-color: var(--module-primary);
+    border-color: var(--finguard-primary);
     box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.1);
 }
 
@@ -228,6 +246,70 @@ body {
     background-position: right 0.75rem center;
     background-size: 1.5rem;
     appearance: none;
+}
+
+/* Invoice Search Dropdown */
+.invoice-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.invoice-search-container .form-input {
+    width: 100%;
+    min-width: 100%;
+}
+
+.invoice-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    margin-top: 4px;
+}
+
+.dropdown-item {
+    padding: 0.875rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-light);
+}
+
+.dropdown-item-main {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.dropdown-item-sub {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+}
+
+.dropdown-item.empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 1.5rem;
+    cursor: default;
+}
+
+.dropdown-item.empty:hover {
+    background-color: var(--bg-white);
 }
 
 .form-textarea {
@@ -334,8 +416,9 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-sm);
-    padding-top: var(--spacing-md);
-    border-top: 2px solid var(--bg-light);
+    padding-top: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    border-top: 2px solid var(--border-light);
 }
 
 .btn {
@@ -357,18 +440,25 @@ body {
 }
 
 .btn-primary {
-    background: var(--module-gradient);
+    background: var(--finguard-gradient);
     color: var(--bg-white);
-    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.2);
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.3);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
 }
 
 .btn-primary:active {
     transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .btn-secondary {
@@ -379,8 +469,12 @@ body {
 
 .btn-secondary:hover {
     background: var(--bg-light);
-    border-color: var(--module-primary);
-    color: var(--module-primary);
+    border-color: var(--finguard-primary);
+    color: var(--finguard-primary);
+}
+
+.btn-secondary:active {
+    background: var(--bg-lighter);
 }
 
 /* Loading Overlay */
@@ -391,10 +485,11 @@ body {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 100000;
 }
 
 .loading-spinner {
@@ -422,13 +517,24 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .main-content,
+    .invoice-feedback-main {
+        padding: var(--spacing-md);
+    }
+}
+
 @media (max-width: 1024px) {
     .invoice-feedback-main {
         margin-left: var(--sidebar-collapsed-width);
-        padding: 1.5rem;
+        padding: var(--spacing-md);
     }
 
     .details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
         grid-template-columns: 1fr;
     }
 }
@@ -436,23 +542,38 @@ body {
 @media (max-width: 768px) {
     .invoice-feedback-main {
         margin-left: 0;
-        padding: 1rem;
+        padding: var(--spacing-sm);
+        margin-top: 60px;
     }
 
     .feedback-card {
-        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .feedback-form {
+        padding: var(--spacing-md);
     }
 
     .header-content {
-        padding: 1.5rem 1rem;
+        padding: var(--spacing-lg) var(--spacing-md);
+        border-radius: 8px;
     }
 
     .page-title {
         font-size: 1.5rem;
     }
 
-    .page-subtitle {
+    .page-subtitle,
+    .page-description {
         font-size: 0.95rem;
+    }
+
+    .card-header {
+        padding: var(--spacing-md);
+    }
+    
+    .card-title {
+        font-size: 1.125rem;
     }
 
     .form-row {
@@ -461,10 +582,179 @@ body {
 
     .form-actions {
         flex-direction: column-reverse;
+        gap: var(--spacing-xs);
     }
 
     .form-actions .btn {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .invoice-feedback-main {
+        padding: 0.75rem;
+    }
+    
+    .page-title {
+        font-size: 1.25rem;
+    }
+    
+    .page-subtitle {
+        font-size: 0.875rem;
+    }
+}
+
+/* Feedback Popup Styles */
+.feedback-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feedback-popup-overlay.show {
+    opacity: 1;
+}
+
+.feedback-popup {
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 2.5rem 2rem 2rem 2rem;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9) translateY(-20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.feedback-popup-overlay.show .feedback-popup {
+    transform: scale(1) translateY(0);
+}
+
+.feedback-popup-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+}
+
+.feedback-popup-icon.success {
+    background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
+}
+
+.feedback-popup-icon.error {
+    background: linear-gradient(135deg, #DC3545 0%, #BD3861 100%);
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
+}
+
+.feedback-popup-icon svg {
+    width: 32px;
+    height: 32px;
+    color: var(--bg-white);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.feedback-popup-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+}
+
+.feedback-popup-message {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+}
+
+.feedback-popup-close {
+    background: var(--finguard-gradient);
+    color: var(--bg-white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+}
+
+.feedback-popup-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+}
+
+.feedback-popup-close:active {
+    transform: translateY(0);
+}
+
+/* Animations */
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments for popup */
+@media (max-width: 480px) {
+    .feedback-popup {
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        max-width: 95%;
+    }
+    
+    .feedback-popup-icon {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .feedback-popup-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .feedback-popup-title {
+        font-size: 1.25rem;
+    }
+    
+    .feedback-popup-message {
+        font-size: 0.875rem;
     }
 }

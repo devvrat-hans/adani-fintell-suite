@@ -667,20 +667,111 @@ async function handleFormSubmit(event) {
             body: JSON.stringify(poData)
         });
         
-        const result = await response.json();
+        let result = await response.json();
+        console.log('API Response:', result);
+        
+        // Handle array response format
+        if (Array.isArray(result) && result.length > 0) {
+            result = result[0];
+            console.log('Extracted object from array:', result);
+        }
         
         if (result.success) {
-            showNotification(`Purchase Order created successfully! PO Number: ${result.po_number || result.po_id || ''}`, 'success');
+            showPOPopup('success', 'Purchase Order Created Successfully', `Your purchase order has been created and is ready for approval.${result.po_number ? ` PO Number: ${result.po_number}` : ''}${result.po_id ? ` PO ID: ${result.po_id}` : ''}`);
+            
+            // Redirect after 3 seconds
             setTimeout(() => {
                 window.location.href = 'purchase-order-database.html';
-            }, 2000);
+            }, 3000);
         } else {
-            showNotification(`Error: ${result.error || 'Failed to create purchase order'}`, 'error');
+            showPOPopup('error', 'Purchase Order Creation Failed', result.error || 'Failed to create purchase order. Please check the form and try again.');
         }
     } catch (error) {
         console.error('Error submitting purchase order:', error);
-        showNotification('Failed to submit purchase order. Please try again.', 'error');
+        showPOPopup('error', 'Submission Error', 'Failed to submit purchase order. Please check your connection and try again.');
     }
+}
+
+/**
+ * Show PO popup with proper styling
+ * @param {string} type - Type of popup: 'success' or 'error'
+ * @param {string} title - Popup title
+ * @param {string} message - Popup message
+ */
+function showPOPopup(type, title, message) {
+    // Remove any existing popup
+    const existingPopup = document.querySelector('.po-popup-overlay');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    // Create popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'po-popup-overlay';
+    
+    // Create popup container
+    const popup = document.createElement('div');
+    popup.className = `po-popup ${type}`;
+    
+    // Get icon based on type
+    const icon = type === 'success' 
+        ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+           </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+           </svg>`;
+    
+    popup.innerHTML = `
+        <div class="po-popup-icon ${type}">
+            ${icon}
+        </div>
+        <h3 class="po-popup-title">${title}</h3>
+        <p class="po-popup-message">${message}</p>
+        <button class="po-popup-close" type="button">Close</button>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Add animation class after a small delay
+    setTimeout(() => {
+        overlay.classList.add('show');
+    }, 10);
+    
+    // Close button handler
+    const closeBtn = popup.querySelector('.po-popup-close');
+    closeBtn.addEventListener('click', () => {
+        closePOPopup(overlay);
+    });
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closePOPopup(overlay);
+        }
+    });
+    
+    // Auto-close after 5 seconds for success, 7 seconds for error
+    const autoCloseDelay = type === 'success' ? 5000 : 7000;
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            closePOPopup(overlay);
+        }
+    }, autoCloseDelay);
+}
+
+/**
+ * Close PO popup
+ * @param {HTMLElement} overlay - Popup overlay element
+ */
+function closePOPopup(overlay) {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            overlay.remove();
+        }
+    }, 300);
 }
 
 /**

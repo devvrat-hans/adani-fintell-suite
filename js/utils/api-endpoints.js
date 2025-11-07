@@ -33,6 +33,8 @@ const FINGUARD_ENDPOINTS = {
     VALIDATE_GST: `${API_BASE_URL}/webhook/f/finguard/validate-gst`,
     VALIDATE_GST_RATE: `${API_BASE_URL}/webhook/f/finguard/validate-gst-rate`,
     PRICE_ANOMALY: `${API_BASE_URL}/webhook/f/finguard/price-anomaly`,
+    STORE_PROCESSED_INVOICE: `${API_BASE_URL}/webhook/f/finguard/store-processed-invoice`,
+    FETCH_PROCESSED_INVOICES: `${API_BASE_URL}/webhook/f/finguard/fetch-processed-invoices`,
     GET_INVOICES: `${API_BASE_URL}/webhook/f/finguard/get-invoices`,
     GET_INVOICE_DETAILS: `${API_BASE_URL}/webhook/f/finguard/get-invoice-details`,
     UPDATE_INVOICE: `${API_BASE_URL}/webhook/f/finguard/update-invoice`,
@@ -98,7 +100,9 @@ const ENTITY_ENDPOINTS = {
 
 const DATABASE_ENDPOINTS = {
     FETCH_INVOICES: `${API_BASE_URL}/webhook/f/database/fetch-invoices`,
-    ADD_INVOICE: `${API_BASE_URL}/webhook/f/database/add-invoice`
+    ADD_INVOICE: `${API_BASE_URL}/webhook/f/database/add-invoice`,
+    ADD_FEEDBACK: `${API_BASE_URL}/webhook/f/database/add-feedback`,
+    FETCH_FEEDBACK: `${API_BASE_URL}/webhook/f/database/fetch-feedback`
 };
 
 // ==========================================================================

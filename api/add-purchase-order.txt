@@ -22,9 +22,7 @@ Request Body:
             "state": "Gujarat",
             "pin_code": "395003"
         },
-        "requested_delivery_date": "2024-02-15",
-        "shipping_method": "road_transport",
-        "special_instructions": "Urgent delivery required"
+        "expected_delivery_date": "2024-02-15"
     },
     "line_items": [
         {
@@ -56,7 +54,7 @@ Request Body:
         "subtotal": 250000.00,
         "total_tax_amount": 45000.00,
         "other_charges": {
-            "freight_charges": 2000.00,
+            "freight": 2000.00,
             "packaging_charges": 500.00,
             "handling_charges": 500.00
         },
@@ -65,33 +63,34 @@ Request Body:
         "currency": "INR"
     },
     "payment_terms": {
-        "payment_method": "bank_transfer",
-        "payment_due_days": 30,
-        "advance_payment_percentage": 0,
-        "payment_schedule": "net_30"
+        "payment_cycle": "net_30",
+        "advance_payment": 0.00,
+        "retention_percentage": 0.00
     },
     "approval_workflow": {
-        "created_by": "John Doe",
-        "approver_name": "Jane Smith",
-        "approval_status": "pending",
-        "approval_notes": ""
+        "requester": {
+            "name": "John Doe",
+            "department": "Operations",
+            "employee_id": "EMP001"
+        },
+        "approver": {
+            "name": "Jane Smith",
+            "designation": "Senior Manager",
+            "employee_id": "EMP002"
+        }
     },
     "budget_allocation": {
-        "department": "Operations",
         "cost_center": "CC-OPS-001",
         "project_code": "PROJ-2024-001",
-        "budget_year": "2024-2025"
+        "budget_code": "BUD-2024-Q1"
     },
     "contract_reference": {
+        "has_contract": true,
         "contract_number": "CNT-2024-001",
-        "contract_date": "2023-12-01",
-        "contract_validity": "2024-12-31"
+        "contract_valid_until": "2024-12-31"
     },
     "metadata": {
-        "priority": "high",
-        "business_unit": "Adani Ports & SEZ",
-        "tags": ["urgent", "infrastructure"],
-        "internal_notes": "Part of Q1 2024 procurement plan"
+        "notes": "Part of Q1 2024 procurement plan. Urgent delivery required."
     }
 }
 

@@ -90,6 +90,13 @@ export function displayPriceAnomalyResults(priceAnomalyData) {
     
     const hasAnomalies = priceAnomalyData.anomalyFound === true;
     
+    // Display summary if available
+    if (priceAnomalyData.summary) {
+        html += '<div class="validation-summary">';
+        html += `<p class="summary-text">${priceAnomalyData.summary}</p>`;
+        html += '</div>';
+    }
+    
     if (!hasAnomalies) {
         html += '<div class="validation-alert alert-success">';
         html += `
@@ -99,11 +106,50 @@ export function displayPriceAnomalyResults(priceAnomalyData) {
                 </svg>
             </div>
             <div class="alert-content">
-                <h4 class="alert-title">✓ No Price Anomalies</h4>
-                <p class="alert-message">All prices are within expected range based on market comparisons.</p>
+                <h4 class="alert-title">✓ No Price Anomalies Detected</h4>
+                <p class="alert-message">All prices are within expected range based on market comparisons. All items have less than 20% deviation from market rates.</p>
             </div>
         `;
         html += '</div>';
+        
+        // Show all items even if no anomalies
+        if (priceAnomalyData.anomalies && priceAnomalyData.anomalies.length > 0) {
+            html += '<div class="price-anomaly-group">';
+            html += '<h4 class="validation-group-title">Price Analysis Details</h4>';
+            html += '<div class="anomaly-items-list">';
+            
+            priceAnomalyData.anomalies.forEach((item, index) => {
+                html += '<div class="anomaly-item-card success-item">';
+                html += `<div class="item-header">${item.description || `Item ${index + 1}`}</div>`;
+                html += '<div class="item-details">';
+                
+                html += `<div class="detail-row">
+                    <span class="detail-label">Billed Rate:</span>
+                    <span class="detail-value">₹${item.billed_rate || 'N/A'}</span>
+                </div>`;
+                
+                html += `<div class="detail-row">
+                    <span class="detail-label">Market Rate:</span>
+                    <span class="detail-value">₹${item.market_rate || 'N/A'}</span>
+                </div>`;
+                
+                html += `<div class="detail-row">
+                    <span class="detail-label">Deviation:</span>
+                    <span class="detail-value deviation-success">${item.deviation_percent || 0}%</span>
+                </div>`;
+                
+                html += `<div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value status-success">${item.issue || 'Within acceptable range'}</span>
+                </div>`;
+                
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            html += '</div>';
+        }
     } else {
         html += '<div class="validation-alert alert-error">';
         html += `
@@ -114,37 +160,52 @@ export function displayPriceAnomalyResults(priceAnomalyData) {
             </div>
             <div class="alert-content">
                 <h4 class="alert-title">⚠️ Price Anomalies Detected</h4>
-                <p class="alert-message">Some line items have prices that deviate significantly from market rates.</p>
+                <p class="alert-message">Found ${priceAnomalyData.anomalyCount || 0} item(s) with prices that deviate more than 20% from market rates.</p>
             </div>
         `;
         html += '</div>';
         
-        // Show anomaly details
+        // Show all analyzed items with anomaly highlights
         if (priceAnomalyData.anomalies && priceAnomalyData.anomalies.length > 0) {
             html += '<div class="price-anomaly-group">';
-            html += '<h4 class="validation-group-title">Detected Anomalies</h4>';
+            html += '<h4 class="validation-group-title">Price Analysis Details</h4>';
             html += '<div class="anomaly-items-list">';
             
-            priceAnomalyData.anomalies.forEach((anomaly, index) => {
-                html += '<div class="anomaly-item-card">';
-                html += `<div class="item-header">Anomaly ${index + 1}</div>`;
+            priceAnomalyData.anomalies.forEach((item, index) => {
+                // Check if this specific item has an anomaly (deviation > 20%)
+                const isAnomaly = item.issue && item.issue.includes('above 20%');
+                const cardClass = isAnomaly ? 'anomaly-item-card error-item' : 'anomaly-item-card success-item';
+                
+                html += `<div class="${cardClass}">`;
+                html += `<div class="item-header">`;
+                html += `<span>${item.description || `Item ${index + 1}`}</span>`;
+                if (isAnomaly) {
+                    html += `<span class="anomaly-badge">Anomaly</span>`;
+                }
+                html += `</div>`;
                 html += '<div class="item-details">';
                 
-                // Display anomaly details - the structure may vary
-                if (typeof anomaly === 'string') {
-                    html += `<div class="detail-row">
-                        <span class="detail-value">${anomaly}</span>
-                    </div>`;
-                } else if (typeof anomaly === 'object') {
-                    // If anomaly is an object, display its properties
-                    for (const [key, value] of Object.entries(anomaly)) {
-                        const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                        html += `<div class="detail-row">
-                            <span class="detail-label">${formattedKey}:</span>
-                            <span class="detail-value">${value}</span>
-                        </div>`;
-                    }
-                }
+                html += `<div class="detail-row">
+                    <span class="detail-label">Billed Rate:</span>
+                    <span class="detail-value">₹${item.billed_rate || 'N/A'}</span>
+                </div>`;
+                
+                html += `<div class="detail-row">
+                    <span class="detail-label">Market Rate:</span>
+                    <span class="detail-value">₹${item.market_rate || 'N/A'}</span>
+                </div>`;
+                
+                const deviationClass = isAnomaly ? 'deviation-error' : 'deviation-success';
+                html += `<div class="detail-row">
+                    <span class="detail-label">Deviation:</span>
+                    <span class="detail-value ${deviationClass}">${item.deviation_percent || 0}%</span>
+                </div>`;
+                
+                const statusClass = isAnomaly ? 'status-error' : 'status-success';
+                html += `<div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value ${statusClass}">${item.issue || 'Within acceptable range'}</span>
+                </div>`;
                 
                 html += '</div>';
                 html += '</div>';

@@ -6,13 +6,16 @@
 // State Management
 const state = {
     invoices: [],
+    filteredInvoices: [],
     selectedInvoice: null,
     isSubmitting: false
 };
 
 // DOM Elements
 const elements = {
-    invoiceSelect: document.getElementById('invoiceSelect'),
+    invoiceSearch: document.getElementById('invoiceSearch'),
+    invoiceDropdown: document.getElementById('invoiceDropdown'),
+    selectedInvoiceDisplay: document.getElementById('selectedInvoiceDisplay'),
     invoicePreview: document.getElementById('invoicePreview'),
     feedbackForm: document.getElementById('feedbackForm'),
     resetBtn: document.getElementById('resetBtn'),
@@ -24,8 +27,16 @@ const elements = {
  * Initialize the page
  */
 async function init() {
+    console.log('[Init] Starting initialization...');
+    console.log('[Init] Elements found:', {
+        invoiceSearch: !!elements.invoiceSearch,
+        invoiceDropdown: !!elements.invoiceDropdown,
+        feedbackForm: !!elements.feedbackForm
+    });
+    
     await loadInvoices();
     attachEventListeners();
+    console.log('[Init] Initialization complete');
 }
 
 /**
@@ -33,39 +44,118 @@ async function init() {
  */
 async function loadInvoices() {
     try {
-        const response = await fetch('https://n8n-n8n.j8euv3.easypanel.host/webhook/fetch-invoices');
+        // Check if invoices are already in localStorage
+        const cachedInvoices = localStorage.getItem('processedInvoices');
+        
+        if (cachedInvoices) {
+            console.log('[Feedback] Loading invoices from localStorage');
+            state.invoices = JSON.parse(cachedInvoices);
+            state.filteredInvoices = state.invoices;
+            console.log(`[Feedback] Loaded ${state.invoices.length} invoices from cache`);
+            return;
+        }
+        
+        console.log('[Feedback] Fetching invoices from API...');
+        // Fetch from API if not in localStorage
+        const response = await fetch(API_ENDPOINTS.DATABASE.FETCH_INVOICES);
         
         if (!response.ok) {
             throw new Error('Failed to fetch invoices');
         }
         
         const data = await response.json();
-        state.invoices = data;
+        console.log(`[Feedback] Fetched ${data.length} invoices from API`);
         
-        populateInvoiceSelect();
+        state.invoices = data;
+        state.filteredInvoices = data;
+        
+        // Store in localStorage
+        localStorage.setItem('processedInvoices', JSON.stringify(data));
+        console.log('[Feedback] Invoices stored in localStorage');
     } catch (error) {
-        console.error('Error loading invoices:', error);
+        console.error('[Feedback] Error loading invoices:', error);
         // Silently fail - user can still try to refresh
     }
 }
 
+
 /**
- * Populate the invoice select dropdown
+ * Filter invoices based on search query
  */
-function populateInvoiceSelect() {
-    const select = elements.invoiceSelect;
+function filterInvoices(searchQuery) {
+    if (!searchQuery || searchQuery.trim() === '') {
+        state.filteredInvoices = state.invoices;
+    } else {
+        const query = searchQuery.toLowerCase().trim();
+        state.filteredInvoices = state.invoices.filter(invoice => {
+            // Get formatted date for comparison
+            let invoiceDate = '';
+            if (invoice.invoice_date) {
+                try {
+                    const date = new Date(invoice.invoice_date);
+                    invoiceDate = date.toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    }).toLowerCase();
+                } catch (e) {
+                    invoiceDate = '';
+                }
+            }
+            
+            return (invoice.invoice_number && invoice.invoice_number.toLowerCase().includes(query)) ||
+                   (invoice.vendor_name && invoice.vendor_name.toLowerCase().includes(query)) ||
+                   invoiceDate.includes(query);
+        });
+    }
     
-    // Clear existing options except the first one
-    select.innerHTML = '<option value="">-- Select an Invoice --</option>';
+    updateDropdown();
+}
+
+/**
+ * Update the dropdown with filtered invoices
+ */
+function updateDropdown() {
+    const dropdown = elements.invoiceDropdown;
     
-    // Add invoice options
-    state.invoices.forEach(invoice => {
-        const option = document.createElement('option');
-        option.value = invoice.invoice_id;
-        option.textContent = `${invoice.invoice_number} - ${invoice.vendor_name} - ₹${formatAmount(invoice.invoice_amount)}`;
-        option.dataset.invoice = JSON.stringify(invoice);
-        select.appendChild(option);
+    if (!dropdown) {
+        console.error('Dropdown element not found!');
+        return;
+    }
+    
+    dropdown.innerHTML = '';
+    
+    if (state.filteredInvoices.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'dropdown-item empty';
+        emptyItem.textContent = 'No invoices found';
+        dropdown.appendChild(emptyItem);
+        dropdown.style.display = 'block';
+        return;
+    }
+    
+    state.filteredInvoices.forEach(invoice => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.innerHTML = `
+            <div class="dropdown-item-main">${invoice.invoice_number} - ${invoice.vendor_name}</div>
+            <div class="dropdown-item-sub">Invoice ID: ${invoice.invoice_id} | Amount: ₹${formatAmount(invoice.invoice_amount)}</div>
+        `;
+        item.addEventListener('click', () => selectInvoice(invoice));
+        dropdown.appendChild(item);
     });
+    
+    dropdown.style.display = 'block';
+}
+
+/**
+ * Select an invoice from dropdown
+ */
+function selectInvoice(invoice) {
+    state.selectedInvoice = invoice;
+    elements.invoiceSearch.value = `${invoice.invoice_number} - ${invoice.vendor_name}`;
+    elements.invoiceDropdown.style.display = 'none';
+    displayInvoiceDetails(invoice);
 }
 
 /**
@@ -92,8 +182,27 @@ function displayInvoiceDetails(invoice) {
  * Attach event listeners
  */
 function attachEventListeners() {
-    // Invoice selection change
-    elements.invoiceSelect.addEventListener('change', handleInvoiceSelect);
+    // Invoice search input
+    elements.invoiceSearch.addEventListener('input', (event) => {
+        filterInvoices(event.target.value);
+    });
+    
+    // Invoice search focus
+    elements.invoiceSearch.addEventListener('focus', () => {
+        if (elements.invoiceSearch.value.trim() === '') {
+            state.filteredInvoices = state.invoices;
+            updateDropdown();
+        } else {
+            filterInvoices(elements.invoiceSearch.value);
+        }
+    });
+    
+    // Click outside to close dropdown
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.invoice-search-container')) {
+            elements.invoiceDropdown.style.display = 'none';
+        }
+    });
     
     // Form submission
     elements.feedbackForm.addEventListener('submit', handleFormSubmit);
@@ -103,38 +212,28 @@ function attachEventListeners() {
 }
 
 /**
- * Handle invoice selection
- */
-function handleInvoiceSelect(event) {
-    const selectedOption = event.target.selectedOptions[0];
-    
-    if (!selectedOption || !selectedOption.dataset.invoice) {
-        state.selectedInvoice = null;
-        displayInvoiceDetails(null);
-        return;
-    }
-    
-    state.selectedInvoice = JSON.parse(selectedOption.dataset.invoice);
-    displayInvoiceDetails(state.selectedInvoice);
-}
-
-/**
  * Handle form submission
  */
 async function handleFormSubmit(event) {
     event.preventDefault();
+    console.log('[Form Submit] Form submitted');
     
     if (state.isSubmitting) {
+        console.log('[Form Submit] Already submitting, ignoring');
         return;
     }
     
     // Validate form
     if (!validateForm()) {
+        console.log('[Form Submit] Validation failed');
         return;
     }
     
+    console.log('[Form Submit] Validation passed');
+    
     // Collect form data
     const formData = collectFormData();
+    console.log('[Form Submit] Form data collected:', formData);
     
     // Submit feedback
     await submitFeedback(formData);
@@ -144,21 +243,27 @@ async function handleFormSubmit(event) {
  * Validate form data
  */
 function validateForm() {
+    console.log('[Validate] Validating form...');
     const form = elements.feedbackForm;
     
     // Check if invoice is selected
     if (!state.selectedInvoice) {
+        console.log('[Validate] No invoice selected');
         showNotification('Please select an invoice', 'error');
-        elements.invoiceSelect.focus();
+        elements.invoiceSearch.focus();
         return false;
     }
     
+    console.log('[Validate] Invoice selected:', state.selectedInvoice.invoice_number);
+    
     // Use HTML5 validation
     if (!form.checkValidity()) {
+        console.log('[Validate] HTML5 validation failed');
         form.reportValidity();
         return false;
     }
     
+    console.log('[Validate] Validation passed');
     return true;
 }
 
@@ -192,12 +297,14 @@ function collectFormData() {
  * Submit feedback to the backend
  */
 async function submitFeedback(data) {
+    console.log('[Submit] Starting feedback submission...', data);
+    
     try {
         state.isSubmitting = true;
         showLoading('Submitting feedback...');
         
-        // TODO: Replace with actual API endpoint when available
-        const response = await fetch('https://n8n-n8n.j8euv3.easypanel.host/webhook/submit-feedback', {
+        console.log('[Submit] Sending request to:', API_ENDPOINTS.DATABASE.ADD_FEEDBACK);
+        const response = await fetch(API_ENDPOINTS.DATABASE.ADD_FEEDBACK, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -205,26 +312,48 @@ async function submitFeedback(data) {
             body: JSON.stringify(data)
         });
         
+        console.log('[Submit] Response received:', response.status, response.ok);
+        
         if (!response.ok) {
             throw new Error('Failed to submit feedback');
         }
         
-        const result = await response.json();
+        let result = await response.json();
+        console.log('[Submit] Success response:', result);
         
+        // Handle array response format
+        if (Array.isArray(result) && result.length > 0) {
+            result = result[0];
+            console.log('[Submit] Extracted object from array:', result);
+        }
+        
+        // Hide loading first
         hideLoading();
-        showNotification('Feedback submitted successfully!', 'success');
+        console.log('[Submit] Loading hidden');
         
-        // Reset form
-        setTimeout(() => {
-            handleReset();
-        }, 1500);
+        // Check if submission was successful
+        if (result.success) {
+            // Show success notification
+            showFeedbackPopup('success', 'Feedback Submitted Successfully', 'Your feedback has been recorded and will help improve our system.');
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                handleReset();
+            }, 1500);
+        } else {
+            // Show error notification
+            showFeedbackPopup('error', 'Submission Failed', result.error || 'Failed to submit feedback. Please try again.');
+        }
         
     } catch (error) {
-        console.error('Error submitting feedback:', error);
+        console.error('[Submit] Error submitting feedback:', error);
         hideLoading();
-        showNotification('Failed to submit feedback. Please try again.', 'error');
+        
+        // Show error notification
+        showFeedbackPopup('error', 'Submission Failed', 'Failed to submit feedback. Please check your connection and try again.');
     } finally {
         state.isSubmitting = false;
+        console.log('[Submit] Submission complete');
     }
 }
 
@@ -234,8 +363,10 @@ async function submitFeedback(data) {
 function handleReset() {
     elements.feedbackForm.reset();
     state.selectedInvoice = null;
+    elements.invoiceSearch.value = '';
+    elements.invoiceDropdown.style.display = 'none';
     displayInvoiceDetails(null);
-    elements.invoiceSelect.focus();
+    elements.invoiceSearch.focus();
 }
 
 /**
@@ -277,11 +408,30 @@ function hideLoading() {
 }
 
 /**
- * Show notification (placeholder - implement based on your notification system)
+ * Show notification
  */
 function showNotification(message, type = 'info') {
     console.log(`[${type.toUpperCase()}] ${message}`);
-    // TODO: Implement actual notification system instead of alert
+    
+    // Use the global notification system if available
+    if (window.NotificationSystem) {
+        const typeMap = {
+            'info': 'info',
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning'
+        };
+        
+        const notificationType = typeMap[type] || 'info';
+        window.NotificationSystem.show({
+            type: notificationType,
+            message: message,
+            duration: 5000
+        });
+    } else {
+        // Fallback to alert
+        alert(message);
+    }
 }
 
 /**
@@ -311,6 +461,88 @@ function formatDate(dateString) {
     } catch (error) {
         return dateString;
     }
+}
+
+/**
+ * Show feedback popup with proper styling
+ * @param {string} type - Type of popup: 'success' or 'error'
+ * @param {string} title - Popup title
+ * @param {string} message - Popup message
+ */
+function showFeedbackPopup(type, title, message) {
+    // Remove any existing popup
+    const existingPopup = document.querySelector('.feedback-popup-overlay');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    // Create popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'feedback-popup-overlay';
+    
+    // Create popup container
+    const popup = document.createElement('div');
+    popup.className = `feedback-popup ${type}`;
+    
+    // Get icon based on type
+    const icon = type === 'success' 
+        ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+           </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+           </svg>`;
+    
+    popup.innerHTML = `
+        <div class="feedback-popup-icon ${type}">
+            ${icon}
+        </div>
+        <h3 class="feedback-popup-title">${title}</h3>
+        <p class="feedback-popup-message">${message}</p>
+        <button class="feedback-popup-close" type="button">Close</button>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Add animation class after a small delay
+    setTimeout(() => {
+        overlay.classList.add('show');
+    }, 10);
+    
+    // Close button handler
+    const closeBtn = popup.querySelector('.feedback-popup-close');
+    closeBtn.addEventListener('click', () => {
+        closeFeedbackPopup(overlay);
+    });
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeFeedbackPopup(overlay);
+        }
+    });
+    
+    // Auto-close after 5 seconds for success, 7 seconds for error
+    const autoCloseDelay = type === 'success' ? 5000 : 7000;
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            closeFeedbackPopup(overlay);
+        }
+    }, autoCloseDelay);
+}
+
+/**
+ * Close feedback popup
+ * @param {HTMLElement} overlay - Popup overlay element
+ */
+function closeFeedbackPopup(overlay) {
+    overlay.classList.remove('show');
+    setTimeout(() => {
+        if (document.body.contains(overlay)) {
+            overlay.remove();
+        }
+    }, 300);
 }
 
 // Initialize when DOM is ready

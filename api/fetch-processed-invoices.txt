@@ -1,0 +1,1014 @@
+GET https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/fetch-processed-invoices
+
+API Type: GET
+
+Description:
+This endpoint retrieves all processed invoices from the database. It returns a list of invoices with their complete data and processing status from all validation steps. This is used to display processed invoices on the processed invoices page.
+
+Request Method: GET
+
+
+Response Format:
+
+
+[
+  {
+    "_id": "690dddc8c0d7d24c6849d254",
+    "results": [
+      {
+        "invoice_id": "IN000000000000027",
+        "invoice_number": "11735",
+        "invoice_date": null,
+        "invoice_amount": 21052.51,
+        "vendor_name": "M/S JOSHI TRADING COMPANY",
+        "vendor_gstin": "08BYUPS2122L1ZT",
+        "company_gstin": "08AAACT1507C1ZX",
+        "subtotal": 20050.01,
+        "cgst_amount": 501.25,
+        "sgst_amount": 501.25,
+        "igst_amount": 0,
+        "gst_rate": 5,
+        "hsn_sac_codes": [
+          "25210010"
+        ],
+        "line_items": [
+          {
+            "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+            "hsn_sac": "25210010",
+            "quantity": 471,
+            "rate": 42.56,
+            "amount": 20050.01
+          }
+        ],
+        "_id": "690ddbeac0d7d24c6849d252",
+        "id": "690ddbeac0d7d24c6849d252",
+        "upload_timestamp": "2025-11-07T11:45:46.806Z",
+        "processing_status": {
+          "ocr_extraction": {
+            "success": true,
+            "comments": "OCR extraction successful"
+          },
+          "arithmetic_accuracy": {
+            "success": true,
+            "comments": "All calculations verified successfully"
+          },
+          "price_anomaly_check": {
+            "success": false,
+            "comments": "Price anomaly check failed"
+          },
+          "duplicate_detection": {
+            "success": false,
+            "comments": "Duplicate check failed"
+          },
+          "gst_validation": {
+            "success": false,
+            "comments": "GST validation failed"
+          },
+          "gst_rate_validation": {
+            "success": false,
+            "comments": "GST rate validation failed"
+          }
+        },
+        "api_responses": {
+          "ocr_processing": {
+            "success": true,
+            "comments": "OCR extraction successful",
+            "full_response": {
+              "success": true,
+              "data": [
+                {
+                  "invoice_id": "IN000000000000027",
+                  "invoice_number": "11735",
+                  "invoice_date": null,
+                  "invoice_amount": 21052.51,
+                  "vendor_name": "M/S JOSHI TRADING COMPANY",
+                  "vendor_gstin": "08BYUPS2122L1ZT",
+                  "company_gstin": "08AAACT1507C1ZX",
+                  "hsn_sac_codes": [
+                    "25210010"
+                  ],
+                  "line_items": [
+                    {
+                      "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                      "hsn_sac": "25210010",
+                      "quantity": 471,
+                      "rate": 42.56,
+                      "amount": 20050.01
+                    }
+                  ],
+                  "subtotal": 20050.01,
+                  "cgst_amount": 501.25,
+                  "sgst_amount": 501.25,
+                  "igst_amount": 0,
+                  "gst_rate": 5,
+                  "upload_timestamp": "2025-11-07T11:45:46.806Z",
+                  "_id": "690ddbeac0d7d24c6849d252",
+                  "id": "690ddbeac0d7d24c6849d252"
+                }
+              ]
+            }
+          },
+          "arithmetic_accuracy": {
+            "success": true,
+            "comments": "All calculations verified successfully",
+            "full_response": {
+              "isValid": true,
+              "errors": [],
+              "calculations": {
+                "subtotal": null,
+                "cgst": 0,
+                "sgst": 0,
+                "igst": 0,
+                "calculatedTotal": null,
+                "invoiceAmount": null
+              }
+            }
+          },
+          "price_anomaly_check": {
+            "success": false,
+            "comments": "Price anomaly check failed",
+            "full_response": {
+              "anomalies": [
+                {
+                  "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                  "billed_rate": 42.56,
+                  "issue": "No market rate found"
+                }
+              ],
+              "marketComparison": [
+                {
+                  "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                  "billed_rate": 42.56,
+                  "market_rate": null,
+                  "deviation_percent": null,
+                  "status": "No market rate found"
+                }
+              ],
+              "anomalyFound": true,
+              "totalItems": 1,
+              "anomalyCount": 1,
+              "summary": "Analyzed 1 items, found 1 anomalies"
+            }
+          },
+          "duplicate_detection": {
+            "success": false,
+            "comments": "Duplicate check failed",
+            "full_response": {
+              "is_duplicate": false,
+              "duplicate_type": "none",
+              "confidence_score": 0,
+              "matched_invoice_ids": [],
+              "duplicate_flags": []
+            }
+          },
+          "gst_validation": {
+            "success": false,
+            "comments": "GST validation failed",
+            "full_response": {
+              "vendorValidation": {
+                "gstin": "03DOXPM4071K1ZE",
+                "legalName": "DISHANT MAHAJAN",
+                "tradeName": "AppyFlow Technologies",
+                "pan": "BYUPS2122L",
+                "status": "Active",
+                "active": true,
+                "businessType": "Proprietorship",
+                "registrationDate": "17/12/2019",
+                "state": "Punjab",
+                "district": "Ludhiana"
+              },
+              "companyValidation": {
+                "gstin": "03DOXPM4071K1ZE",
+                "legalName": "DISHANT MAHAJAN",
+                "tradeName": "AppyFlow Technologies",
+                "pan": "AAACT1507C",
+                "status": "Active",
+                "active": true,
+                "businessType": "Proprietorship",
+                "registrationDate": "17/12/2019",
+                "state": "Punjab",
+                "district": "Ludhiana"
+              },
+              "gstSummary": {
+                "vendor_gstin_from_invoice": "08BYUPS2122L1ZT",
+                "company_gstin_from_invoice": "08AAACT1507C1ZX",
+                "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+                "company_gstin_from_api": "03DOXPM4071K1ZE",
+                "vendor_business_name_from_invoice": "M/S JOSHI TRADING COMPANY",
+                "company_business_name_from_invoice": "",
+                "vendor_business_name_from_api": "AppyFlow Technologies",
+                "company_business_name_from_api": "AppyFlow Technologies",
+                "vendor_gst_active": true,
+                "company_gst_active": true,
+                "vendor_business_match": false,
+                "company_business_match": false,
+                "overall_valid": false
+              },
+              "valid": false,
+              "messages": [
+                "Vendor GSTIN is Active",
+                "Company GSTIN is Active",
+                "Vendor business name mismatch",
+                "Company business name mismatch"
+              ]
+            }
+          },
+          "gst_rate_validation": {
+            "success": false,
+            "comments": "GST rate validation failed",
+            "full_response": {
+              "status": "anomaly",
+              "anomalies": [
+                {
+                  "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                  "hsn_sac": "25210010",
+                  "billed": {
+                    "rate": 42.56,
+                    "amount": 20050.01,
+                    "quantity": 471
+                  },
+                  "expected": null,
+                  "status": "INVALID",
+                  "issue": "HSN/SAC not found in master list"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "overall_status": "failed",
+      "processed_at": "2025-11-07T11:45:53.979Z",
+      "file_name": "N10N20125402115.pdf",
+      "file_type": "pdf",
+      "total_invoices": 1
+    },
+    "processing_summary": {
+      "passed_checks": 2,
+      "failed_checks": 4,
+      "total_checks": 6,
+      "all_checks": [
+        {
+          "check_name": "ocr_extraction",
+          "success": true,
+          "comments": "OCR extraction successful"
+        },
+        {
+          "check_name": "arithmetic_accuracy",
+          "success": true,
+          "comments": "All calculations verified successfully"
+        },
+        {
+          "check_name": "price_anomaly_check",
+          "success": false,
+          "comments": "Price anomaly check failed"
+        },
+        {
+          "check_name": "duplicate_detection",
+          "success": false,
+          "comments": "Duplicate check failed"
+        },
+        {
+          "check_name": "gst_validation",
+          "success": false,
+          "comments": "GST validation failed"
+        },
+        {
+          "check_name": "gst_rate_validation",
+          "success": false,
+          "comments": "GST rate validation failed"
+        }
+      ]
+    },
+    "api_responses_full": {
+      "ocr_processing": {
+        "success": true,
+        "comments": "OCR extraction successful",
+        "full_response": {
+          "success": true,
+          "data": [
+            {
+              "invoice_id": "IN000000000000027",
+              "invoice_number": "11735",
+              "invoice_date": null,
+              "invoice_amount": 21052.51,
+              "vendor_name": "M/S JOSHI TRADING COMPANY",
+              "vendor_gstin": "08BYUPS2122L1ZT",
+              "company_gstin": "08AAACT1507C1ZX",
+              "hsn_sac_codes": [
+                "25210010"
+              ],
+              "line_items": [
+                {
+                  "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                  "hsn_sac": "25210010",
+                  "quantity": 471,
+                  "rate": 42.56,
+                  "amount": 20050.01
+                }
+              ],
+              "subtotal": 20050.01,
+              "cgst_amount": 501.25,
+              "sgst_amount": 501.25,
+              "igst_amount": 0,
+              "gst_rate": 5,
+              "upload_timestamp": "2025-11-07T11:45:46.806Z",
+              "_id": "690ddbeac0d7d24c6849d252",
+              "id": "690ddbeac0d7d24c6849d252"
+            }
+          ]
+        }
+      },
+      "arithmetic_accuracy": {
+        "success": true,
+        "comments": "All calculations verified successfully",
+        "full_response": {
+          "isValid": true,
+          "errors": [],
+          "calculations": {
+            "subtotal": null,
+            "cgst": 0,
+            "sgst": 0,
+            "igst": 0,
+            "calculatedTotal": null,
+            "invoiceAmount": null
+          }
+        }
+      },
+      "price_anomaly_check": {
+        "success": false,
+        "comments": "Price anomaly check failed",
+        "full_response": {
+          "anomalies": [
+            {
+              "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+              "billed_rate": 42.56,
+              "issue": "No market rate found"
+            }
+          ],
+          "marketComparison": [
+            {
+              "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+              "billed_rate": 42.56,
+              "market_rate": null,
+              "deviation_percent": null,
+              "status": "No market rate found"
+            }
+          ],
+          "anomalyFound": true,
+          "totalItems": 1,
+          "anomalyCount": 1,
+          "summary": "Analyzed 1 items, found 1 anomalies"
+        }
+      },
+      "duplicate_detection": {
+        "success": false,
+        "comments": "Duplicate check failed",
+        "full_response": {
+          "is_duplicate": false,
+          "duplicate_type": "none",
+          "confidence_score": 0,
+          "matched_invoice_ids": [],
+          "duplicate_flags": []
+        }
+      },
+      "gst_validation": {
+        "success": false,
+        "comments": "GST validation failed",
+        "full_response": {
+          "vendorValidation": {
+            "gstin": "03DOXPM4071K1ZE",
+            "legalName": "DISHANT MAHAJAN",
+            "tradeName": "AppyFlow Technologies",
+            "pan": "BYUPS2122L",
+            "status": "Active",
+            "active": true,
+            "businessType": "Proprietorship",
+            "registrationDate": "17/12/2019",
+            "state": "Punjab",
+            "district": "Ludhiana"
+          },
+          "companyValidation": {
+            "gstin": "03DOXPM4071K1ZE",
+            "legalName": "DISHANT MAHAJAN",
+            "tradeName": "AppyFlow Technologies",
+            "pan": "AAACT1507C",
+            "status": "Active",
+            "active": true,
+            "businessType": "Proprietorship",
+            "registrationDate": "17/12/2019",
+            "state": "Punjab",
+            "district": "Ludhiana"
+          },
+          "gstSummary": {
+            "vendor_gstin_from_invoice": "08BYUPS2122L1ZT",
+            "company_gstin_from_invoice": "08AAACT1507C1ZX",
+            "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+            "company_gstin_from_api": "03DOXPM4071K1ZE",
+            "vendor_business_name_from_invoice": "M/S JOSHI TRADING COMPANY",
+            "company_business_name_from_invoice": "",
+            "vendor_business_name_from_api": "AppyFlow Technologies",
+            "company_business_name_from_api": "AppyFlow Technologies",
+            "vendor_gst_active": true,
+            "company_gst_active": true,
+            "vendor_business_match": false,
+            "company_business_match": false,
+            "overall_valid": false
+          },
+          "valid": false,
+          "messages": [
+            "Vendor GSTIN is Active",
+            "Company GSTIN is Active",
+            "Vendor business name mismatch",
+            "Company business name mismatch"
+          ]
+        }
+      },
+      "gst_rate_validation": {
+        "success": false,
+        "comments": "GST rate validation failed",
+        "full_response": {
+          "status": "anomaly",
+          "anomalies": [
+            {
+              "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+              "hsn_sac": "25210010",
+              "billed": {
+                "rate": 42.56,
+                "amount": 20050.01,
+                "quantity": 471
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "_id": "690debf8c0d7d24c6849d256",
+    "results": [
+      {
+        "invoice_id": "IN000000000000028",
+        "invoice_number": "KLSURW2400035",
+        "invoice_date": null,
+        "invoice_amount": 24333.75,
+        "vendor_name": "The Kurgan Land Loosers Transport co-Operative, Society Ltd. Mangoo",
+        "vendor_gstin": "02AAHAT5667NIZY",
+        "company_gstin": "02AAACG0569P1ZJ",
+        "subtotal": 24333.75,
+        "cgst_amount": null,
+        "sgst_amount": null,
+        "igst_amount": null,
+        "gst_rate": null,
+        "hsn_sac_codes": [],
+        "line_items": [
+          {
+            "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+            "hsn_sac": null,
+            "quantity": 23,
+            "rate": 525,
+            "amount": 12211.5
+          },
+          {
+            "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+            "hsn_sac": null,
+            "quantity": 23,
+            "rate": 525,
+            "amount": 12122.25
+          }
+        ],
+        "_id": "690debefc0d7d24c6849d255",
+        "id": "690debefc0d7d24c6849d255",
+        "upload_timestamp": "2025-11-07T12:54:07.242Z",
+        "processing_status": {
+          "ocr_extraction": {
+            "success": true,
+            "comments": "OCR extraction successful"
+          },
+          "arithmetic_accuracy": {
+            "success": true,
+            "comments": "All calculations verified successfully"
+          },
+          "price_anomaly_check": {
+            "success": false,
+            "comments": "Price anomaly check failed"
+          },
+          "duplicate_detection": {
+            "success": false,
+            "comments": "Duplicate check failed"
+          },
+          "gst_validation": {
+            "success": false,
+            "comments": "GST validation failed"
+          },
+          "gst_rate_validation": {
+            "success": false,
+            "comments": "GST rate validation failed"
+          }
+        },
+        "api_responses": {
+          "ocr_processing": {
+            "success": true,
+            "comments": "OCR extraction successful",
+            "full_response": {
+              "success": true,
+              "data": [
+                {
+                  "invoice_id": "IN000000000000028",
+                  "invoice_number": "KLSURW2400035",
+                  "invoice_date": null,
+                  "invoice_amount": 24333.75,
+                  "vendor_name": "The Kurgan Land Loosers Transport co-Operative, Society Ltd. Mangoo",
+                  "vendor_gstin": "02AAHAT5667NIZY",
+                  "company_gstin": "02AAACG0569P1ZJ",
+                  "hsn_sac_codes": [],
+                  "line_items": [
+                    {
+                      "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+                      "hsn_sac": null,
+                      "quantity": 23,
+                      "rate": 525,
+                      "amount": 12211.5
+                    },
+                    {
+                      "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+                      "hsn_sac": null,
+                      "quantity": 23,
+                      "rate": 525,
+                      "amount": 12122.25
+                    }
+                  ],
+                  "subtotal": 24333.75,
+                  "cgst_amount": null,
+                  "sgst_amount": null,
+                  "igst_amount": null,
+                  "gst_rate": null,
+                  "upload_timestamp": "2025-11-07T12:54:07.242Z",
+                  "_id": "690debefc0d7d24c6849d255",
+                  "id": "690debefc0d7d24c6849d255"
+                }
+              ]
+            }
+          },
+          "arithmetic_accuracy": {
+            "success": true,
+            "comments": "All calculations verified successfully",
+            "full_response": {
+              "isValid": true,
+              "errors": [],
+              "calculations": {
+                "subtotal": null,
+                "cgst": 0,
+                "sgst": 0,
+                "igst": 0,
+                "calculatedTotal": null,
+                "invoiceAmount": null
+              }
+            }
+          },
+          "price_anomaly_check": {
+            "success": false,
+            "comments": "Price anomaly check failed",
+            "full_response": {
+              "anomalies": [
+                {
+                  "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+                  "billed_rate": 525,
+                  "market_rate": 400,
+                  "deviation_percent": 31.3,
+                  "issue": "Price deviation above 20%"
+                },
+                {
+                  "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+                  "billed_rate": 525,
+                  "market_rate": 400,
+                  "deviation_percent": 31.3,
+                  "issue": "Price deviation above 20%"
+                }
+              ],
+              "marketComparison": [
+                {
+                  "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+                  "billed_rate": 525,
+                  "market_rate": 400,
+                  "deviation_percent": 31.3,
+                  "status": "Deviation above 20%"
+                },
+                {
+                  "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+                  "billed_rate": 525,
+                  "market_rate": 400,
+                  "deviation_percent": 31.3,
+                  "status": "Deviation above 20%"
+                }
+              ],
+              "anomalyFound": true,
+              "totalItems": 2,
+              "anomalyCount": 2,
+              "summary": "Analyzed 2 items, found 2 anomalies"
+            }
+          },
+          "duplicate_detection": {
+            "success": false,
+            "comments": "Duplicate check failed",
+            "full_response": {
+              "is_duplicate": false,
+              "duplicate_type": "none",
+              "confidence_score": 0,
+              "matched_invoice_ids": [],
+              "duplicate_flags": []
+            }
+          },
+          "gst_validation": {
+            "success": false,
+            "comments": "GST validation failed",
+            "full_response": {
+              "vendorValidation": {
+                "gstin": "03DOXPM4071K1ZE",
+                "legalName": "DISHANT MAHAJAN",
+                "tradeName": "AppyFlow Technologies",
+                "pan": "AAHAT5667N",
+                "status": "Active",
+                "active": true,
+                "businessType": "Proprietorship",
+                "registrationDate": "17/12/2019",
+                "state": "Punjab",
+                "district": "Ludhiana"
+              },
+              "companyValidation": {
+                "gstin": "03DOXPM4071K1ZE",
+                "legalName": "DISHANT MAHAJAN",
+                "tradeName": "AppyFlow Technologies",
+                "pan": "AAACG0569P",
+                "status": "Active",
+                "active": true,
+                "businessType": "Proprietorship",
+                "registrationDate": "17/12/2019",
+                "state": "Punjab",
+                "district": "Ludhiana"
+              },
+              "gstSummary": {
+                "vendor_gstin_from_invoice": "02AAHAT5667NIZY",
+                "company_gstin_from_invoice": "02AAACG0569P1ZJ",
+                "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+                "company_gstin_from_api": "03DOXPM4071K1ZE",
+                "vendor_business_name_from_invoice": "The Kurgan Land Loosers Transport co-Operative, Society Ltd. Mangoo",
+                "company_business_name_from_invoice": "",
+                "vendor_business_name_from_api": "AppyFlow Technologies",
+                "company_business_name_from_api": "AppyFlow Technologies",
+                "vendor_gst_active": true,
+                "company_gst_active": true,
+                "vendor_business_match": false,
+                "company_business_match": false,
+                "overall_valid": false
+              },
+              "valid": false,
+              "messages": [
+                "Vendor GSTIN is Active",
+                "Company GSTIN is Active",
+                "Vendor business name mismatch",
+                "Company business name mismatch"
+              ]
+            }
+          },
+          "gst_rate_validation": {
+            "success": false,
+            "comments": "GST rate validation failed",
+            "full_response": {
+              "status": "anomaly",
+              "anomalies": [
+                {
+                  "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+                  "hsn_sac": null,
+                  "billed": {
+                    "rate": 525,
+                    "amount": 12211.5,
+                    "quantity": 23
+                  },
+                  "expected": null,
+                  "status": "INVALID",
+                  "issue": "HSN/SAC not found in master list"
+                },
+                {
+                  "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+                  "hsn_sac": null,
+                  "billed": {
+                    "rate": 525,
+                    "amount": 12122.25,
+                    "quantity": 23
+                  },
+                  "expected": null,
+                  "status": "INVALID",
+                  "issue": "HSN/SAC not found in master list"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "overall_status": "failed",
+      "processed_at": "2025-11-07T12:54:15.753Z",
+      "file_name": "N20NE0425100600.pdf",
+      "file_type": "pdf",
+      "total_invoices": 1
+    },
+    "processing_summary": {
+      "passed_checks": 2,
+      "failed_checks": 4,
+      "total_checks": 6,
+      "all_checks": [
+        {
+          "check_name": "ocr_extraction",
+          "success": true,
+          "comments": "OCR extraction successful"
+        },
+        {
+          "check_name": "arithmetic_accuracy",
+          "success": true,
+          "comments": "All calculations verified successfully"
+        },
+        {
+          "check_name": "price_anomaly_check",
+          "success": false,
+          "comments": "Price anomaly check failed"
+        },
+        {
+          "check_name": "duplicate_detection",
+          "success": false,
+          "comments": "Duplicate check failed"
+        },
+        {
+          "check_name": "gst_validation",
+          "success": false,
+          "comments": "GST validation failed"
+        },
+        {
+          "check_name": "gst_rate_validation",
+          "success": false,
+          "comments": "GST rate validation failed"
+        }
+      ]
+    },
+    "api_responses_full": {
+      "ocr_processing": {
+        "success": true,
+        "comments": "OCR extraction successful",
+        "full_response": {
+          "success": true,
+          "data": [
+            {
+              "invoice_id": "IN000000000000028",
+              "invoice_number": "KLSURW2400035",
+              "invoice_date": null,
+              "invoice_amount": 24333.75,
+              "vendor_name": "The Kurgan Land Loosers Transport co-Operative, Society Ltd. Mangoo",
+              "vendor_gstin": "02AAHAT5667NIZY",
+              "company_gstin": "02AAACG0569P1ZJ",
+              "hsn_sac_codes": [],
+              "line_items": [
+                {
+                  "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+                  "hsn_sac": null,
+                  "quantity": 23,
+                  "rate": 525,
+                  "amount": 12211.5
+                },
+                {
+                  "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+                  "hsn_sac": null,
+                  "quantity": 23,
+                  "rate": 525,
+                  "amount": 12122.25
+                }
+              ],
+              "subtotal": 24333.75,
+              "cgst_amount": null,
+              "sgst_amount": null,
+              "igst_amount": null,
+              "gst_rate": null,
+              "upload_timestamp": "2025-11-07T12:54:07.242Z",
+              "_id": "690debefc0d7d24c6849d255",
+              "id": "690debefc0d7d24c6849d255"
+            }
+          ]
+        }
+      },
+      "arithmetic_accuracy": {
+        "success": true,
+        "comments": "All calculations verified successfully",
+        "full_response": {
+          "isValid": true,
+          "errors": [],
+          "calculations": {
+            "subtotal": null,
+            "cgst": 0,
+            "sgst": 0,
+            "igst": 0,
+            "calculatedTotal": null,
+            "invoiceAmount": null
+          }
+        }
+      },
+      "price_anomaly_check": {
+        "success": false,
+        "comments": "Price anomaly check failed",
+        "full_response": {
+          "anomalies": [
+            {
+              "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+              "billed_rate": 525,
+              "market_rate": 400,
+              "deviation_percent": 31.3,
+              "issue": "Price deviation above 20%"
+            },
+            {
+              "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+              "billed_rate": 525,
+              "market_rate": 400,
+              "deviation_percent": 31.3,
+              "issue": "Price deviation above 20%"
+            }
+          ],
+          "marketComparison": [
+            {
+              "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+              "billed_rate": 525,
+              "market_rate": 400,
+              "deviation_percent": 31.3,
+              "status": "Deviation above 20%"
+            },
+            {
+              "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+              "billed_rate": 525,
+              "market_rate": 400,
+              "deviation_percent": 31.3,
+              "status": "Deviation above 20%"
+            }
+          ],
+          "anomalyFound": true,
+          "totalItems": 2,
+          "anomalyCount": 2,
+          "summary": "Analyzed 2 items, found 2 anomalies"
+        }
+      },
+      "duplicate_detection": {
+        "success": false,
+        "comments": "Duplicate check failed",
+        "full_response": {
+          "is_duplicate": false,
+          "duplicate_type": "none",
+          "confidence_score": 0,
+          "matched_invoice_ids": [],
+          "duplicate_flags": []
+        }
+      },
+      "gst_validation": {
+        "success": false,
+        "comments": "GST validation failed",
+        "full_response": {
+          "vendorValidation": {
+            "gstin": "03DOXPM4071K1ZE",
+            "legalName": "DISHANT MAHAJAN",
+            "tradeName": "AppyFlow Technologies",
+            "pan": "AAHAT5667N",
+            "status": "Active",
+            "active": true,
+            "businessType": "Proprietorship",
+            "registrationDate": "17/12/2019",
+            "state": "Punjab",
+            "district": "Ludhiana"
+          },
+          "companyValidation": {
+            "gstin": "03DOXPM4071K1ZE",
+            "legalName": "DISHANT MAHAJAN",
+            "tradeName": "AppyFlow Technologies",
+            "pan": "AAACG0569P",
+            "status": "Active",
+            "active": true,
+            "businessType": "Proprietorship",
+            "registrationDate": "17/12/2019",
+            "state": "Punjab",
+            "district": "Ludhiana"
+          },
+          "gstSummary": {
+            "vendor_gstin_from_invoice": "02AAHAT5667NIZY",
+            "company_gstin_from_invoice": "02AAACG0569P1ZJ",
+            "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+            "company_gstin_from_api": "03DOXPM4071K1ZE",
+            "vendor_business_name_from_invoice": "The Kurgan Land Loosers Transport co-Operative, Society Ltd. Mangoo",
+            "company_business_name_from_invoice": "",
+            "vendor_business_name_from_api": "AppyFlow Technologies",
+            "company_business_name_from_api": "AppyFlow Technologies",
+            "vendor_gst_active": true,
+            "company_gst_active": true,
+            "vendor_business_match": false,
+            "company_business_match": false,
+            "overall_valid": false
+          },
+          "valid": false,
+          "messages": [
+            "Vendor GSTIN is Active",
+            "Company GSTIN is Active",
+            "Vendor business name mismatch",
+            "Company business name mismatch"
+          ]
+        }
+      },
+      "gst_rate_validation": {
+        "success": false,
+        "comments": "GST rate validation failed",
+        "full_response": {
+          "status": "anomaly",
+          "anomalies": [
+            {
+              "description": "COAL;BT:12.5-15GJ/T;S<1;V20-35;RJ;KL:MK",
+              "hsn_sac": null,
+              "billed": {
+                "rate": 525,
+                "amount": 12211.5,
+                "quantity": 23
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            },
+            {
+              "description": "COAL;BT;12.5-15GJ/T;S<1;V20-35;RJ;KL;MK",
+              "hsn_sac": null,
+              "billed": {
+                "rate": 525,
+                "amount": 12122.25,
+                "quantity": 23
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            }
+          ]
+        }
+      }
+    }
+  }
+]
+
+Usage Notes:
+1. This endpoint returns all processed invoices from the database
+2. Invoices are returned in reverse chronological order (most recent first)
+3. The response can be cached in localStorage for performance
+4. The API should be called when the page loads and when the refresh button is clicked
+5. Filter and search functionality should be implemented on the frontend using the fetched data
+6. The overall_status field can be used to filter invoices by their processing result
+
+Frontend Implementation:
+```javascript
+// Fetch processed invoices
+async function fetchProcessedInvoices() {
+    try {
+        const response = await fetch('https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/fetch-processed-invoices', {
+            method: 'GET'
+        });
+        
+        const result = await response.json();
+        
+        if (result[0].success) {
+            const invoices = result[0].data;
+            
+            // Store in localStorage
+            localStorage.setItem('processed_invoices', JSON.stringify(invoices));
+            
+            // Display invoices
+            displayInvoices(invoices);
+        } else {
+            console.error('Failed to fetch invoices:', result[0].error);
+        }
+    } catch (error) {
+        console.error('Error fetching invoices:', error);
+    }
+}
+
+// Get invoices from localStorage
+function getStoredInvoices() {
+    const stored = localStorage.getItem('processed_invoices');
+    return stored ? JSON.parse(stored) : [];
+}
+
+// Filter invoices by status
+function filterByStatus(status) {
+    const invoices = getStoredInvoices();
+    return invoices.filter(inv => inv.overall_status === status);
+}
+```
+
+Filtering Examples:
+- Show all completed invoices: Filter by overall_status === 'completed'
+- Show failed invoices: Filter by overall_status === 'failed'
+- Show invoices with warnings: Filter by overall_status === 'completed_with_warnings'
+- Search by invoice number: Filter by invoice_data.invoice_number
+- Search by vendor: Filter by invoice_data.vendor_name
+- Filter by date range: Compare processed_at timestamps

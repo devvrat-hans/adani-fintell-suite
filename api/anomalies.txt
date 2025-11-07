@@ -1,0 +1,99 @@
+
+endpoint: GET https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/anomalies
+
+response:
+[
+  {
+    "timestamp": "2025-11-07T13:00:25.637Z",
+    "batchCount": 1,
+    "totalProcessed": 1,
+    "dashboard": {
+      "metrics": {
+        "total": 7,
+        "high": 4,
+        "medium": 2,
+        "low": 0
+      },
+      "anomalyTypes": {
+        "duplicateInvoices": 0,
+        "priceAnomalies": 1,
+        "gstCompliance": 5,
+        "highRisk": 1
+      },
+      "status": {
+        "flagged": 0,
+        "underReview": 1,
+        "resolved": 0
+      }
+    },
+    "invoices": [
+      {
+        "batchId": "690dddc8c0d7d24c6849d254",
+        "invoiceId": "IN000000000000027",
+        "invoiceNumber": "11735",
+        "vendorName": "M/S JOSHI TRADING COMPANY",
+        "invoiceAmount": 21052.51,
+        "uploadTimestamp": "2025-11-07T11:45:46.806Z",
+        "anomalyDetails": [
+          {
+            "type": "PRICE_ANOMALY",
+            "severity": "MEDIUM",
+            "description": "No market rate found | Billed Rate: ₹42.56 | Item: BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRA..."
+          },
+          {
+            "type": "GST_VALIDATION",
+            "severity": "HIGH",
+            "description": "Vendor GSTIN is Active"
+          },
+          {
+            "type": "GST_VALIDATION",
+            "severity": "HIGH",
+            "description": "Company GSTIN is Active"
+          },
+          {
+            "type": "GST_VALIDATION",
+            "severity": "HIGH",
+            "description": "Vendor business name mismatch"
+          },
+          {
+            "type": "GST_VALIDATION",
+            "severity": "HIGH",
+            "description": "Company business name mismatch"
+          },
+          {
+            "type": "GST_RATE_ANOMALY",
+            "severity": "MEDIUM",
+            "description": "HSN/SAC 25210010: HSN/SAC not found in master list | Billed Rate: ₹42.56"
+          },
+          {
+            "type": "HIGH_RISK_FLAG",
+            "severity": "HIGH",
+            "description": "Multiple critical failures detected: GST mismatch combined with price/duplicate issues"
+          }
+        ],
+        "severity": "high",
+        "status": "under_review",
+        "riskScore": 95,
+        "anomalyCount": 6,
+        "gstMismatch": {
+          "invoiceVendorGstin": "08BYUPS2122L1ZT",
+          "apiVendorGstin": "03DOXPM4071K1ZE",
+          "invoiceCompanyGstin": "08AAACT1507C1ZX",
+          "apiCompanyGstin": "03DOXPM4071K1ZE",
+          "vendorNameMismatch": true,
+          "companyNameMismatch": true
+        }
+      }
+    ],
+    "batchInfo": [
+      {
+        "batchId": "690dddc8c0d7d24c6849d254",
+        "fileName": "N10N20125402115.pdf",
+        "processedAt": "2025-11-07T11:45:53.979Z",
+        "totalInvoices": 1,
+        "anomaliesInBatch": 6,
+        "failedInBatch": 0
+      }
+    ]
+  }
+]

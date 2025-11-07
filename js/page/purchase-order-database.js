@@ -141,28 +141,69 @@ async function fetchPurchaseOrders() {
             return;
         }
         
-        const data = await response.json();
+        let data = await response.json();
         console.log('API Response:', data);
         
-        // Handle successful response with data
-        if (data.success && data.data && Array.isArray(data.data)) {
-            state.purchaseOrders = data.data;
-            state.filteredPurchaseOrders = [...data.data];
+        // Normalize the data from camelCase to snake_case for consistency with frontend
+        if (Array.isArray(data) && data.length > 0) {
+            const normalizedData = data.map(po => ({
+                _id: po._id,
+                po_id: po._id, // Use _id as po_id for consistency
+                po_number: po.po_number || 'PO-' + po._id.substring(po._id.length - 8),
+                po_date: po.poDate,
+                po_status: po.poStatus,
+                status: po.poStatus, // Also keep as 'status' for compatibility
+                
+                // Flatten vendor information for easy access
+                vendor_name: po.vendorReference?.vendorName,
+                vendor_code: po.vendorReference?.vendorCode,
+                vendor_gstin: po.vendorReference?.vendorGstNumber,
+                vendor_gst_number: po.vendorReference?.vendorGstNumber, // Alternative field name
+                
+                // Flatten financial information
+                total_amount: po.financialSummary?.grandTotal,
+                grand_total: po.financialSummary?.grandTotal,
+                subtotal: po.financialSummary?.subtotal,
+                
+                // Flatten delivery information
+                delivery_date: po.deliveryDetails?.expectedDeliveryDate || po.deliveryDetails?.requestedDeliveryDate,
+                expected_delivery_date: po.deliveryDetails?.expectedDeliveryDate || po.deliveryDetails?.requestedDeliveryDate,
+                
+                // Line items count
+                items_count: po.lineItems?.length || 0,
+                
+                // Keep full nested structures for details view
+                vendor_reference: {
+                    vendor_code: po.vendorReference?.vendorCode,
+                    vendor_name: po.vendorReference?.vendorName,
+                    vendor_gst_number: po.vendorReference?.vendorGstNumber
+                },
+                delivery_details: po.deliveryDetails,
+                line_items: po.lineItems,
+                financial_summary: {
+                    subtotal: po.financialSummary?.subtotal,
+                    total_tax_amount: po.financialSummary?.totalTaxAmount,
+                    other_charges: po.financialSummary?.otherCharges,
+                    total_other_charges: po.financialSummary?.totalOtherCharges,
+                    grand_total: po.financialSummary?.grandTotal,
+                    currency: po.financialSummary?.currency
+                },
+                payment_terms: po.paymentTerms,
+                approval_workflow: po.approvalWorkflow,
+                budget_allocation: po.budgetAllocation,
+                contract_reference: po.contractReference,
+                metadata: po.metadata
+            }));
+            
+            state.purchaseOrders = normalizedData;
+            state.filteredPurchaseOrders = [...normalizedData];
             
             // Cache the data
-            cachePurchaseOrders(data.data);
+            cachePurchaseOrders(normalizedData);
             
             renderPurchaseOrders();
-        } 
-        // Handle successful response but empty data
-        else if (data.success && (!data.data || data.data.length === 0)) {
-            state.purchaseOrders = [];
-            state.filteredPurchaseOrders = [];
-            renderPurchaseOrders();
-        }
-        // Handle error response
-        else {
-            console.error('Invalid response format:', data);
+        } else {
+            // Empty array or no data
             state.purchaseOrders = [];
             state.filteredPurchaseOrders = [];
             renderPurchaseOrders();
@@ -341,6 +382,61 @@ function attachActionButtonListeners() {
  */
 async function handleViewDetails(event) {
     const poId = event.target.dataset.poId;
+    if (!poId) {
+        console.error('No PO ID found');
+        return;
+    }
+    
+    try {
+        // Show loading state
+        showNotification('Loading purchase order details...', 'info');
+        
+        console.log('Fetching PO details for:', poId);
+        console.log('API Endpoint:', API_ENDPOINTS.PURCHASE_ORDER.GET_PO_DETAILS);
+        
+        // Fetch PO details from API
+        const response = await fetch(API_ENDPOINTS.PURCHASE_ORDER.GET_PO_DETAILS, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ po_id: poId })
+        }).catch(fetchError => {
+            console.error('Fetch error:', fetchError);
+            throw new Error(`Network error: ${fetchError.message}`);
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error text:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('API Response:', result);
+        
+        if (result.success && result.data) {
+            showPODetailsModal(result.data);
+        } else {
+            const errorMessage = result.error || 'Failed to load purchase order details';
+            showNotification(errorMessage, 'error');
+            console.error('API Error:', result);
+        }
+    } catch (error) {
+        console.error('Error fetching PO details:', error);
+        console.error('Error stack:', error.stack);
+        showNotification(`Error: ${error.message}`, 'error');
+    }
+}
+
+/**
+ * Handle edit PO button click
+ */
+async function handleEditPO(event) {
+    const poId = event.target.dataset.poId;
     if (!poId) return;
     
     try {
@@ -359,25 +455,30 @@ async function handleViewDetails(event) {
         const result = await response.json();
         
         if (result.success && result.data) {
-            showPODetailsModal(result.data);
+            // Store PO details in localStorage for the edit page to use
+            localStorage.setItem('current_po_for_edit', JSON.stringify(result.data));
+            
+            // Also store all POs data for search functionality
+            const allPOsData = state.purchaseOrders.map(po => ({
+                po_id: po.po_id,
+                po_number: po.po_number,
+                vendor_name: po.vendor_name,
+                vendor_code: po.vendor_code,
+                po_date: po.po_date,
+                po_status: po.po_status || po.status,
+                grand_total: po.grand_total || po.total_amount
+            }));
+            localStorage.setItem('all_pos_for_search', JSON.stringify(allPOsData));
+            
+            // Redirect to edit page
+            window.location.href = `edit-purchase-order.html?po_id=${encodeURIComponent(poId)}`;
         } else {
             showNotification('Failed to load purchase order details', 'error');
         }
     } catch (error) {
-        console.error('Error fetching PO details:', error);
-        showNotification('Error loading purchase order details', 'error');
+        console.error('Error fetching PO details for edit:', error);
+        showNotification('Error loading purchase order. Please try again.', 'error');
     }
-}
-
-/**
- * Handle edit PO button click
- */
-function handleEditPO(event) {
-    const poId = event.target.dataset.poId;
-    if (!poId) return;
-    
-    // Redirect to edit page with PO ID
-    window.location.href = `edit-purchase-order.html?po_id=${encodeURIComponent(poId)}`;
 }
 
 /**

@@ -825,6 +825,164 @@ body {
 }
 
 /* ==========================================================================
+   PO Popup Styles
+   ========================================================================== */
+
+/* PO Popup Overlay */
+.po-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.po-popup-overlay.show {
+    opacity: 1;
+}
+
+.po-popup {
+    background: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 2.5rem 2rem 2rem 2rem;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.9) translateY(-20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.po-popup-overlay.show .po-popup {
+    transform: scale(1) translateY(0);
+}
+
+.po-popup-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+}
+
+.po-popup-icon.success {
+    background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
+    box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
+}
+
+.po-popup-icon.error {
+    background: linear-gradient(135deg, #DC3545 0%, #BD3861 100%);
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
+}
+
+.po-popup-icon svg {
+    width: 32px;
+    height: 32px;
+    color: var(--bg-white);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.po-popup-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+}
+
+.po-popup-message {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
+}
+
+.po-popup-close {
+    background: var(--finguard-gradient);
+    color: var(--bg-white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+}
+
+.po-popup-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+}
+
+.po-popup-close:active {
+    transform: translateY(0);
+}
+
+/* Popup Animations */
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments for popup */
+@media (max-width: 480px) {
+    .po-popup {
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        max-width: 95%;
+    }
+    
+    .po-popup-icon {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .po-popup-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .po-popup-title {
+        font-size: 1.25rem;
+    }
+    
+    .po-popup-message {
+        font-size: 0.875rem;
+    }
+}
+
+/* ==========================================================================
    Accessibility
    ========================================================================== */
 

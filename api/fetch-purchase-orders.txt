@@ -9,48 +9,100 @@ Content-Type: application/json
 Request Parameters: None
 
 Response Body (Success):
-{
-    "success": true,
-    "data": [
-        {
-            "po_id": "PO-2024-001",
-            "po_number": "PO/24/001",
-            "po_date": "2024-01-15",
-            "vendor_name": "ABC Suppliers Ltd",
-            "vendor_gstin": "27AABCU9603R1ZX",
-            "company_gstin": "27AADCA5659F1ZV",
-            "total_amount": 150000.00,
-            "status": "Approved",
-            "delivery_date": "2024-02-15",
-            "items_count": 5,
-            "created_by": "John Doe",
-            "created_at": "2024-01-15T10:30:00Z",
-            "updated_at": "2024-01-15T10:30:00Z"
-        },
-        {
-            "po_id": "PO-2024-002",
-            "po_number": "PO/24/002",
-            "po_date": "2024-01-20",
-            "vendor_name": "XYZ Trading Co",
-            "vendor_gstin": "29AABCU9603R1ZY",
-            "company_gstin": "27AADCA5659F1ZV",
-            "total_amount": 250000.00,
-            "status": "Pending",
-            "delivery_date": "2024-02-20",
-            "items_count": 8,
-            "created_by": "Jane Smith",
-            "created_at": "2024-01-20T14:45:00Z",
-            "updated_at": "2024-01-20T14:45:00Z"
-        }
+[
+  {
+    "_id": "690d29c6c0d7d24c6849d242",
+    "poDate": "2025-11-06",
+    "poStatus": "draft",
+    "vendorReference": {
+      "vendorCode": "690c99d4c0d7d24c6849d224",
+      "vendorName": "ABC Enterprises Pvt Ltd",
+      "vendorGstNumber": "29ABCDE1234F1Z5"
+    },
+    "deliveryDetails": {
+      "shipToAddress": {
+        "addressLine1": "Warehouse 5, Industrial Zone",
+        "city": "Pune",
+        "state": "Maharashtra",
+        "pinCode": "411001"
+      },
+      "requestedDeliveryDate": "2025-11-20",
+      "shippingMethod": "road_transport",
+      "specialInstructions": "Handle with care"
+    },
+    "lineItems": [
+      {
+        "line_number": 1,
+        "item_description": "Steel Rods - 10mm diameter",
+        "hsn_code": "7214",
+        "quantity": 100,
+        "unit_of_measurement": "KG",
+        "unit_price": 150,
+        "line_total": 15000,
+        "tax_rate": 18,
+        "tax_amount": 2700,
+        "line_total_with_tax": 17700
+      },
+      {
+        "line_number": 2,
+        "item_description": "Cement Bags - 50KG",
+        "hsn_code": "25232900",
+        "quantity": 200,
+        "unit_of_measurement": "BAG",
+        "unit_price": 400,
+        "line_total": 80000,
+        "tax_rate": 18,
+        "tax_amount": 14400,
+        "line_total_with_tax": 94400
+      }
     ],
-    "count": 2
-}
-
-Response Body (Error):
-{
-    "success": false,
-    "error": "Error message description"
-}
+    "financialSummary": {
+      "subtotal": 95000,
+      "totalTaxAmount": 17100,
+      "otherCharges": {
+        "freightCharges": 2000,
+        "packagingCharges": 500,
+        "handlingCharges": 500
+      },
+      "totalOtherCharges": 3000,
+      "grandTotal": 115100,
+      "currency": "INR"
+    },
+    "paymentTerms": {
+      "paymentMethod": "bank_transfer",
+      "paymentDueDays": 30,
+      "advancePaymentPercentage": 0,
+      "paymentSchedule": "net_30"
+    },
+    "approvalWorkflow": {
+      "createdBy": "Ramesh Kumar",
+      "approverName": "Suresh Patel",
+      "approvalStatus": "pending",
+      "approvalNotes": ""
+    },
+    "budgetAllocation": {
+      "department": "Operations",
+      "costCenter": "CC-OPS-001",
+      "projectCode": "PROJ-2024-001",
+      "budgetYear": "2024-2025"
+    },
+    "contractReference": {
+      "contractNumber": "CNT-2024-001",
+      "contractDate": "2023-12-01",
+      "contractValidity": "2024-12-31"
+    },
+    "invoiceMatching": null,
+    "metadata": {
+      "priority": "high",
+      "businessUnit": "Adani Ports & SEZ",
+      "tags": [
+        "urgent",
+        "infrastructure"
+      ],
+      "internalNotes": "Part of Q1 2024 procurement plan"
+    }
+  }
+]
 
 Notes:
 - The endpoint returns all purchase orders from the database

@@ -93,6 +93,192 @@ body {
 }
 
 /* ==========================================================================
+   Search Section
+   ========================================================================== */
+
+.search-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.search-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-input-wrapper {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--bg-white);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--finguard-primary);
+    box-shadow: 0 0 0 3px rgba(11, 116, 176, 0.1);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-button {
+    padding: 12px 24px;
+    background: var(--finguard-gradient);
+    color: var(--bg-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(11, 116, 176, 0.25);
+    white-space: nowrap;
+}
+
+.search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.35);
+}
+
+.search-button:active {
+    transform: translateY(0);
+}
+
+.search-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.search-results {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 80px;
+    margin-top: 8px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.search-result-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: var(--bg-lighter);
+}
+
+.search-result-item.no-results {
+    cursor: default;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.search-result-item.no-results:hover {
+    background: var(--bg-white);
+}
+
+.result-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.result-main strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.result-vendor {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-left: var(--spacing-sm);
+}
+
+.result-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.result-date {
+    color: var(--text-muted);
+}
+
+.result-status {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.result-status.status-pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #856404;
+}
+
+.result-status.status-approved {
+    background: rgba(40, 167, 69, 0.2);
+    color: #155724;
+}
+
+.result-status.status-rejected {
+    background: rgba(220, 53, 69, 0.2);
+    color: #721c24;
+}
+
+.result-status.status-completed {
+    background: rgba(40, 167, 69, 0.2);
+    color: #155724;
+}
+
+.result-status.status-cancelled {
+    background: rgba(108, 117, 125, 0.2);
+    color: #383d41;
+}
+
+/* ==========================================================================
    Form Section
    ========================================================================== */
 

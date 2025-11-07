@@ -276,6 +276,11 @@
    Timeline Item States
    ========================================================================== */
 
+/* Hide non-active icons by default */
+.timeline-item .marker-icon svg {
+    display: none;
+}
+
 /* Pending State */
 .timeline-item[data-status="pending"] .marker-icon {
     border-color: var(--border-light);
@@ -284,7 +289,7 @@
 }
 
 .timeline-item[data-status="pending"] .icon-pending {
-    display: block;
+    display: block !important;
     color: var(--text-light);
 }
 
@@ -298,7 +303,7 @@
 }
 
 .timeline-item[data-status="in-progress"] .icon-loading {
-    display: block;
+    display: block !important;
     color: var(--adani-blue);
     animation: spin 1.2s linear infinite;
     filter: drop-shadow(0 0 2px rgba(11, 116, 176, 0.4));
@@ -313,7 +318,7 @@
 }
 
 .timeline-item[data-status="completed"] .icon-success {
-    display: block;
+    display: block !important;
     color: var(--bg-white);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
@@ -327,14 +332,9 @@
 }
 
 .timeline-item[data-status="failed"] .icon-error {
-    display: block;
+    display: block !important;
     color: var(--bg-white);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
-}
-
-/* Hide non-active icons */
-.timeline-item .marker-icon svg {
-    display: none;
 }
 
 /* ==========================================================================

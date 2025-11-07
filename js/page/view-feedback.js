@@ -46,20 +46,59 @@ async function init() {
 /**
  * Load feedback from the backend
  */
-async function loadFeedback() {
+async function loadFeedback(forceRefresh = false) {
     try {
         showLoadingState();
         
-        // TODO: Replace with actual API endpoint when available
-        const response = await fetch('https://n8n-n8n.j8euv3.easypanel.host/webhook/fetch-feedback');
+        // Check if feedback is already in localStorage and not forcing refresh
+        if (!forceRefresh) {
+            const cachedFeedback = localStorage.getItem('allFeedback');
+            
+            if (cachedFeedback) {
+                console.log('Loading feedback from cache');
+                state.allFeedback = JSON.parse(cachedFeedback);
+                state.filteredFeedback = [...state.allFeedback];
+                
+                updateSummaryCards();
+                renderFeedbackList();
+                hideLoadingState();
+                return;
+            }
+        }
+        
+        // Fetch from API
+        console.log('Fetching feedback from API');
+        const response = await fetch(API_ENDPOINTS.DATABASE.FETCH_FEEDBACK);
         
         if (!response.ok) {
-            // For now, use mock data if endpoint doesn't exist
-            state.allFeedback = generateMockFeedback();
-        } else {
-            const data = await response.json();
-            state.allFeedback = data;
+            throw new Error('Failed to fetch feedback');
         }
+        
+        const data = await response.json();
+        console.log('Feedback fetched successfully:', data);
+        
+        // Normalize the API response to match expected format
+        const normalizedData = data.map(item => ({
+            id: item._id?.$oid || item.id || 'N/A',
+            invoice_id: item.invoice_id,
+            invoice_number: item.invoice_number,
+            vendor_name: item.vendor_name,
+            feedback_type: item.feedback_type,
+            severity: item.severity,
+            title: item.title,
+            description: item.description,
+            expected_result: item.expected_result || '',
+            actual_result: item.actual_result || '',
+            affected_fields: item.affected_fields || '',
+            suggested_fix: item.suggested_fix || '',
+            submitted_at: item.submitted_at,
+            submitted_by: item.submitted_by || { name: 'Unknown', email: 'unknown@email.com' },
+            metadata: item.metadata || {}
+        }));
+        
+        // Store in state and localStorage
+        state.allFeedback = normalizedData;
+        localStorage.setItem('allFeedback', JSON.stringify(normalizedData));
         
         state.filteredFeedback = [...state.allFeedback];
         
@@ -69,111 +108,24 @@ async function loadFeedback() {
         
     } catch (error) {
         console.error('Error loading feedback:', error);
-        // Use mock data on error
-        state.allFeedback = generateMockFeedback();
+        
+        // Try to use cached data on error
+        const cachedFeedback = localStorage.getItem('allFeedback');
+        if (cachedFeedback) {
+            console.log('Using cached feedback due to error');
+            state.allFeedback = JSON.parse(cachedFeedback);
+        } else {
+            // No cached data available, show empty state
+            console.log('No cached feedback available');
+            state.allFeedback = [];
+        }
+        
         state.filteredFeedback = [...state.allFeedback];
         
         updateSummaryCards();
         renderFeedbackList();
         hideLoadingState();
     }
-}
-
-/**
- * Generate mock feedback data for testing
- */
-function generateMockFeedback() {
-    return [
-        {
-            id: 'FB001',
-            invoice_id: 'IN000000000000001',
-            invoice_number: 'CONS-2025-789',
-            vendor_name: 'Business Advisory Services LLP',
-            feedback_type: 'ocr_error',
-            severity: 'critical',
-            title: 'Invoice number extracted incorrectly',
-            description: 'The OCR system extracted the invoice number as "C0NS-2025-789" instead of "CONS-2025-789". The zero was misread as the letter O.',
-            expected_result: 'CONS-2025-789',
-            actual_result: 'C0NS-2025-789',
-            affected_fields: 'invoice_number',
-            submitted_at: '2025-11-05T10:30:00.000Z',
-            submitted_by: {
-                name: 'Rajesh Kumar',
-                email: 'rajesh.kumar@adani.com'
-            }
-        },
-        {
-            id: 'FB002',
-            invoice_id: 'IN000000000000002',
-            invoice_number: 'INV-2025-456',
-            vendor_name: 'Tech Solutions Pvt Ltd',
-            feedback_type: 'gst_validation_error',
-            severity: 'major',
-            title: 'GST rate validation failed',
-            description: 'The system validated GST at 18% but the actual applicable rate for this service is 12%.',
-            expected_result: '12% GST',
-            actual_result: '18% GST',
-            affected_fields: 'gst_rate, gst_amount',
-            suggested_fix: 'Update HSN/SAC code mapping for service category',
-            submitted_at: '2025-11-04T14:20:00.000Z',
-            submitted_by: {
-                name: 'Priya Sharma',
-                email: 'priya.sharma@adani.com'
-            }
-        },
-        {
-            id: 'FB003',
-            invoice_id: 'IN000000000000003',
-            invoice_number: 'BILL-2025-123',
-            vendor_name: 'Logistics Partners Ltd',
-            feedback_type: 'amount_calculation_error',
-            severity: 'critical',
-            title: 'Total amount calculation mismatch',
-            description: 'The calculated total does not match the invoice total. Subtotal + GST should equal ₹1,88,800 but system shows ₹1,90,000.',
-            expected_result: '₹1,88,800',
-            actual_result: '₹1,90,000',
-            affected_fields: 'invoice_amount, subtotal, gst_amount',
-            submitted_at: '2025-11-03T09:15:00.000Z',
-            submitted_by: {
-                name: 'Amit Patel',
-                email: 'amit.patel@adani.com'
-            }
-        },
-        {
-            id: 'FB004',
-            invoice_id: 'IN000000000000004',
-            invoice_number: 'SRV-2025-890',
-            vendor_name: 'Consulting Experts Inc',
-            feedback_type: 'line_items_error',
-            severity: 'minor',
-            title: 'Line item description truncated',
-            description: 'One of the line item descriptions is cut off and incomplete.',
-            affected_fields: 'line_items[0].description',
-            submitted_at: '2025-11-02T16:45:00.000Z',
-            submitted_by: {
-                name: 'Sneha Reddy',
-                email: 'sneha.reddy@adani.com'
-            }
-        },
-        {
-            id: 'FB005',
-            invoice_id: 'IN000000000000005',
-            invoice_number: 'PO-2025-567',
-            vendor_name: 'Equipment Suppliers Ltd',
-            feedback_type: 'duplicate_detection_error',
-            severity: 'major',
-            title: 'Duplicate invoice not detected',
-            description: 'This invoice was processed twice but the duplicate detection system did not flag it.',
-            expected_result: 'System should detect duplicate',
-            actual_result: 'No duplicate flag raised',
-            suggested_fix: 'Review duplicate detection algorithm for similar invoice patterns',
-            submitted_at: '2025-11-01T11:30:00.000Z',
-            submitted_by: {
-                name: 'Vikram Singh',
-                email: 'vikram.singh@adani.com'
-            }
-        }
-    ];
 }
 
 /**
@@ -201,7 +153,8 @@ function attachEventListeners() {
  * Handle refresh button click
  */
 async function handleRefresh() {
-    await loadFeedback();
+    console.log('Refreshing feedback data...');
+    await loadFeedback(true); // Force refresh from API
 }
 
 /**

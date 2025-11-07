@@ -435,9 +435,7 @@
       "state": "Maharashtra",
       "pin_code": "411001"
     },
-    "requested_delivery_date": "2025-11-20",
-    "shipping_method": "road_transport",
-    "special_instructions": "Handle with care"
+    "expected_delivery_date": "2025-11-20"
   },
   "line_items": [
     {
@@ -469,7 +467,7 @@
     "subtotal": 95000.00,
     "total_tax_amount": 17100.00,
     "other_charges": {
-      "freight_charges": 2000.00,
+      "freight": 2000.00,
       "packaging_charges": 500.00,
       "handling_charges": 500.00
     },
@@ -478,33 +476,34 @@
     "currency": "INR"
   },
   "payment_terms": {
-    "payment_method": "bank_transfer",
-    "payment_due_days": 30,
-    "advance_payment_percentage": 0,
-    "payment_schedule": "net_30"
+    "payment_cycle": "net_30",
+    "advance_payment": 0.00,
+    "retention_percentage": 0.00
   },
   "approval_workflow": {
-    "created_by": "Ramesh Kumar",
-    "approver_name": "Suresh Patel",
-    "approval_status": "pending",
-    "approval_notes": ""
+    "requester": {
+      "name": "Ramesh Kumar",
+      "department": "Operations",
+      "employee_id": "EMP001"
+    },
+    "approver": {
+      "name": "Suresh Patel",
+      "designation": "Senior Manager",
+      "employee_id": "EMP002"
+    }
   },
   "budget_allocation": {
-    "department": "Operations",
     "cost_center": "CC-OPS-001",
     "project_code": "PROJ-2024-001",
-    "budget_year": "2024-2025"
+    "budget_code": "BUD-2024-Q1"
   },
   "contract_reference": {
+    "has_contract": true,
     "contract_number": "CNT-2024-001",
-    "contract_date": "2023-12-01",
-    "contract_validity": "2024-12-31"
+    "contract_valid_until": "2024-12-31"
   },
   "metadata": {
-    "priority": "high",
-    "business_unit": "Adani Ports & SEZ",
-    "tags": ["urgent", "infrastructure"],
-    "internal_notes": "Part of Q1 2024 procurement plan"
+    "notes": "Part of Q1 2024 procurement plan. Urgent delivery required."
   }
 }</textarea>
             </div>
@@ -585,6 +584,135 @@
                 <strong>Note:</strong> This endpoint retrieves complete details of a specific purchase order including all line items, financial summary, and metadata.
             </div>
         </div>
+
+        <!-- Add Feedback Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <div class="endpoint-title">8. Add Invoice Feedback</div>
+                <div class="endpoint-url">POST /webhook/f/database/add-feedback</div>
+            </div>
+
+            <div class="request-section">
+                <div class="section-label">Request Body:</div>
+                <textarea id="add-feedback-request">{
+  "invoice_id": "IN000000000000001",
+  "invoice_number": "CONS-2025-789",
+  "vendor_name": "Business Advisory Services LLP",
+  "feedback_type": "ocr_error",
+  "severity": "critical",
+  "title": "Invoice number extracted incorrectly",
+  "description": "The OCR system extracted the invoice number as 'C0NS-2025-789' instead of 'CONS-2025-789'. The zero was misread as the letter O.",
+  "expected_result": "CONS-2025-789",
+  "actual_result": "C0NS-2025-789",
+  "affected_fields": "invoice_number",
+  "suggested_fix": "Improve OCR training for alphanumeric characters",
+  "submitted_at": "2025-11-05T10:30:00.000Z",
+  "submitted_by": {
+    "name": "Rajesh Kumar",
+    "email": "rajesh.kumar@adani.com"
+  }
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('add-feedback')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('add-feedback')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('add-feedback')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="add-feedback-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="add-feedback-status"></div>
+                <div class="response-box" id="add-feedback-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint allows users to submit feedback on processed invoices. Feedback types include: ocr_error, data_mismatch, gst_validation_error, duplicate_detection_error, amount_calculation_error, hsn_sac_error, vendor_details_error, line_items_error, other. Severity levels: critical, major, minor.
+            </div>
+        </div>
+
+        <!-- Store Processed Invoice Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <div class="endpoint-title">9. Store Processed Invoice</div>
+                <div class="endpoint-url">POST /webhook/f/finguard/store-processed-invoice</div>
+            </div>
+
+            <div class="request-section">
+                <div class="section-label">Request Body:</div>
+                <textarea id="store-invoice-request">{
+  "invoice_data": {
+    "invoice_number": "CONS-2025-789",
+    "invoice_date": "October 12, 2025",
+    "invoice_amount": "188800",
+    "vendor_name": "ABC Financial Services",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    "hsn_sac_codes": ["998314"],
+    "line_items": [
+      {
+        "description": "Financial Consulting",
+        "hsn_sac": "998314",
+        "quantity": "40",
+        "rate": "2500",
+        "amount": "100000"
+      }
+    ],
+    "subtotal": "160000",
+    "cgst_amount": "14400",
+    "sgst_amount": "14400",
+    "igst_amount": null,
+    "gst_rate": "18%"
+  },
+  "processing_status": {
+    "ocr_processing": {
+      "success": true,
+      "comments": null
+    },
+    "arithmetic_accuracy": {
+      "success": true,
+      "comments": null
+    },
+    "price_anomaly_check": {
+      "success": true,
+      "comments": "No price anomalies detected"
+    },
+    "duplicate_detection": {
+      "success": true,
+      "comments": "No duplicate found"
+    },
+    "gst_validation": {
+      "success": true,
+      "comments": null
+    },
+    "gst_rate_validation": {
+      "success": true,
+      "comments": "All GST rates are valid"
+    }
+  },
+  "overall_status": "completed",
+  "processed_at": "2025-11-07T14:30:00Z",
+  "file_name": "invoice_2025_789.pdf",
+  "file_type": "pdf"
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('store-invoice')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('store-invoice')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('store-invoice')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="store-invoice-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="store-invoice-status"></div>
+                <div class="response-box" id="store-invoice-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint stores the complete processing results of an invoice after all validation checks. It saves invoice data along with the status of each validation step (OCR, arithmetic accuracy, price anomaly, duplicate detection, GST validation, GST rate validation). Overall status can be: completed, completed_with_warnings, or failed.
+            </div>
+        </div>
     </div>
 
     <script>
@@ -595,7 +723,9 @@
             'add-vendor': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/vendor-master/add-vendor',
             'add-po': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/purchase-orders/add-po',
             'fetch-pos': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/database/fetch-purchase-orders',
-            'get-po-details': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/purchase-orders/get-po-details'
+            'get-po-details': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/purchase-orders/get-po-details',
+            'add-feedback': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/database/add-feedback',
+            'store-invoice': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/store-processed-invoice'
         };
 
         async function sendRequest(type) {

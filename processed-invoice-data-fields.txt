@@ -1,0 +1,24 @@
+{
+  "_id": {
+    "$oid": "690db5d9c0d7d24c6849d24d"
+  },
+  "invoice_id": "IN000000000000024",
+  "invoice_number": "PB2401142935",
+  "vendor_name": "HPCL-Mittal Energy Limited",
+  "invoice_amount": 5,
+  "overall_status": "failed",
+  "processed_at": "2025-11-07T08:54:39.841Z",
+  "file_name": "N20NE1225400794.pdf",
+  "ocr_extraction_success": true,
+  "ocr_extraction_comments": "OCR extraction successful",
+  "arithmetic_accuracy_success": true,
+  "arithmetic_accuracy_comments": "All calculations verified successfully",
+  "price_anomaly_check_success": false,
+  "price_anomaly_check_comments": "Price anomaly check failed",
+  "duplicate_detection_success": false,
+  "duplicate_detection_comments": "Duplicate check failed",
+  "gst_validation_success": false,
+  "gst_validation_comments": "GST validation failed",
+  "gst_rate_validation_success": false,
+  "gst_rate_validation_comments": "GST rate validation failed"
+}

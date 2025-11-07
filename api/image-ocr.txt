@@ -1,0 +1,133 @@
+POST https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/ocr/image
+
+API Type: POST
+
+Description:
+This endpoint processes image files (PNG, JPEG, JPG) uploaded by users to extract invoice data using OCR technology. It accepts image files in multipart/form-data format and returns structured invoice information.
+
+Request Method: POST
+
+Request Body:
+Content-Type: multipart/form-data
+
+Form Data:
+- file: (binary) - The image file to be processed (PNG, JPEG, or JPG format)
+
+Supported Image Formats:
+- image/png
+- image/jpeg
+- image/jpg
+
+Maximum File Size: 10MB
+
+Response Format:
+
+Success Response (HTTP 200):
+[
+  {
+    "success": true,
+    "data": {
+      "invoice_number": "CONS-2025-789",
+      "invoice_date": "October 12, 2025",
+      "invoice_amount": "188800",
+      "vendor_gstin": "07AADCB3456H1ZP",
+      "company_gstin": "27AAACP1234M1Z1",
+      "hsn_sac_codes": [
+        "998314"
+      ],
+      "line_items": [
+        {
+          "description": "Financial Consulting",
+          "hsn_sac": "998314",
+          "quantity": "40",
+          "rate": "2500",
+          "amount": "100000"
+        },
+        {
+          "description": "Tax Advisory",
+          "hsn_sac": "998314",
+          "quantity": "20",
+          "rate": "3000",
+          "amount": "60000"
+        }
+      ],
+      "subtotal": "160000",
+      "cgst_amount": "14400",
+      "sgst_amount": "14400",
+      "igst_amount": null,
+      "gst_rate": null
+    }
+  }
+]
+
+Failure Response (HTTP 200):
+[
+  {
+    "success": false
+  }
+]
+
+Error Response (HTTP 400/500):
+{
+  "error": "Error message describing what went wrong",
+  "details": "Additional error details if available"
+}
+
+Response Fields:
+- success (boolean): Indicates whether the OCR processing was successful
+- data (object): Contains extracted invoice information (only present when success is true)
+  - invoice_number (string): Extracted invoice number
+  - invoice_date (string): Invoice date in readable format
+  - invoice_amount (string): Total invoice amount
+  - vendor_gstin (string): Vendor's GST Identification Number
+  - company_gstin (string): Company's GST Identification Number
+  - hsn_sac_codes (array): Array of HSN/SAC codes found in the invoice
+  - line_items (array): Array of line item objects with:
+    - description (string): Item description
+    - hsn_sac (string): HSN/SAC code for the item
+    - quantity (string): Quantity
+    - rate (string): Rate per unit
+    - amount (string): Total amount for the line item
+  - subtotal (string): Subtotal before taxes
+  - cgst_amount (string): Central GST amount
+  - sgst_amount (string): State GST amount
+  - igst_amount (string|null): Integrated GST amount (null if not applicable)
+  - gst_rate (string|null): GST rate applied (null if not specified)
+
+Usage Notes:
+1. This endpoint should be called when the uploaded file is detected as an image (PNG, JPEG, JPG)
+2. The file type detection should happen on the frontend before making the API call
+3. After successful OCR, the response data should be used for subsequent validation steps:
+   - Arithmetical accuracy check
+   - Price anomaly detection
+   - Duplicate detection
+   - GST validation
+4. If success is false, the processing workflow should stop and error should be displayed to the user
+5. Image quality affects OCR accuracy - clearer images produce better results
+
+Example Frontend Implementation:
+```javascript
+// Detect if file is an image
+const isImage = file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg';
+
+if (isImage) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await fetch('https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/ocr/image', {
+        method: 'POST',
+        body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result[0].success) {
+        // Process the extracted data
+        const invoiceData = result[0].data;
+        // Continue with validation workflow
+    } else {
+        // Handle OCR failure
+        console.error('OCR processing failed');
+    }
+}
+```

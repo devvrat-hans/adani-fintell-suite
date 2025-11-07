@@ -1,0 +1,38 @@
+endpoints: https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/get-invoice-details
+
+request body:
+
+{ invoice_id: IN000000000000001 }
+
+reseponse body:
+
+[
+  {
+    "_id": "690db3c9c0d7d24c6849d24b",
+    "invoice_id": "IN000000000000024",
+    "invoice_number": "PB2401142935",
+    "invoice_date": "1970-01-01T00:00:00.000Z",
+    "invoice_amount": 5,
+    "vendor_name": "HPCL-Mittal Energy Limited",
+    "vendor_gstin": "03AABCG5231F1Z8",
+    "company_gstin": "03AAACG0569P1ZH",
+    "hsn_sac_codes": [
+      "27131100"
+    ],
+    "line_items": [
+      {
+        "description": "Petcoke-55000",
+        "hsn_sac": "27131100",
+        "quantity": 3,
+        "rate": 12,
+        "amount": 4
+      }
+    ],
+    "subtotal": 4,
+    "cgst_amount": 40,
+    "sgst_amount": 40,
+    "igst_amount": null,
+    "gst_rate": 9,
+    "upload_timestamp": "2025-11-07T08:54:32.966Z"
+  }
+]

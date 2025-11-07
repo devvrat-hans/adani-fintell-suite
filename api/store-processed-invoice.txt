@@ -1,0 +1,616 @@
+POST https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/store-processed-invoice
+
+API Type: POST
+
+Description:
+This endpoint stores the complete processing results of an invoice after all validation checks have been completed. It saves the invoice data along with the FULL API RESPONSES from each validation step (OCR, arithmetic accuracy, price anomaly, duplicate detection, GST validation, and GST rate validation).
+
+Request Method: POST
+
+Request Body:
+
+
+{
+  "_id": {
+    "$oid": "690dddc8c0d7d24c6849d254"
+  },
+  "results": [
+    {
+      "invoice_id": "IN000000000000027",
+      "invoice_number": "11735",
+      "invoice_date": null,
+      "invoice_amount": 21052.51,
+      "vendor_name": "M/S JOSHI TRADING COMPANY",
+      "vendor_gstin": "08BYUPS2122L1ZT",
+      "company_gstin": "08AAACT1507C1ZX",
+      "subtotal": 20050.01,
+      "cgst_amount": 501.25,
+      "sgst_amount": 501.25,
+      "igst_amount": 0,
+      "gst_rate": 5,
+      "hsn_sac_codes": [
+        "25210010"
+      ],
+      "line_items": [
+        {
+          "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+          "hsn_sac": "25210010",
+          "quantity": 471,
+          "rate": 42.56,
+          "amount": 20050.01
+        }
+      ],
+      "_id": "690ddbeac0d7d24c6849d252",
+      "id": "690ddbeac0d7d24c6849d252",
+      "upload_timestamp": "2025-11-07T11:45:46.806Z",
+      "processing_status": {
+        "ocr_extraction": {
+          "success": true,
+          "comments": "OCR extraction successful"
+        },
+        "arithmetic_accuracy": {
+          "success": true,
+          "comments": "All calculations verified successfully"
+        },
+        "price_anomaly_check": {
+          "success": false,
+          "comments": "Price anomaly check failed"
+        },
+        "duplicate_detection": {
+          "success": false,
+          "comments": "Duplicate check failed"
+        },
+        "gst_validation": {
+          "success": false,
+          "comments": "GST validation failed"
+        },
+        "gst_rate_validation": {
+          "success": false,
+          "comments": "GST rate validation failed"
+        }
+      },
+      "api_responses": {
+        "ocr_processing": {
+          "success": true,
+          "comments": "OCR extraction successful",
+          "full_response": {
+            "success": true,
+            "data": [
+              {
+                "invoice_id": "IN000000000000027",
+                "invoice_number": "11735",
+                "invoice_date": null,
+                "invoice_amount": 21052.51,
+                "vendor_name": "M/S JOSHI TRADING COMPANY",
+                "vendor_gstin": "08BYUPS2122L1ZT",
+                "company_gstin": "08AAACT1507C1ZX",
+                "hsn_sac_codes": [
+                  "25210010"
+                ],
+                "line_items": [
+                  {
+                    "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                    "hsn_sac": "25210010",
+                    "quantity": 471,
+                    "rate": 42.56,
+                    "amount": 20050.01
+                  }
+                ],
+                "subtotal": 20050.01,
+                "cgst_amount": 501.25,
+                "sgst_amount": 501.25,
+                "igst_amount": 0,
+                "gst_rate": 5,
+                "upload_timestamp": "2025-11-07T11:45:46.806Z",
+                "_id": "690ddbeac0d7d24c6849d252",
+                "id": "690ddbeac0d7d24c6849d252"
+              }
+            ]
+          }
+        },
+        "arithmetic_accuracy": {
+          "success": true,
+          "comments": "All calculations verified successfully",
+          "full_response": {
+            "isValid": true,
+            "errors": [],
+            "calculations": {
+              "subtotal": null,
+              "cgst": 0,
+              "sgst": 0,
+              "igst": 0,
+              "calculatedTotal": null,
+              "invoiceAmount": null
+            }
+          }
+        },
+        "price_anomaly_check": {
+          "success": false,
+          "comments": "Price anomaly check failed",
+          "full_response": {
+            "anomalies": [
+              {
+                "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                "billed_rate": 42.56,
+                "issue": "No market rate found"
+              }
+            ],
+            "marketComparison": [
+              {
+                "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                "billed_rate": 42.56,
+                "market_rate": null,
+                "deviation_percent": null,
+                "status": "No market rate found"
+              }
+            ],
+            "anomalyFound": true,
+            "totalItems": 1,
+            "anomalyCount": 1,
+            "summary": "Analyzed 1 items, found 1 anomalies"
+          }
+        },
+        "duplicate_detection": {
+          "success": false,
+          "comments": "Duplicate check failed",
+          "full_response": {
+            "is_duplicate": false,
+            "duplicate_type": "none",
+            "confidence_score": 0,
+            "matched_invoice_ids": [],
+            "duplicate_flags": []
+          }
+        },
+        "gst_validation": {
+          "success": false,
+          "comments": "GST validation failed",
+          "full_response": {
+            "vendorValidation": {
+              "gstin": "03DOXPM4071K1ZE",
+              "legalName": "DISHANT MAHAJAN",
+              "tradeName": "AppyFlow Technologies",
+              "pan": "BYUPS2122L",
+              "status": "Active",
+              "active": true,
+              "businessType": "Proprietorship",
+              "registrationDate": "17/12/2019",
+              "state": "Punjab",
+              "district": "Ludhiana"
+            },
+            "companyValidation": {
+              "gstin": "03DOXPM4071K1ZE",
+              "legalName": "DISHANT MAHAJAN",
+              "tradeName": "AppyFlow Technologies",
+              "pan": "AAACT1507C",
+              "status": "Active",
+              "active": true,
+              "businessType": "Proprietorship",
+              "registrationDate": "17/12/2019",
+              "state": "Punjab",
+              "district": "Ludhiana"
+            },
+            "gstSummary": {
+              "vendor_gstin_from_invoice": "08BYUPS2122L1ZT",
+              "company_gstin_from_invoice": "08AAACT1507C1ZX",
+              "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+              "company_gstin_from_api": "03DOXPM4071K1ZE",
+              "vendor_business_name_from_invoice": "M/S JOSHI TRADING COMPANY",
+              "company_business_name_from_invoice": "",
+              "vendor_business_name_from_api": "AppyFlow Technologies",
+              "company_business_name_from_api": "AppyFlow Technologies",
+              "vendor_gst_active": true,
+              "company_gst_active": true,
+              "vendor_business_match": false,
+              "company_business_match": false,
+              "overall_valid": false
+            },
+            "valid": false,
+            "messages": [
+              "Vendor GSTIN is Active",
+              "Company GSTIN is Active",
+              "Vendor business name mismatch",
+              "Company business name mismatch"
+            ]
+          }
+        },
+        "gst_rate_validation": {
+          "success": false,
+          "comments": "GST rate validation failed",
+          "full_response": {
+            "status": "anomaly",
+            "anomalies": [
+              {
+                "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                "hsn_sac": "25210010",
+                "billed": {
+                  "rate": 42.56,
+                  "amount": 20050.01,
+                  "quantity": 471
+                },
+                "expected": null,
+                "status": "INVALID",
+                "issue": "HSN/SAC not found in master list"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "overall_status": "failed",
+    "processed_at": "2025-11-07T11:45:53.979Z",
+    "file_name": "N10N20125402115.pdf",
+    "file_type": "pdf",
+    "total_invoices": 1
+  },
+  "processing_summary": {
+    "passed_checks": 2,
+    "failed_checks": 4,
+    "total_checks": 6,
+    "all_checks": [
+      {
+        "check_name": "ocr_extraction",
+        "success": true,
+        "comments": "OCR extraction successful"
+      },
+      {
+        "check_name": "arithmetic_accuracy",
+        "success": true,
+        "comments": "All calculations verified successfully"
+      },
+      {
+        "check_name": "price_anomaly_check",
+        "success": false,
+        "comments": "Price anomaly check failed"
+      },
+      {
+        "check_name": "duplicate_detection",
+        "success": false,
+        "comments": "Duplicate check failed"
+      },
+      {
+        "check_name": "gst_validation",
+        "success": false,
+        "comments": "GST validation failed"
+      },
+      {
+        "check_name": "gst_rate_validation",
+        "success": false,
+        "comments": "GST rate validation failed"
+      }
+    ]
+  },
+  "api_responses_full": {
+    "ocr_processing": {
+      "success": true,
+      "comments": "OCR extraction successful",
+      "full_response": {
+        "success": true,
+        "data": [
+          {
+            "invoice_id": "IN000000000000027",
+            "invoice_number": "11735",
+            "invoice_date": null,
+            "invoice_amount": 21052.51,
+            "vendor_name": "M/S JOSHI TRADING COMPANY",
+            "vendor_gstin": "08BYUPS2122L1ZT",
+            "company_gstin": "08AAACT1507C1ZX",
+            "hsn_sac_codes": [
+              "25210010"
+            ],
+            "line_items": [
+              {
+                "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+                "hsn_sac": "25210010",
+                "quantity": 471,
+                "rate": 42.56,
+                "amount": 20050.01
+              }
+            ],
+            "subtotal": 20050.01,
+            "cgst_amount": 501.25,
+            "sgst_amount": 501.25,
+            "igst_amount": 0,
+            "gst_rate": 5,
+            "upload_timestamp": "2025-11-07T11:45:46.806Z",
+            "_id": "690ddbeac0d7d24c6849d252",
+            "id": "690ddbeac0d7d24c6849d252"
+          }
+        ]
+      }
+    },
+    "arithmetic_accuracy": {
+      "success": true,
+      "comments": "All calculations verified successfully",
+      "full_response": {
+        "isValid": true,
+        "errors": [],
+        "calculations": {
+          "subtotal": null,
+          "cgst": 0,
+          "sgst": 0,
+          "igst": 0,
+          "calculatedTotal": null,
+          "invoiceAmount": null
+        }
+      }
+    },
+    "price_anomaly_check": {
+      "success": false,
+      "comments": "Price anomaly check failed",
+      "full_response": {
+        "anomalies": [
+          {
+            "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+            "billed_rate": 42.56,
+            "issue": "No market rate found"
+          }
+        ],
+        "marketComparison": [
+          {
+            "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+            "billed_rate": 42.56,
+            "market_rate": null,
+            "deviation_percent": null,
+            "status": "No market rate found"
+          }
+        ],
+        "anomalyFound": true,
+        "totalItems": 1,
+        "anomalyCount": 1,
+        "summary": "Analyzed 1 items, found 1 anomalies"
+      }
+    },
+    "duplicate_detection": {
+      "success": false,
+      "comments": "Duplicate check failed",
+      "full_response": {
+        "is_duplicate": false,
+        "duplicate_type": "none",
+        "confidence_score": 0,
+        "matched_invoice_ids": [],
+        "duplicate_flags": []
+      }
+    },
+    "gst_validation": {
+      "success": false,
+      "comments": "GST validation failed",
+      "full_response": {
+        "vendorValidation": {
+          "gstin": "03DOXPM4071K1ZE",
+          "legalName": "DISHANT MAHAJAN",
+          "tradeName": "AppyFlow Technologies",
+          "pan": "BYUPS2122L",
+          "status": "Active",
+          "active": true,
+          "businessType": "Proprietorship",
+          "registrationDate": "17/12/2019",
+          "state": "Punjab",
+          "district": "Ludhiana"
+        },
+        "companyValidation": {
+          "gstin": "03DOXPM4071K1ZE",
+          "legalName": "DISHANT MAHAJAN",
+          "tradeName": "AppyFlow Technologies",
+          "pan": "AAACT1507C",
+          "status": "Active",
+          "active": true,
+          "businessType": "Proprietorship",
+          "registrationDate": "17/12/2019",
+          "state": "Punjab",
+          "district": "Ludhiana"
+        },
+        "gstSummary": {
+          "vendor_gstin_from_invoice": "08BYUPS2122L1ZT",
+          "company_gstin_from_invoice": "08AAACT1507C1ZX",
+          "vendor_gstin_from_api": "03DOXPM4071K1ZE",
+          "company_gstin_from_api": "03DOXPM4071K1ZE",
+          "vendor_business_name_from_invoice": "M/S JOSHI TRADING COMPANY",
+          "company_business_name_from_invoice": "",
+          "vendor_business_name_from_api": "AppyFlow Technologies",
+          "company_business_name_from_api": "AppyFlow Technologies",
+          "vendor_gst_active": true,
+          "company_gst_active": true,
+          "vendor_business_match": false,
+          "company_business_match": false,
+          "overall_valid": false
+        },
+        "valid": false,
+        "messages": [
+          "Vendor GSTIN is Active",
+          "Company GSTIN is Active",
+          "Vendor business name mismatch",
+          "Company business name mismatch"
+        ]
+      }
+    },
+    "gst_rate_validation": {
+      "success": false,
+      "comments": "GST rate validation failed",
+      "full_response": {
+        "status": "anomaly",
+        "anomalies": [
+          {
+            "description": "BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRANA TO ACC CEMENT WORKS LAKHERI (N-201) PERIOED- 15.06.2024 To 21.06.2024",
+            "hsn_sac": "25210010",
+            "billed": {
+              "rate": 42.56,
+              "amount": 20050.01,
+              "quantity": 471
+            },
+            "expected": null,
+            "status": "INVALID",
+            "issue": "HSN/SAC not found in master list"
+          }
+        ]
+      }
+    }
+  }
+}
+
+Request Fields:
+- invoice_data (object): Complete extracted invoice information
+  - invoice_number (string): Invoice number
+  - invoice_date (string): Invoice date
+  - invoice_amount (string): Total invoice amount
+  - vendor_name (string): Vendor name (if available)
+  - vendor_gstin (string): Vendor GSTIN
+  - company_gstin (string): Company GSTIN
+  - hsn_sac_codes (array): Array of HSN/SAC codes
+  - line_items (array): Array of line item objects
+  - subtotal (string): Subtotal amount
+  - cgst_amount (string): CGST amount
+  - sgst_amount (string): SGST amount
+  - igst_amount (string|null): IGST amount
+  - gst_rate (string): GST rate
+
+- api_responses (object): FULL API RESPONSES from each validation step
+  - ocr_processing (object):
+    - success (boolean): Whether OCR was successful
+    - comments (string|null): Error message if failed
+    - full_response (object): Complete OCR API response with all extracted data
+  
+  - arithmetic_accuracy (object):
+    - success (boolean): Whether arithmetic check passed
+    - comments (string|null): Details if failed
+    - full_response (object): Complete arithmetic validation response including verification details
+  
+  - price_anomaly_check (object):
+    - success (boolean): Whether price anomaly check passed
+    - comments (string): Summary message
+    - full_response (object): Complete price anomaly API response with benchmark comparisons, deviation percentages, and risk levels
+  
+  - duplicate_detection (object):
+    - success (boolean): Whether duplicate check passed
+    - comments (string): Summary message
+    - full_response (object): Complete duplicate detection response including matching invoices, similarity scores, and scan details
+  
+  - gst_validation (object):
+    - success (boolean): Whether GST validation passed
+    - comments (string|null): Error message if failed
+    - full_response (object): Complete GST validation response including vendor and company GSTIN details, legal names, registration status
+  
+  - gst_rate_validation (object):
+    - success (boolean): Whether GST rate validation passed
+    - comments (string): Summary message
+    - full_response (object): Complete GST rate validation response including HSN/SAC validations, applicable rates, and rate breakdowns
+
+- processing_status (object): Summary status of each validation step (for backward compatibility)
+  - ocr_processing (object):
+    - success (boolean): Whether OCR was successful
+    - comments (string|null): Error message if failed
+  - arithmetic_accuracy (object):
+    - success (boolean): Whether arithmetic check passed
+    - comments (string|null): Details if failed (e.g., "Subtotal mismatch: Expected 160000, Got 159000")
+  - price_anomaly_check (object):
+    - success (boolean): Whether price anomaly check passed
+    - comments (string|null): Details about anomalies found
+  - duplicate_detection (object):
+    - success (boolean): Whether duplicate check passed (true = no duplicate)
+    - comments (string|null): Details if duplicate found
+  - gst_validation (object):
+    - success (boolean): Whether GST validation passed
+    - comments (string|null): Error details if failed
+  - gst_rate_validation (object):
+    - success (boolean): Whether GST rate validation passed
+    - comments (string|null): Details about rate anomalies if found
+
+- overall_status (string): Overall processing status
+  - "completed": All validations passed
+  - "completed_with_warnings": Completed but some warnings (e.g., price anomalies)
+  - "failed": One or more critical validations failed
+
+- processed_at (string): ISO 8601 timestamp of when processing completed
+- file_name (string): Original uploaded file name
+- file_type (string): File type (pdf, png, jpeg)
+
+Response Format:
+
+Success Response (HTTP 200):
+[
+  {
+    "success": true,
+    "invoice_id": "673c5e1f2a8d9b4c6849d123",
+    "message": "Invoice processed and stored successfully"
+  }
+]
+
+Failure Response (HTTP 200):
+[
+  {
+    "success": false,
+    "error": "Failed to store invoice data",
+    "details": "Database connection error"
+  }
+]
+
+Error Response (HTTP 400):
+{
+  "error": "Invalid request body",
+  "details": "Missing required field: invoice_data"
+}
+
+Response Fields:
+- success (boolean): Indicates whether the invoice was stored successfully
+- invoice_id (string): Unique identifier assigned to the stored invoice (MongoDB ObjectId)
+- message (string): Success message
+- error (string): Error message if success is false
+- details (string): Additional error details if available
+
+Usage Notes:
+1. This endpoint should be called after ALL validation steps are completed
+2. It should be called regardless of whether validations passed or failed
+3. The processing_status object should accurately reflect the result of each step
+4. If a step fails, subsequent steps may not have been executed - mark them with success: false and appropriate comments
+5. The invoice_id returned can be used to reference this invoice in other operations (feedback, reports, etc.)
+6. Store the complete invoice data for audit trail and reporting purposes
+
+Example Workflow:
+1. OCR processing completes → Extract data
+2. Run all validation checks (arithmetic, price anomaly, duplicate, GST, GST rate)
+3. Collect results from all validation steps
+4. Call this endpoint with complete invoice data and all validation results
+5. Store the returned invoice_id for future reference
+
+Example Failed Scenario:
+{
+  "invoice_data": {
+    "invoice_number": "CONS-2025-790",
+    "invoice_date": "October 13, 2025",
+    "invoice_amount": "50000",
+    "vendor_gstin": "07AADCB3456H1ZP",
+    "company_gstin": "27AAACP1234M1Z1",
+    // ... other fields
+  },
+  "processing_status": {
+    "ocr_processing": {
+      "success": true,
+      "comments": null
+    },
+    "arithmetic_accuracy": {
+      "success": false,
+      "comments": "Subtotal mismatch: Line items total 48000 but subtotal is 50000"
+    },
+    "price_anomaly_check": {
+      "success": false,
+      "comments": "Not executed due to arithmetic failure"
+    },
+    "duplicate_detection": {
+      "success": false,
+      "comments": "Not executed due to arithmetic failure"
+    },
+    "gst_validation": {
+      "success": false,
+      "comments": "Not executed due to arithmetic failure"
+    },
+    "gst_rate_validation": {
+      "success": false,
+      "comments": "Not executed due to arithmetic failure"
+    }
+  },
+  "overall_status": "failed",
+  "processed_at": "2025-11-07T14:35:00Z",
+  "file_name": "invoice_2025_790.pdf",
+  "file_type": "pdf"
+}

@@ -3,7 +3,6 @@
  * Displays and manages invoice anomalies
  */
 
-import { API_ENDPOINTS } from '../utils/api-endpoints.js';
 import { showNotification } from '../utils/notification.js';
 
 // State Management
@@ -46,9 +45,16 @@ const elements = {
  * Initialize the page
  */
 async function init() {
-    // Load templates
-    await window.templateLoader.loadNavbar();
-    await window.templateLoader.loadSidebar();
+    console.log('Anomalies dashboard init started');
+    
+    // Wait for templates to load (auto-loaded by templates.js)
+    if (!document.body.classList.contains('templates-loaded')) {
+        console.log('Waiting for templates to load...');
+        await new Promise(resolve => {
+            document.addEventListener('templatesLoaded', resolve, { once: true });
+        });
+        console.log('Templates loaded');
+    }
 
     // Initialize DOM elements
     initializeElements();
@@ -61,17 +67,21 @@ async function init() {
 
     // Remove loading state
     document.body.classList.remove('loading-layout');
+    
+    console.log('Anomalies dashboard init complete');
 }
 
 /**
  * Initialize DOM element references
  */
 function initializeElements() {
+    console.log('Initializing DOM elements...');
     elements.searchInput = document.getElementById('searchInput');
     elements.typeFilter = document.getElementById('typeFilter');
     elements.severityFilter = document.getElementById('severityFilter');
     elements.statusFilter = document.getElementById('statusFilter');
     elements.refreshBtn = document.getElementById('refreshBtn');
+    console.log('refreshBtn found:', elements.refreshBtn);
     elements.tableBody = document.getElementById('anomaliesTableBody');
     elements.paginationContainer = document.getElementById('paginationContainer');
     elements.modalOverlay = document.getElementById('modalOverlay');
@@ -85,12 +95,15 @@ function initializeElements() {
     elements.priceAnomalyCount = document.getElementById('priceAnomalyCount');
     elements.gstComplianceCount = document.getElementById('gstComplianceCount');
     elements.highRiskCount = document.getElementById('highRiskCount');
+    console.log('DOM elements initialized');
 }
 
 /**
  * Attach event listeners
  */
 function attachEventListeners() {
+    console.log('Attaching event listeners...');
+    
     // Search input
     elements.searchInput?.addEventListener('input', handleSearch);
 
@@ -100,7 +113,13 @@ function attachEventListeners() {
     elements.statusFilter?.addEventListener('change', handleFilterChange);
 
     // Refresh button
-    elements.refreshBtn?.addEventListener('click', handleRefresh);
+    console.log('Refresh button element:', elements.refreshBtn);
+    if (elements.refreshBtn) {
+        console.log('Attaching click event to refresh button');
+        elements.refreshBtn.addEventListener('click', handleRefresh);
+    } else {
+        console.error('Refresh button element not found!');
+    }
 
     // Modal close
     elements.modalClose?.addEventListener('click', closeModal);
@@ -109,39 +128,114 @@ function attachEventListeners() {
             closeModal();
         }
     });
-
-    // Anomaly type cards
-    document.querySelectorAll('.anomaly-type-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const type = card.dataset.type;
-            elements.typeFilter.value = type;
-            handleFilterChange();
-        });
-    });
-}
-
-/**
+    
+    console.log('Event listeners attached');
+}/**
  * Fetch anomalies from API
  */
-async function fetchAnomalies() {
+async function fetchAnomalies(forceRefresh = false) {
     try {
-        // For now, using mock data since API endpoint might not be ready
-        // Uncomment below when API is ready
-        // const response = await fetch(API_ENDPOINTS.FETCH_ANOMALIES);
-        // const data = await response.json();
+        console.log('=== fetchAnomalies START ===');
+        console.log('Force refresh:', forceRefresh);
         
-        // Mock data for testing
-        const data = getMockData();
-
-        if (data.success) {
-            state.anomalies = data.anomalies;
-            updateSummary(data.summary);
-            applyFilters();
+        // Check localStorage first (unless force refresh)
+        if (!forceRefresh) {
+            const cachedData = localStorage.getItem('anomaliesData');
+            const cacheTimestamp = localStorage.getItem('anomaliesDataTimestamp');
+            
+            if (cachedData && cacheTimestamp) {
+                const cacheAge = Date.now() - parseInt(cacheTimestamp);
+                const cacheMaxAge = 5 * 60 * 1000; // 5 minutes
+                
+                console.log('Cache found, age:', cacheAge, 'ms');
+                
+                if (cacheAge < cacheMaxAge) {
+                    console.log('Using cached data');
+                    const cachedAnomalies = JSON.parse(cachedData);
+                    
+                    state.anomalies = cachedAnomalies;
+                    console.log('Loaded from cache:', state.anomalies.length, 'anomalies');
+                    
+                    // Calculate summary
+                    const summary = calculateSummary(state.anomalies);
+                    updateSummary(summary);
+                    
+                    // Apply filters and render
+                    applyFilters();
+                    console.log('=== fetchAnomalies END (cached) ===');
+                    return;
+                } else {
+                    console.log('Cache expired, fetching fresh data');
+                }
+            } else {
+                console.log('No cache found, fetching fresh data');
+            }
         } else {
-            throw new Error(data.message || 'Failed to fetch anomalies');
+            console.log('Force refresh requested, bypassing cache');
         }
+        
+        console.log('API Endpoint:', window.API_ENDPOINTS.FINGUARD.FETCH_ANOMALIES);
+        
+        // Fetch from the anomalies API endpoint
+        const response = await fetch(window.API_ENDPOINTS.FINGUARD.FETCH_ANOMALIES, {
+            method: 'GET'
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const apiData = await response.json();
+        console.log('Anomalies API response:', apiData);
+        console.log('API data type:', typeof apiData);
+        console.log('Is array:', Array.isArray(apiData));
+
+        // API returns an array of objects, each containing an invoices array
+        let anomaliesData = [];
+        
+        if (Array.isArray(apiData)) {
+            console.log('Processing array with', apiData.length, 'items');
+            // Extract invoices from each object in the array
+            apiData.forEach((item, index) => {
+                console.log(`Item ${index}:`, item);
+                if (item.invoices && Array.isArray(item.invoices)) {
+                    console.log(`  - Found ${item.invoices.length} invoices`);
+                    anomaliesData = anomaliesData.concat(item.invoices);
+                }
+            });
+        }
+
+        console.log('Extracted anomalies data:', anomaliesData);
+        console.log('Total invoices with anomalies extracted:', anomaliesData.length);
+
+        // Transform API data to anomaly records
+        state.anomalies = transformAnomaliesToRecords(anomaliesData);
+        console.log('Transformed anomalies:', state.anomalies);
+        console.log('Total anomalies after transform:', state.anomalies.length);
+
+        // Save to localStorage
+        localStorage.setItem('anomaliesData', JSON.stringify(state.anomalies));
+        localStorage.setItem('anomaliesDataTimestamp', Date.now().toString());
+        console.log('Data saved to localStorage');
+
+        // Calculate summary
+        const summary = calculateSummary(state.anomalies);
+        console.log('Calculated summary:', summary);
+        updateSummary(summary);
+
+        // Apply filters and render
+        console.log('Calling applyFilters...');
+        applyFilters();
+        console.log('=== fetchAnomalies END ===');
+
     } catch (error) {
-        console.error('Error fetching anomalies:', error);
+        console.error('=== fetchAnomalies ERROR ===');
+        console.error('Error details:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
         showNotification('Failed to load anomalies data', 'error');
         elements.tableBody.innerHTML = `
             <tr class="empty-state">
@@ -162,19 +256,137 @@ async function fetchAnomalies() {
 }
 
 /**
+ * Transform anomalies data to anomaly records
+ */
+function transformAnomaliesToRecords(anomaliesData) {
+    console.log('=== transformAnomaliesToRecords START ===');
+    console.log('Input data:', anomaliesData);
+    const records = [];
+
+    // The API response structure: invoices array containing invoice objects with anomalyDetails
+    anomaliesData.forEach(invoice => {
+        console.log('Processing invoice:', invoice);
+        
+        const anomalyDetails = invoice.anomalyDetails || [];
+        
+        // Create a record for each anomaly detail
+        anomalyDetails.forEach((anomaly, index) => {
+            // Map the API type to our display type
+            let anomalyType = 'other';
+            if (anomaly.type === 'DUPLICATE_DETECTION') anomalyType = 'duplicate';
+            else if (anomaly.type === 'PRICE_ANOMALY') anomalyType = 'price_anomaly';
+            else if (anomaly.type === 'GST_VALIDATION') anomalyType = 'gst_compliance';
+            else if (anomaly.type === 'GST_RATE_ANOMALY') anomalyType = 'gst_compliance';
+            else if (anomaly.type === 'HIGH_RISK_FLAG') anomalyType = 'high_risk';
+            
+            records.push({
+                id: `${invoice.invoiceId}-${index}`,
+                invoice_number: invoice.invoiceNumber,
+                vendor_name: invoice.vendorName,
+                vendor_gstin: invoice.gstMismatch?.invoiceVendorGstin || 'N/A',
+                invoice_date: invoice.uploadTimestamp,
+                invoice_amount: invoice.invoiceAmount,
+                anomaly_type: anomalyType,
+                severity: anomaly.severity.toLowerCase(), // 'HIGH', 'MEDIUM', 'LOW' -> 'high', 'medium', 'low'
+                risk_score: invoice.riskScore || 0,
+                status: invoice.status || 'flagged', // 'under_review' -> keep as is
+                description: anomaly.description,
+                detection_date: invoice.uploadTimestamp,
+                batch_id: invoice.batchId,
+                invoice_data: invoice
+            });
+        });
+    });
+
+    console.log('Transformed records:', records);
+    console.log('Total records:', records.length);
+    console.log('=== transformAnomaliesToRecords END ===');
+    return records;
+}
+
+/**
+ * Determine severity based on anomaly type and amount
+ */
+function determineSeverity(type, amount) {
+    const numAmount = parseFloat(amount) || 0;
+    
+    // High severity rules
+    if (type === 'duplicate' || type === 'gst_compliance') {
+        return 'high';
+    }
+    if (numAmount > 100000) {
+        return 'high';
+    }
+    
+    // Medium severity rules
+    if (numAmount > 50000) {
+        return 'medium';
+    }
+    if (type === 'price_anomaly' || type === 'calculation_error') {
+        return 'medium';
+    }
+    
+    // Low severity
+    return 'low';
+}
+
+/**
+ * Calculate summary statistics
+ */
+function calculateSummary(anomalies) {
+    const summary = {
+        total_anomalies: anomalies.length,
+        by_severity: {
+            high: 0,
+            medium: 0,
+            low: 0
+        },
+        by_type: {
+            duplicate: 0,
+            price_anomaly: 0,
+            gst_compliance: 0,
+            high_risk: 0,
+            other: 0
+        }
+    };
+
+    anomalies.forEach(anomaly => {
+        // Count by severity
+        if (anomaly.severity === 'high') summary.by_severity.high++;
+        else if (anomaly.severity === 'medium') summary.by_severity.medium++;
+        else summary.by_severity.low++;
+
+        // Count by type
+        if (anomaly.anomaly_type === 'duplicate') summary.by_type.duplicate++;
+        else if (anomaly.anomaly_type === 'price_anomaly') summary.by_type.price_anomaly++;
+        else if (anomaly.anomaly_type === 'gst_compliance') summary.by_type.gst_compliance++;
+        else if (anomaly.anomaly_type === 'high_risk') summary.by_type.high_risk++;
+        else summary.by_type.other++;
+    });
+
+    return summary;
+}
+
+/**
  * Update summary cards
  */
 function updateSummary(summary) {
     if (!summary) return;
 
+    console.log('Updating summary with:', summary);
+
     elements.totalAnomalies.textContent = summary.total_anomalies || 0;
     elements.highSeverity.textContent = summary.by_severity?.high || 0;
     elements.mediumSeverity.textContent = summary.by_severity?.medium || 0;
     elements.lowSeverity.textContent = summary.by_severity?.low || 0;
-    elements.duplicateCount.textContent = summary.by_type?.duplicate || 0;
-    elements.priceAnomalyCount.textContent = summary.by_type?.price_anomaly || 0;
-    elements.gstComplianceCount.textContent = summary.by_type?.gst_compliance || 0;
-    elements.highRiskCount.textContent = summary.by_type?.high_risk || 0;
+    
+    // Anomaly type counts
+    if (elements.duplicateCount) elements.duplicateCount.textContent = summary.by_type?.duplicate || 0;
+    if (elements.priceAnomalyCount) elements.priceAnomalyCount.textContent = summary.by_type?.price_anomaly || 0;
+    if (elements.gstComplianceCount) elements.gstComplianceCount.textContent = summary.by_type?.gst_compliance || 0;
+    if (elements.highRiskCount) elements.highRiskCount.textContent = summary.by_type?.high_risk || 0;
+    
+    console.log('Summary updated');
 }
 
 /**
@@ -201,6 +413,10 @@ function handleFilterChange() {
  * Apply filters to anomalies
  */
 function applyFilters() {
+    console.log('=== applyFilters START ===');
+    console.log('Total anomalies:', state.anomalies.length);
+    console.log('Current filters:', state.filters);
+    
     let filtered = [...state.anomalies];
 
     // Apply search filter
@@ -211,33 +427,46 @@ function applyFilters() {
             anomaly.vendor_gstin.toLowerCase().includes(state.filters.search) ||
             anomaly.id.toLowerCase().includes(state.filters.search)
         );
+        console.log('After search filter:', filtered.length);
     }
 
     // Apply type filter
     if (state.filters.type) {
         filtered = filtered.filter(anomaly => anomaly.anomaly_type === state.filters.type);
+        console.log('After type filter:', filtered.length);
     }
 
     // Apply severity filter
     if (state.filters.severity) {
         filtered = filtered.filter(anomaly => anomaly.severity === state.filters.severity);
+        console.log('After severity filter:', filtered.length);
     }
 
     // Apply status filter
     if (state.filters.status) {
         filtered = filtered.filter(anomaly => anomaly.status === state.filters.status);
+        console.log('After status filter:', filtered.length);
     }
 
     state.filteredAnomalies = filtered;
+    console.log('Final filtered anomalies:', filtered.length);
+    console.log('Calling renderTable...');
     renderTable();
+    console.log('Calling renderPagination...');
     renderPagination();
+    console.log('=== applyFilters END ===');
 }
 
 /**
  * Render table with anomalies
  */
 function renderTable() {
+    console.log('=== renderTable START ===');
+    console.log('Filtered anomalies count:', state.filteredAnomalies.length);
+    console.log('tableBody element:', elements.tableBody);
+    
     if (state.filteredAnomalies.length === 0) {
+        console.log('No anomalies to display, showing empty state');
         elements.tableBody.innerHTML = `
             <tr class="empty-state">
                 <td colspan="10" class="text-center">
@@ -254,12 +483,14 @@ function renderTable() {
                 </td>
             </tr>
         `;
+        console.log('=== renderTable END (empty state) ===');
         return;
     }
 
     const start = (state.currentPage - 1) * state.itemsPerPage;
     const end = start + state.itemsPerPage;
     const pageAnomalies = state.filteredAnomalies.slice(start, end);
+    console.log(`Rendering page ${state.currentPage}, items ${start}-${end}, count: ${pageAnomalies.length}`);
 
     elements.tableBody.innerHTML = pageAnomalies.map(anomaly => `
         <tr>
@@ -286,6 +517,8 @@ function renderTable() {
             </td>
         </tr>
     `).join('');
+    console.log('Table HTML updated');
+    console.log('=== renderTable END ===');
 }
 
 /**
@@ -513,10 +746,14 @@ function closeModal() {
  * Handle refresh
  */
 async function handleRefresh() {
+    console.log('handleRefresh called');
+    console.log('Refresh button element:', elements.refreshBtn);
     elements.refreshBtn.disabled = true;
-    await fetchAnomalies();
-    showNotification('Data refreshed successfully', 'success');
+    console.log('Calling fetchAnomalies with forceRefresh=true...');
+    await fetchAnomalies(true); // Force refresh
+    showNotification('success', 'Data refreshed successfully');
     elements.refreshBtn.disabled = false;
+    console.log('handleRefresh complete');
 }
 
 /**

@@ -166,6 +166,75 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.setItem('currentInvoiceData', JSON.stringify(invoiceData));
                 console.log('Invoice data stored in localStorage:', invoiceData);
                 
+                // Initialize processing status tracking object
+                const processingStatus = {
+                    ocr_extraction: {
+                        success: true,
+                        comments: 'OCR extraction successful'
+                    },
+                    arithmetic_accuracy: {
+                        success: null,
+                        comments: 'Not executed yet'
+                    },
+                    price_anomaly_check: {
+                        success: null,
+                        comments: 'Not executed yet'
+                    },
+                    duplicate_detection: {
+                        success: null,
+                        comments: 'Not executed yet'
+                    },
+                    gst_validation: {
+                        success: null,
+                        comments: 'Not executed yet'
+                    },
+                    gst_rate_validation: {
+                        success: null,
+                        comments: 'Not executed yet'
+                    }
+                };
+                
+                // Initialize API responses tracking object
+                const apiResponses = {
+                    ocr_processing: {
+                        success: true,
+                        comments: 'OCR extraction successful',
+                        full_response: ocrResponse // Store complete OCR response
+                    },
+                    arithmetic_accuracy: {
+                        success: null,
+                        comments: 'Not executed yet',
+                        full_response: null
+                    },
+                    price_anomaly_check: {
+                        success: null,
+                        comments: 'Not executed yet',
+                        full_response: null
+                    },
+                    duplicate_detection: {
+                        success: null,
+                        comments: 'Not executed yet',
+                        full_response: null
+                    },
+                    gst_validation: {
+                        success: null,
+                        comments: 'Not executed yet',
+                        full_response: null
+                    },
+                    gst_rate_validation: {
+                        success: null,
+                        comments: 'Not executed yet',
+                        full_response: null
+                    }
+                };
+                
+                // Track overall status
+                let overallStatus = 'completed'; // Can be: completed, completed_with_warnings, failed
+                
+                console.log('=== Processing status tracking initialized ===');
+                console.log('=== API responses tracking initialized ===');
+                console.log('Initial processing status:', processingStatus);
+                
                 // Update timeline: OCR completed
                 updateTimelineStep('ocr', 'completed', 'Data extracted successfully');
                 
@@ -184,15 +253,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (arithmeticCheck.isValid) {
                         updateTimelineStep('arithmetic', 'completed', 'All calculations verified successfully');
+                        processingStatus.arithmetic_accuracy.success = true;
+                        processingStatus.arithmetic_accuracy.comments = 'All calculations verified successfully';
+                        apiResponses.arithmetic_accuracy.success = true;
+                        apiResponses.arithmetic_accuracy.comments = 'All calculations verified successfully';
+                        apiResponses.arithmetic_accuracy.full_response = arithmeticCheck;
                         console.log('Arithmetic validation passed:', arithmeticCheck);
                     } else {
                         updateTimelineStep('arithmetic', 'failed', `Calculation errors found: ${arithmeticCheck.errors.join(', ')}`);
+                        processingStatus.arithmetic_accuracy.success = false;
+                        processingStatus.arithmetic_accuracy.comments = `Calculation errors: ${arithmeticCheck.errors.join(', ')}`;
+                        apiResponses.arithmetic_accuracy.success = false;
+                        apiResponses.arithmetic_accuracy.comments = `Calculation errors: ${arithmeticCheck.errors.join(', ')}`;
+                        apiResponses.arithmetic_accuracy.full_response = arithmeticCheck;
+                        overallStatus = 'failed';
                         console.warn('Arithmetic validation failed:', arithmeticCheck);
                         // Continue to next step even if this fails
                     }
                 } catch (error) {
                     console.error('Arithmetic validation error:', error);
                     updateTimelineStep('arithmetic', 'failed', 'Failed to perform arithmetic checks');
+                    processingStatus.arithmetic_accuracy.success = false;
+                    processingStatus.arithmetic_accuracy.comments = `Error: ${error.message}`;
+                    apiResponses.arithmetic_accuracy.success = false;
+                    apiResponses.arithmetic_accuracy.comments = `Error: ${error.message}`;
+                    apiResponses.arithmetic_accuracy.full_response = { error: error.message };
+                    overallStatus = 'failed';
                     // Continue to next step
                 }
                 
@@ -222,14 +308,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     if (priceAnomalyData.success) {
-                        updateTimelineStep('price-anomaly', 'completed', 'No price anomalies detected');
+                        const hasAnomalies = priceAnomalyData.data && priceAnomalyData.data.anomalyFound;
+                        if (hasAnomalies) {
+                            updateTimelineStep('price-anomaly', 'failed', 'Price anomalies detected');
+                            processingStatus.price_anomaly_check.success = false;
+                            processingStatus.price_anomaly_check.comments = 'Price anomalies detected';
+                            apiResponses.price_anomaly_check.success = false;
+                            apiResponses.price_anomaly_check.comments = 'Price anomalies detected';
+                            apiResponses.price_anomaly_check.full_response = priceAnomalyData;
+                            overallStatus = 'completed_with_warnings';
+                        } else {
+                            updateTimelineStep('price-anomaly', 'completed', 'No price anomalies detected');
+                            processingStatus.price_anomaly_check.success = true;
+                            processingStatus.price_anomaly_check.comments = 'No price anomalies detected';
+                            apiResponses.price_anomaly_check.success = true;
+                            apiResponses.price_anomaly_check.comments = 'No price anomalies detected';
+                            apiResponses.price_anomaly_check.full_response = priceAnomalyData;
+                        }
                     } else {
                         updateTimelineStep('price-anomaly', 'failed', 'Price anomaly check failed');
+                        processingStatus.price_anomaly_check.success = false;
+                        processingStatus.price_anomaly_check.comments = 'Price anomaly check failed';
+                        apiResponses.price_anomaly_check.success = false;
+                        apiResponses.price_anomaly_check.comments = 'Price anomaly check failed';
+                        apiResponses.price_anomaly_check.full_response = priceAnomalyData;
+                        overallStatus = 'completed_with_warnings';
                         // Continue to next step even if this fails
                     }
                 } catch (error) {
                     console.error('Price anomaly check error:', error);
                     updateTimelineStep('price-anomaly', 'failed', 'Failed to check price anomalies');
+                    processingStatus.price_anomaly_check.success = false;
+                    processingStatus.price_anomaly_check.comments = `Error: ${error.message}`;
+                    apiResponses.price_anomaly_check.success = false;
+                    apiResponses.price_anomaly_check.comments = `Error: ${error.message}`;
+                    apiResponses.price_anomaly_check.full_response = { error: error.message };
+                    overallStatus = 'completed_with_warnings';
                 }
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -258,14 +372,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     if (duplicateData.success) {
-                        updateTimelineStep('duplicate', 'completed', 'No duplicates found');
+                        const isDuplicate = duplicateData.data && duplicateData.data.is_duplicate;
+                        if (isDuplicate) {
+                            updateTimelineStep('duplicate', 'failed', 'Duplicate invoice detected');
+                            processingStatus.duplicate_detection.success = false;
+                            processingStatus.duplicate_detection.comments = 'Duplicate invoice detected';
+                            apiResponses.duplicate_detection.success = false;
+                            apiResponses.duplicate_detection.comments = 'Duplicate invoice detected';
+                            apiResponses.duplicate_detection.full_response = duplicateData;
+                            overallStatus = 'failed';
+                        } else {
+                            updateTimelineStep('duplicate', 'completed', 'No duplicates found');
+                            processingStatus.duplicate_detection.success = true;
+                            processingStatus.duplicate_detection.comments = 'No duplicate found';
+                            apiResponses.duplicate_detection.success = true;
+                            apiResponses.duplicate_detection.comments = 'No duplicate found';
+                            apiResponses.duplicate_detection.full_response = duplicateData;
+                        }
                     } else {
                         updateTimelineStep('duplicate', 'failed', 'Duplicate check failed');
+                        processingStatus.duplicate_detection.success = false;
+                        processingStatus.duplicate_detection.comments = 'Duplicate check failed';
+                        apiResponses.duplicate_detection.success = false;
+                        apiResponses.duplicate_detection.comments = 'Duplicate check failed';
+                        apiResponses.duplicate_detection.full_response = duplicateData;
+                        overallStatus = 'completed_with_warnings';
                         // Continue to next step even if this fails
                     }
                 } catch (error) {
                     console.error('Duplicate detection error:', error);
                     updateTimelineStep('duplicate', 'failed', 'Failed to check for duplicates');
+                    processingStatus.duplicate_detection.success = false;
+                    processingStatus.duplicate_detection.comments = `Error: ${error.message}`;
+                    apiResponses.duplicate_detection.success = false;
+                    apiResponses.duplicate_detection.comments = `Error: ${error.message}`;
+                    apiResponses.duplicate_detection.full_response = { error: error.message };
+                    overallStatus = 'completed_with_warnings';
                 }
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -295,13 +437,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (gstData.success) {
                         updateTimelineStep('gst', 'completed', 'GST numbers validated');
+                        processingStatus.gst_validation.success = true;
+                        processingStatus.gst_validation.comments = 'GST numbers validated successfully';
+                        apiResponses.gst_validation.success = true;
+                        apiResponses.gst_validation.comments = 'GST numbers validated successfully';
+                        apiResponses.gst_validation.full_response = gstData;
                     } else {
                         updateTimelineStep('gst', 'failed', 'GST validation failed');
+                        processingStatus.gst_validation.success = false;
+                        processingStatus.gst_validation.comments = 'GST validation failed';
+                        apiResponses.gst_validation.success = false;
+                        apiResponses.gst_validation.comments = 'GST validation failed';
+                        apiResponses.gst_validation.full_response = gstData;
+                        overallStatus = 'failed';
                         // Continue to next step even if this fails
                     }
                 } catch (error) {
                     console.error('GST validation error:', error);
                     updateTimelineStep('gst', 'failed', 'Failed to validate GST');
+                    processingStatus.gst_validation.success = false;
+                    processingStatus.gst_validation.comments = `Error: ${error.message}`;
+                    apiResponses.gst_validation.success = false;
+                    apiResponses.gst_validation.comments = `Error: ${error.message}`;
+                    apiResponses.gst_validation.full_response = { error: error.message };
+                    overallStatus = 'failed';
                 }
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -331,28 +490,120 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (gstRateData.success) {
                         updateTimelineStep('gst-rate', 'completed', 'GST rates validated');
+                        processingStatus.gst_rate_validation.success = true;
+                        processingStatus.gst_rate_validation.comments = 'GST rates validated successfully';
+                        apiResponses.gst_rate_validation.success = true;
+                        apiResponses.gst_rate_validation.comments = 'GST rates validated successfully';
+                        apiResponses.gst_rate_validation.full_response = gstRateData;
                     } else {
                         updateTimelineStep('gst-rate', 'failed', 'GST rate validation failed');
+                        processingStatus.gst_rate_validation.success = false;
+                        processingStatus.gst_rate_validation.comments = 'GST rate validation failed';
+                        apiResponses.gst_rate_validation.success = false;
+                        apiResponses.gst_rate_validation.comments = 'GST rate validation failed';
+                        apiResponses.gst_rate_validation.full_response = gstRateData;
+                        overallStatus = 'failed';
                     }
                 } catch (error) {
                     console.error('GST rate validation error:', error);
                     updateTimelineStep('gst-rate', 'failed', 'Failed to validate GST rates');
+                    processingStatus.gst_rate_validation.success = false;
+                    processingStatus.gst_rate_validation.comments = `Error: ${error.message}`;
+                    apiResponses.gst_rate_validation.success = false;
+                    apiResponses.gst_rate_validation.comments = `Error: ${error.message}`;
+                    apiResponses.gst_rate_validation.full_response = { error: error.message };
+                    overallStatus = 'failed';
                 }
                 
-                // Display final success notification
+                // Store processed invoice in database
                 if (!processingCancelled) {
-                    window.NotificationSystem.success(
-                        'Processing Complete',
-                        'All validation checks completed successfully!'
-                    );
+                    console.log('=== Storing processed invoice in database ===');
+                    console.log('Invoice Data:', invoiceData);
+                    console.log('Processing Status:', processingStatus);
+                    console.log('API Responses:', apiResponses);
+                    console.log('Overall Status:', overallStatus);
+                    console.log('File Name:', selectedFile.name);
+                    console.log('File Type:', fileType);
                     
-                    // Auto-hide modal after 3 seconds
-                    setTimeout(() => {
+                    try {
+                        const storeResponse = await storeProcessedInvoice(
+                            invoiceData,
+                            processingStatus,
+                            apiResponses, // Include full API responses
+                            overallStatus,
+                            selectedFile.name,
+                            fileType
+                        );
+                        console.log('=== Store invoice response:', storeResponse);
+                        
+                        // Close timeline modal
                         if (processingPopup) {
                             processingPopup.style.display = 'none';
                         }
-                    }, 3000);
+                        
+                        // Check if response is valid and not null
+                        if (storeResponse && storeResponse !== null && !storeResponse.error) {
+                            // Check for success indicators in the new response format
+                            const hasId = storeResponse._id || (storeResponse.results && storeResponse.results.length > 0);
+                            const metadataExists = storeResponse.metadata && storeResponse.metadata.processed_at;
+                            
+                            if (hasId || metadataExists) {
+                                console.log('Invoice successfully stored in database');
+                                
+                                // Get processing summary for detailed message
+                                const summary = storeResponse.processing_summary;
+                                let detailMessage = 'All validation checks completed and invoice has been stored in the database.';
+                                
+                                if (summary) {
+                                    detailMessage = `Processing complete: ${summary.passed_checks}/${summary.total_checks} checks passed.`;
+                                }
+                                
+                                // Show success popup
+                                window.NotificationSystem.success(
+                                    'Invoice Processed Successfully',
+                                    detailMessage
+                                );
+                            } else {
+                                console.warn('Failed to store invoice in database:', storeResponse);
+                                
+                                // Show failure popup
+                                window.NotificationSystem.error(
+                                    'Invoice Processing Failed',
+                                    'Failed to store invoice in database. Please try again.'
+                                );
+                            }
+                        } else {
+                            // Response is null or contains error
+                            console.warn('Failed to store invoice - null response or error:', storeResponse);
+                            
+                            // Show failure popup
+                            window.NotificationSystem.error(
+                                'Invoice Processing Failed',
+                                storeResponse?.error || 'Failed to store invoice in database. Please try again.'
+                            );
+                        }
+                    } catch (storeError) {
+                        console.error('Error storing invoice:', storeError);
+                        
+                        // Close timeline modal
+                        if (processingPopup) {
+                            processingPopup.style.display = 'none';
+                        }
+                        
+                        // Show failure popup
+                        window.NotificationSystem.error(
+                            'Invoice Processing Failed',
+                            `Error storing invoice: ${storeError.message}`
+                        );
+                    }
+                } else {
+                    // Processing was cancelled
+                    if (processingPopup) {
+                        processingPopup.style.display = 'none';
+                    }
                 }
+                
+                // Removed - No longer showing generic completion notification
                 
             } catch (error) {
                 // Don't show error if processing was cancelled
@@ -362,13 +613,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 console.error('Error processing file:', error);
-                updateTimelineStep('ocr', 'failed', 'Failed to extract data from invoice');
                 
-                // Show error notification
-                window.NotificationSystem.error(
-                    'Processing Failed',
-                    'Failed to extract data from invoice. Please try again.'
-                );
+                // Only update OCR step if it's an OCR-specific error (early in the workflow)
+                // Don't reset OCR if error occurs in later validation steps
+                const ocrData = localStorage.getItem('currentInvoiceData');
+                if (!ocrData) {
+                    // OCR never completed successfully, so it's an OCR error
+                    updateTimelineStep('ocr', 'failed', 'Failed to extract data from invoice');
+                    
+                    // Show error notification
+                    window.NotificationSystem.error(
+                        'Processing Failed',
+                        'Failed to extract data from invoice. Please try again.'
+                    );
+                } else {
+                    // OCR completed but later validation failed
+                    console.log('Validation workflow error - OCR was successful but later step failed');
+                    
+                    // Show generic error notification
+                    window.NotificationSystem.error(
+                        'Processing Error',
+                        'An error occurred during validation. Please check the timeline for details.'
+                    );
+                }
                 
                 // Hide popup after delay
                 setTimeout(function() {
@@ -467,6 +734,171 @@ function performArithmeticValidation(invoiceData) {
 }
 
 /**
+ * Store processed invoice in database
+ */
+async function storeProcessedInvoice(invoiceData, processingStatus, apiResponses, overallStatus, fileName, fileType) {
+    try {
+        console.log('Storing processed invoice...');
+        
+        // Count passed and failed checks
+        let passedChecks = 0;
+        let failedChecks = 0;
+        const allChecks = [];
+        
+        // Create all_checks array with proper structure
+        const checkNames = [
+            { key: 'ocr_extraction', apiKey: 'ocr_processing', label: 'OCR Extraction' },
+            { key: 'arithmetic_accuracy', label: 'Arithmetic Accuracy' },
+            { key: 'price_anomaly_check', label: 'Price Anomaly Check' },
+            { key: 'duplicate_detection', label: 'Duplicate Detection' },
+            { key: 'gst_validation', label: 'GST Validation' },
+            { key: 'gst_rate_validation', label: 'GST Rate Validation' }
+        ];
+        
+        checkNames.forEach(({ key, apiKey, label }) => {
+            const apiResponseKey = apiKey || key;
+            const success = apiResponses[apiResponseKey]?.success || false;
+            const comments = apiResponses[apiResponseKey]?.comments || 'Not executed';
+            
+            if (success === true) {
+                passedChecks++;
+            } else if (success === false) {
+                failedChecks++;
+            }
+            
+            allChecks.push({
+                check_name: key,
+                success: success,
+                comments: comments
+            });
+        });
+        
+        const totalChecks = passedChecks + failedChecks;
+        
+        // Create the invoice result object
+        const invoiceResult = {
+            invoice_id: invoiceData.invoice_id || invoiceData.id || invoiceData._id,
+            invoice_number: invoiceData.invoice_number,
+            invoice_date: invoiceData.invoice_date,
+            invoice_amount: invoiceData.invoice_amount,
+            vendor_name: invoiceData.vendor_name,
+            vendor_gstin: invoiceData.vendor_gstin,
+            company_gstin: invoiceData.company_gstin,
+            subtotal: invoiceData.subtotal,
+            cgst_amount: invoiceData.cgst_amount,
+            sgst_amount: invoiceData.sgst_amount,
+            igst_amount: invoiceData.igst_amount,
+            gst_rate: invoiceData.gst_rate,
+            hsn_sac_codes: invoiceData.hsn_sac_codes,
+            line_items: invoiceData.line_items,
+            upload_timestamp: invoiceData.upload_timestamp || new Date().toISOString(),
+            processing_status: {
+                ocr_extraction: {
+                    success: apiResponses.ocr_processing?.success || false,
+                    comments: apiResponses.ocr_processing?.comments || 'OCR processing status'
+                },
+                arithmetic_accuracy: {
+                    success: apiResponses.arithmetic_accuracy?.success || false,
+                    comments: apiResponses.arithmetic_accuracy?.comments || 'Arithmetic accuracy status'
+                },
+                price_anomaly_check: {
+                    success: apiResponses.price_anomaly_check?.success || false,
+                    comments: apiResponses.price_anomaly_check?.comments || 'Price anomaly check status'
+                },
+                duplicate_detection: {
+                    success: apiResponses.duplicate_detection?.success || false,
+                    comments: apiResponses.duplicate_detection?.comments || 'Duplicate detection status'
+                },
+                gst_validation: {
+                    success: apiResponses.gst_validation?.success || false,
+                    comments: apiResponses.gst_validation?.comments || 'GST validation status'
+                },
+                gst_rate_validation: {
+                    success: apiResponses.gst_rate_validation?.success || false,
+                    comments: apiResponses.gst_rate_validation?.comments || 'GST rate validation status'
+                }
+            },
+            api_responses: {
+                ocr_processing: {
+                    success: apiResponses.ocr_processing?.success || false,
+                    comments: apiResponses.ocr_processing?.comments || null,
+                    full_response: apiResponses.ocr_processing?.full_response || null
+                },
+                arithmetic_accuracy: {
+                    success: apiResponses.arithmetic_accuracy?.success || false,
+                    comments: apiResponses.arithmetic_accuracy?.comments || null,
+                    full_response: apiResponses.arithmetic_accuracy?.full_response || null
+                },
+                price_anomaly_check: {
+                    success: apiResponses.price_anomaly_check?.success || false,
+                    comments: apiResponses.price_anomaly_check?.comments || null,
+                    full_response: apiResponses.price_anomaly_check?.full_response || null
+                },
+                duplicate_detection: {
+                    success: apiResponses.duplicate_detection?.success || false,
+                    comments: apiResponses.duplicate_detection?.comments || null,
+                    full_response: apiResponses.duplicate_detection?.full_response || null
+                },
+                gst_validation: {
+                    success: apiResponses.gst_validation?.success || false,
+                    comments: apiResponses.gst_validation?.comments || null,
+                    full_response: apiResponses.gst_validation?.full_response || null
+                },
+                gst_rate_validation: {
+                    success: apiResponses.gst_rate_validation?.success || false,
+                    comments: apiResponses.gst_rate_validation?.comments || null,
+                    full_response: apiResponses.gst_rate_validation?.full_response || null
+                }
+            }
+        };
+        
+        // Prepare request body with the new structure
+        const requestBody = {
+            results: [invoiceResult],
+            metadata: {
+                overall_status: overallStatus,
+                processed_at: new Date().toISOString(),
+                file_name: fileName,
+                file_type: fileType,
+                total_invoices: 1
+            },
+            processing_summary: {
+                passed_checks: passedChecks,
+                failed_checks: failedChecks,
+                total_checks: totalChecks,
+                all_checks: allChecks
+            },
+            api_responses_full: apiResponses
+        };
+        
+        console.log('Store invoice request body:', JSON.stringify(requestBody, null, 2));
+        
+        // Send POST request
+        const response = await fetch(window.API_ENDPOINTS.FINGUARD.STORE_PROCESSED_INVOICE, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const storeResponse = await response.json();
+        console.log('Store invoice response:', storeResponse);
+        
+        // The response should now have the complete structure with _id, results, metadata, processing_summary
+        return storeResponse;
+        
+    } catch (error) {
+        console.error('Error storing processed invoice:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+/**
  * Get file type from file object
  */
 function getFileType(file) {
@@ -493,38 +925,72 @@ function getFileType(file) {
  * Update timeline step status
  */
 function updateTimelineStep(step, status, message) {
+    console.log(`=== UPDATE TIMELINE STEP (process-handler.js) ===`);
+    console.log(`Step: ${step}`);
+    console.log(`Status: ${status}`);
+    console.log(`Message: ${message}`);
+    
     const timelineItem = document.querySelector(`[data-timeline-step="${step}"]`);
-    if (!timelineItem) return;
+    if (!timelineItem) {
+        console.warn(`Timeline item not found for step: ${step}`);
+        return;
+    }
+    
+    console.log(`Timeline item found:`, timelineItem);
+    console.log(`Current data-status:`, timelineItem.getAttribute('data-status'));
     
     // Update status attribute
     timelineItem.setAttribute('data-status', status);
+    console.log(`New data-status set to: ${status}`);
     
     // Update description message
     const description = timelineItem.querySelector(`[data-step-description="${step}"]`);
     if (description && message) {
         description.textContent = message;
+        console.log(`Description updated for step ${step}`);
     }
     
     // Update icon visibility
     const iconContainer = timelineItem.querySelector(`[data-step-icon="${step}"]`);
     if (iconContainer) {
-        // Hide all icons
-        iconContainer.querySelectorAll('svg').forEach(icon => {
+        // Hide all icons in THIS specific container only
+        const allIcons = iconContainer.querySelectorAll('svg');
+        console.log(`Found ${allIcons.length} icons in container for step ${step}`);
+        allIcons.forEach(icon => {
             icon.style.display = 'none';
         });
         
-        // Show appropriate icon
-        const iconClass = `.icon-${status === 'in-progress' ? 'loading' : status === 'completed' ? 'success' : status === 'failed' ? 'error' : 'pending'}`;
+        // Show appropriate icon based on status
+        let iconClass;
+        if (status === 'in-progress') {
+            iconClass = '.icon-loading';
+        } else if (status === 'completed') {
+            iconClass = '.icon-success';
+        } else if (status === 'failed') {
+            iconClass = '.icon-error';
+        } else {
+            iconClass = '.icon-pending';
+        }
+        
+        console.log(`Determined icon class: ${iconClass}`);
+        
         const activeIcon = iconContainer.querySelector(iconClass);
         if (activeIcon) {
             activeIcon.style.display = 'block';
+            console.log(`Successfully set ${iconClass} to display:block for step ${step}`);
+        } else {
+            console.warn(`Icon ${iconClass} not found for step ${step}`);
         }
+    } else {
+        console.warn(`Icon container not found for step: ${step}`);
     }
     
     // Update progress percentage
     if (status === 'completed') {
         updateProgressPercentage();
     }
+    
+    console.log(`=== TIMELINE STEP UPDATE COMPLETE (process-handler.js) ===\n`);
 }
 
 /**
