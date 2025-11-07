@@ -2,111 +2,33 @@
 Endpoint: AI Assistant - Send Chat Message
 =======================================================================
 
-Purpose: Send a user message to the AI assistant and receive a response
+Purpose: Send a user query to the AI assistant and get a response
 
-URL: /api/ai-assistant/chat
+URL: https://n8n-n8n.qoezvx.easypanel.host/webhook/f/ai-assistant/chat
 Method: POST
-Authentication: Required (Session Token)
+Content-Type: application/json
 
 -------------------------------------------------------------------
 Request Body
 -------------------------------------------------------------------
 {
-    "message": string (required) - User's message/query
-    "session_id": string (optional) - Conversation session ID
-    "context": {
-        "module": string (optional) - Context module (finguard/sheetsense/analytics)
-        "filters": object (optional) - Additional context filters
-    }
+    "message": string - User's question or query,
 }
 
 Example Request:
+POST https://n8n-n8n.qoezvx.easypanel.host/webhook/f/ai-assistant/chat
+Content-Type: application/json
+
 {
     "message": "Show me top 5 anomalies observed in duplicate invoices",
-    "session_id": "sess_abc123xyz",
-    "context": {
-        "module": "finguard",
-        "filters": {
-            "date_range": "last_30_days"
-        }
-    }
 }
 
 -------------------------------------------------------------------
 Response (Success - 200 OK)
 -------------------------------------------------------------------
-{
-    "success": true,
-    "data": {
-        "response": {
-            "text": string - AI response text
-            "type": string - Response type (text/list/table/chart)
-            "data": object (optional) - Structured data if applicable
-        },
-        "session_id": string - Session ID for conversation continuity
-        "timestamp": string - ISO 8601 timestamp
-        "suggested_followups": array - Suggested follow-up questions
-    }
-}
 
-Example Response:
-{
-    "success": true,
-    "data": {
-        "response": {
-            "text": "Here are the top 5 duplicate invoice anomalies detected:",
-            "type": "list",
-            "data": [
-                {
-                    "invoice_id": "INV-2024-001234",
-                    "vendor": "ABC Suppliers Ltd",
-                    "amount": 125000,
-                    "duplicate_of": "INV-2024-001198",
-                    "risk_score": 92
-                },
-                // ... more items
-            ]
-        },
-        "session_id": "sess_abc123xyz",
-        "timestamp": "2024-11-04T10:30:00Z",
-        "suggested_followups": [
-            "Show details of INV-2024-001234",
-            "What actions were taken on these duplicates?",
-            "Show GST compliance status"
-        ]
-    }
-}
-
--------------------------------------------------------------------
-Response (Error - 400 Bad Request)
--------------------------------------------------------------------
-{
-    "success": false,
-    "error": {
-        "code": "INVALID_MESSAGE",
-        "message": "Message cannot be empty"
-    }
-}
-
--------------------------------------------------------------------
-n8n Workflow Integration
--------------------------------------------------------------------
-1. Workflow: ai-assistant-chat-handler
-2. Trigger: Webhook POST /api/ai-assistant/chat
-3. Steps:
-   a. Validate session and authentication
-   b. Extract message and context
-   c. Call Google Gemini AI with system prompt and context
-   d. Process AI response and structure data
-   e. Store conversation in database
-   f. Return formatted response with suggestions
-
--------------------------------------------------------------------
-Notes
--------------------------------------------------------------------
-- Session ID is generated on first message and maintained throughout conversation
-- Context helps AI understand which module/data to focus on
-- Response type determines how frontend renders the data
-- Suggested followups are generated based on conversation context
-- Rate limiting: 100 requests per minute per user
-- Timeout: 30 seconds for AI response generation
+[
+  {
+    "output": "Here are the details of the last 2 anomalies identified by the system:\n\n**Invoice IN000000000000027 from M/S JOSHI TRADING COMPANY for ₹21,052.51**\n\n**Anomalies Detected:**\n*   **Price Anomaly (Medium Severity):** No market rate was found for the item \"BILL FOR MATERIAL COST OF MARBLE SLURRY FROM MAKRA...\" with a billed rate of ₹42.56.\n*   **GST Validation (High Severity):** The vendor's business name on the invoice does not match the name registered with the GSTIN.\n*   **GST Validation (High Severity):** The company's business name on the invoice does not match the name registered with the GSTIN.\n*   **GST Rate Anomaly (Medium Severity):** The HSN/SAC code 25210010 is not found in the master list for the billed rate of ₹42.56.\n*   **High-Risk Flag (High Severity):** The invoice has been flagged as high-risk due to multiple critical failures, including GST mismatches combined with price anomalies.\n\nWould you like me to look into any of these anomalies in more detail?"
+  }
+]

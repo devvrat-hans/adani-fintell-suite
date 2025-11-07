@@ -3,7 +3,27 @@
  * Handles AI-powered assistant for FinGuard and SheetSense queries using Google Gemini AI
  */
 
-import { showNotification } from '../utils/notification.js';
+// Notification System available globally via window.NotificationSystem
+// API Endpoints available globally via window.API_ENDPOINTS
+
+// ===================================================================
+// UTILITY FUNCTIONS
+// ===================================================================
+
+/**
+ * Show notification wrapper
+ * @param {string} type - Notification type (success, error, warning, info)
+ * @param {string} message - Notification message
+ */
+function showNotification(type, message) {
+    if (window.NotificationSystem) {
+        window.NotificationSystem.show({
+            type: type,
+            title: type.charAt(0).toUpperCase() + type.slice(1),
+            message: message
+        });
+    }
+}
 
 // ===================================================================
 // STATE MANAGEMENT
@@ -234,7 +254,8 @@ function setupEventListeners() {
     const queryChips = document.querySelectorAll('.query-chip');
     queryChips.forEach(chip => {
         chip.addEventListener('click', () => {
-            const query = chip.textContent;
+            const query = chip.dataset.query || chip.textContent.trim();
+            console.log('Query chip clicked:', query);
             chatInput.value = query;
             handleSendMessage();
         });
@@ -297,7 +318,11 @@ function createNewSession() {
 async function handleSendMessage() {
     const message = chatInput.value.trim();
     
+    console.log('=== AI Assistant - handleSendMessage called ===');
+    console.log('Message:', message);
+    
     if (!message) {
+        console.log('Message is empty, returning');
         return;
     }
 
@@ -315,7 +340,9 @@ async function handleSendMessage() {
 
     // Send to AI and get response
     try {
+        console.log('Calling sendToGeminiAI with message:', message);
         const response = await sendToGeminiAI(message);
+        console.log('Received response from AI:', response);
         
         // Hide typing indicator
         hideTypingIndicator();
@@ -703,6 +730,14 @@ function addMessage(text, type) {
 
     state.messages.push(messageObj);
 
+    // Hide suggested queries after first user message
+    if (type === 'user') {
+        const suggestedQueries = document.getElementById('suggestedQueries');
+        if (suggestedQueries) {
+            suggestedQueries.style.display = 'none';
+        }
+    }
+
     // Render the message
     renderMessage(messageObj);
 }
@@ -724,26 +759,20 @@ function renderMessage(message) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'assistant-message';
 
-    // Check if message contains structured data (like lists)
-    if (message.text.includes('\n-') || message.text.includes('\n•')) {
-        const parts = message.text.split('\n');
-        const textPart = parts[0];
-        const listItems = parts.slice(1).filter(item => item.trim());
-
-        contentDiv.appendChild(document.createTextNode(textPart));
-
-        if (listItems.length > 0) {
-            const ul = document.createElement('ul');
-            listItems.forEach(item => {
-                const li = document.createElement('li');
-                li.textContent = item.replace(/^[-•]\s*/, '');
-                ul.appendChild(li);
-            });
-            contentDiv.appendChild(ul);
-        }
-    } else {
-        contentDiv.textContent = message.text;
-    }
+    // Format the message text with basic markdown-like formatting
+    let formattedText = message.text;
+    
+    // Replace **text** with <strong>text</strong>
+    formattedText = formattedText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Replace *text* with <em>text</em>
+    formattedText = formattedText.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    
+    // Convert line breaks to <br>
+    formattedText = formattedText.replace(/\n/g, '<br>');
+    
+    // Use innerHTML to preserve formatting
+    contentDiv.innerHTML = formattedText;
 
     const timeSpan = document.createElement('span');
     timeSpan.className = 'message-time';
@@ -831,43 +860,87 @@ async function sendToGeminiAI(userMessage) {
     
     // For other queries, try to call the API first
     try {
-        const apiEndpoint = '/api/ai-assistant/chat';
+        // Use the proper n8n endpoint from API_ENDPOINTS
+        const apiEndpoint = window.API_ENDPOINTS.AI_ASSISTANT.SEND_MESSAGE;
         
+        // Build request body according to API specification
         const requestBody = {
             message: userMessage,
-            session_id: state.currentSessionId,
-            context: {
-                module: state.currentModule,
-                filters: {}
-            }
+            session_id: state.currentSessionId || undefined,
+            context: "finguard" // Default to finguard, can be made dynamic
         };
+        
+        console.log('Sending message to AI Assistant:', requestBody);
+        console.log('API Endpoint:', apiEndpoint);
         
         const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-                // Add authorization header when authentication is implemented
-                // 'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify(requestBody)
         });
+        
+        console.log('API Response Status:', response.status);
         
         if (!response.ok) {
             throw new Error(`API returned status ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('AI Assistant response data:', data);
         
-        if (data.success && data.data && data.data.response) {
-            // Extract response text
-            const responseText = typeof data.data.response === 'string' 
-                ? data.data.response 
-                : data.data.response.text;
+        // Handle the new response format - array with output field
+        let responseText = '';
+        
+        if (Array.isArray(data)) {
+            // If response is an array, get the first element's output
+            if (data.length > 0 && data[0].output) {
+                responseText = data[0].output;
+                console.log('Extracted output from array response');
+            } else {
+                throw new Error('Invalid array response format');
+            }
+        } else if (data.success && data.data) {
+            // Legacy format support - Update session ID if returned
+            if (data.data.session_id) {
+                state.currentSessionId = data.data.session_id;
+                console.log('Updated session ID:', state.currentSessionId);
+            }
             
-            return responseText;
+            // Extract response text based on API response format
+            if (data.data.content) {
+                responseText = data.data.content;
+            } else if (data.data.output) {
+                responseText = data.data.output;
+            } else if (data.data.response) {
+                // Fallback to response field if content doesn't exist
+                if (typeof data.data.response === 'string') {
+                    responseText = data.data.response;
+                } else if (data.data.response.text) {
+                    responseText = data.data.response.text;
+                    
+                    // If there's structured data, format it
+                    if (data.data.response.data && data.data.response.type) {
+                        responseText = formatStructuredResponse(
+                            data.data.response.text,
+                            data.data.response.data,
+                            data.data.response.type
+                        );
+                    }
+                }
+            } else if (data.data.message) {
+                // Another fallback
+                responseText = data.data.message;
+            }
         } else {
+            console.error('Invalid API response format:', data);
             throw new Error('Invalid API response format');
         }
+        
+        console.log('Extracted response text:', responseText);
+        
+        return responseText || 'I received your message but couldn\'t generate a response.';
         
     } catch (error) {
         console.warn('API call failed, using mock response:', error);
@@ -880,6 +953,57 @@ async function sendToGeminiAI(userMessage) {
             }, 800 + Math.random() * 700);
         });
     }
+}
+
+/**
+ * Format structured response from AI
+ * @param {string} text - Response text
+ * @param {Object|Array} data - Structured data
+ * @param {string} type - Response type (text/list/table/chart)
+ * @returns {string} Formatted HTML response
+ */
+function formatStructuredResponse(text, data, type) {
+    let formattedResponse = text + '\n\n';
+    
+    if (type === 'list' && Array.isArray(data)) {
+        formattedResponse += '<ul class="ai-response-list">';
+        data.forEach(item => {
+            if (typeof item === 'string') {
+                formattedResponse += `<li>${item}</li>`;
+            } else if (typeof item === 'object') {
+                // Format object data
+                formattedResponse += '<li><div class="ai-list-item">';
+                Object.entries(item).forEach(([key, value]) => {
+                    const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    formattedResponse += `<div class="ai-item-field"><strong>${formattedKey}:</strong> ${value}</div>`;
+                });
+                formattedResponse += '</div></li>';
+            }
+        });
+        formattedResponse += '</ul>';
+    } else if (type === 'table' && Array.isArray(data) && data.length > 0) {
+        formattedResponse += '<div class="ai-response-table"><table>';
+        // Table headers from first object keys
+        const headers = Object.keys(data[0]);
+        formattedResponse += '<thead><tr>';
+        headers.forEach(header => {
+            const formattedHeader = header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            formattedResponse += `<th>${formattedHeader}</th>`;
+        });
+        formattedResponse += '</tr></thead><tbody>';
+        
+        // Table rows
+        data.forEach(row => {
+            formattedResponse += '<tr>';
+            headers.forEach(header => {
+                formattedResponse += `<td>${row[header] || '-'}</td>`;
+            });
+            formattedResponse += '</tr>';
+        });
+        formattedResponse += '</tbody></table></div>';
+    }
+    
+    return formattedResponse;
 }
 
 /**

@@ -713,6 +713,43 @@
                 <strong>Note:</strong> This endpoint stores the complete processing results of an invoice after all validation checks. It saves invoice data along with the status of each validation step (OCR, arithmetic accuracy, price anomaly, duplicate detection, GST validation, GST rate validation). Overall status can be: completed, completed_with_warnings, or failed.
             </div>
         </div>
+
+        <!-- AI Assistant Chat Endpoint -->
+        <div class="endpoint-section">
+            <div class="endpoint-header">
+                <div class="endpoint-title">AI Assistant - Send Chat Message</div>
+                <span class="method post">POST</span>
+            </div>
+
+            <div class="endpoint-url">
+                https://n8n-n8n.qoezvx.easypanel.host/webhook/f/ai-assistant/chat
+            </div>
+
+            <div class="request-section">
+                <div class="section-label">Request Body:</div>
+                <textarea id="ai-chat-request">{
+    "message": "Show me top 5 anomalies observed in duplicate invoices",
+    "session_id": "sess_001",
+    "context": "finguard"
+}</textarea>
+            </div>
+
+            <div class="button-group">
+                <button onclick="sendRequest('ai-chat')">Send Request</button>
+                <button class="copy-btn" onclick="copyRequest('ai-chat')">Copy Request</button>
+                <button class="clear-btn" onclick="clearResponse('ai-chat')">Clear Response</button>
+            </div>
+
+            <div class="response-section" id="ai-chat-response-section" style="display: none;">
+                <div class="section-label">Response:</div>
+                <div id="ai-chat-status"></div>
+                <div class="response-box" id="ai-chat-response"></div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> This endpoint sends a user query to the AI assistant and receives a response. The AI has access to anomalies database, processed invoices, purchase orders, vendors, and feedback data. The session_id parameter is optional but recommended for maintaining conversation context.
+            </div>
+        </div>
     </div>
 
     <script>
@@ -725,7 +762,8 @@
             'fetch-pos': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/database/fetch-purchase-orders',
             'get-po-details': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/purchase-orders/get-po-details',
             'add-feedback': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/database/add-feedback',
-            'store-invoice': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/store-processed-invoice'
+            'store-invoice': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/finguard/store-processed-invoice',
+            'ai-chat': 'https://n8n-n8n.qoezvx.easypanel.host/webhook/f/ai-assistant/chat'
         };
 
         async function sendRequest(type) {
