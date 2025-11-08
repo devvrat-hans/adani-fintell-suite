@@ -38,20 +38,71 @@ request body:
 response body:
 
 {
-  "is_duplicate": true,
-  "confidence_score": 92,
-  "matched_invoice_ids": ["IN000000000000001"],
-  "duplicate_type": "fuzzy_match",
-  "duplicate_reason": "Same vendor, similar invoice number and amount within 3 days"
-}
-
-or 
-
-{
   "is_duplicate": false,
+  "duplicate_type": "none",
   "confidence_score": 0,
   "matched_invoice_ids": [],
-  "duplicate_type": null,
-  "duplicate_reason": null
+  "duplicate_flags": []
 }
 
+
+{
+  "is_duplicate": true,
+  "duplicate_type": "exact_match",
+  "confidence_score": 100,
+  "matched_invoice_ids": ["<matched_invoice_id>"],
+  "duplicate_flags": [
+    {
+      "flag_type": "exact_duplicate",
+      "matched_invoice_id": "<matched_invoice_id>",
+      "confidence": 100,
+      "reason": "Same invoice number and vendor GSTIN"
+    }
+  ]
+}
+
+
+{
+  "is_duplicate": true,
+  "duplicate_type": "fuzzy_match",
+  "confidence_score": 87,
+  "matched_invoice_ids": ["<matched_invoice_id>"],
+  "duplicate_flags": [
+    {
+      "flag_type": "fuzzy_invoice_number",
+      "matched_invoice_id": "<matched_invoice_id>",
+      "confidence": 87,
+      "reason": "Similar invoice number (87.0% match), same vendor, within 5 days"
+    }
+  ]
+}
+
+{
+  "is_duplicate": true,
+  "duplicate_type": "potential_duplicate",
+  "confidence_score": 70,
+  "matched_invoice_ids": ["<matched_invoice_id>"],
+  "duplicate_flags": [
+    {
+      "flag_type": "amount_date_vendor_match",
+      "matched_invoice_id": "<matched_invoice_id>",
+      "confidence": 70,
+      "reason": "Same vendor, similar amount (1.5% variance), within 3 days"
+    }
+  ]
+}
+
+{
+  "is_duplicate": true,
+  "duplicate_type": "content_match",
+  "confidence_score": 85,
+  "matched_invoice_ids": ["<matched_invoice_id>"],
+  "duplicate_flags": [
+    {
+      "flag_type": "line_items_match",
+      "matched_invoice_id": "<matched_invoice_id>",
+      "confidence": 85,
+      "reason": "85% of line items match"
+    }
+  ]
+}

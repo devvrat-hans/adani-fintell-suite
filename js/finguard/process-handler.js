@@ -252,7 +252,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (processingCancelled) return;
                     
                     if (arithmeticCheck.isValid) {
-                        updateTimelineStep('arithmetic', 'completed', 'All calculations verified successfully');
+                        // Show success message with details
+                        const successMessage = arithmeticCheck.details && arithmeticCheck.details.length > 0 
+                            ? arithmeticCheck.details[0] // Show first detail
+                            : 'All calculations verified successfully';
+                        updateTimelineStep('arithmetic', 'completed', successMessage);
                         processingStatus.arithmetic_accuracy.success = true;
                         processingStatus.arithmetic_accuracy.comments = 'All calculations verified successfully';
                         apiResponses.arithmetic_accuracy.success = true;
@@ -260,11 +264,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         apiResponses.arithmetic_accuracy.full_response = arithmeticCheck;
                         console.log('Arithmetic validation passed:', arithmeticCheck);
                     } else {
-                        updateTimelineStep('arithmetic', 'failed', `Calculation errors found: ${arithmeticCheck.errors.join(', ')}`);
+                        // Show detailed error message
+                        const errorMessage = arithmeticCheck.errors && arithmeticCheck.errors.length > 0 
+                            ? arithmeticCheck.errors[0] // Show first error for brevity
+                            : 'Calculation errors found';
+                        updateTimelineStep('arithmetic', 'failed', errorMessage);
                         processingStatus.arithmetic_accuracy.success = false;
-                        processingStatus.arithmetic_accuracy.comments = `Calculation errors: ${arithmeticCheck.errors.join(', ')}`;
+                        processingStatus.arithmetic_accuracy.comments = arithmeticCheck.errors.join('; ');
                         apiResponses.arithmetic_accuracy.success = false;
-                        apiResponses.arithmetic_accuracy.comments = `Calculation errors: ${arithmeticCheck.errors.join(', ')}`;
+                        apiResponses.arithmetic_accuracy.comments = arithmeticCheck.errors.join('; ');
                         apiResponses.arithmetic_accuracy.full_response = arithmeticCheck;
                         overallStatus = 'failed';
                         console.warn('Arithmetic validation failed:', arithmeticCheck);
@@ -272,14 +280,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } catch (error) {
                     console.error('Arithmetic validation error:', error);
-                    updateTimelineStep('arithmetic', 'failed', 'Failed to perform arithmetic checks');
+                    updateTimelineStep('arithmetic', 'failed', `Failed to perform checks: ${error.message}`);
                     processingStatus.arithmetic_accuracy.success = false;
                     processingStatus.arithmetic_accuracy.comments = `Error: ${error.message}`;
                     apiResponses.arithmetic_accuracy.success = false;
                     apiResponses.arithmetic_accuracy.comments = `Error: ${error.message}`;
                     apiResponses.arithmetic_accuracy.full_response = { error: error.message };
                     overallStatus = 'failed';
-                    // Continue to next step
                 }
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -300,40 +307,41 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (processingCancelled) return;
                     
                     let priceAnomalyData = await priceAnomalyResponse.json();
-                    console.log('Price Anomaly Response:', priceAnomalyData);
+                    console.log('=== Price Anomaly Response:', priceAnomalyData);
                     
-                    // Handle array response
+                    // Handle array response - API returns: [{ json: { anomalyFound: true/false, ... } }]
                     if (Array.isArray(priceAnomalyData) && priceAnomalyData.length > 0) {
-                        priceAnomalyData = priceAnomalyData[0];
+                        priceAnomalyData = priceAnomalyData[0].json || priceAnomalyData[0];
                     }
                     
-                    if (priceAnomalyData.success) {
-                        const hasAnomalies = priceAnomalyData.data && priceAnomalyData.data.anomalyFound;
-                        if (hasAnomalies) {
-                            updateTimelineStep('price-anomaly', 'failed', 'Price anomalies detected');
-                            processingStatus.price_anomaly_check.success = false;
-                            processingStatus.price_anomaly_check.comments = 'Price anomalies detected';
-                            apiResponses.price_anomaly_check.success = false;
-                            apiResponses.price_anomaly_check.comments = 'Price anomalies detected';
-                            apiResponses.price_anomaly_check.full_response = priceAnomalyData;
-                            overallStatus = 'completed_with_warnings';
-                        } else {
-                            updateTimelineStep('price-anomaly', 'completed', 'No price anomalies detected');
-                            processingStatus.price_anomaly_check.success = true;
-                            processingStatus.price_anomaly_check.comments = 'No price anomalies detected';
-                            apiResponses.price_anomaly_check.success = true;
-                            apiResponses.price_anomaly_check.comments = 'No price anomalies detected';
-                            apiResponses.price_anomaly_check.full_response = priceAnomalyData;
-                        }
-                    } else {
-                        updateTimelineStep('price-anomaly', 'failed', 'Price anomaly check failed');
+                    console.log('=== Processed price anomaly data:', priceAnomalyData);
+                    
+                    // Updated API response format: response directly contains anomalyFound field
+                    const hasAnomalies = priceAnomalyData.anomalyFound === true;
+                    const anomalyCount = priceAnomalyData.anomalyCount || 0;
+                    const totalItems = priceAnomalyData.totalItems || 0;
+                    
+                    console.log('=== Price Anomaly Results - hasAnomalies:', hasAnomalies, 'count:', anomalyCount, 'total:', totalItems);
+                    
+                    if (hasAnomalies) {
+                        // Anomalies found - mark as failed (red)
+                        const failureMessage = `Price anomalies detected: ${anomalyCount} of ${totalItems} items`;
+                        updateTimelineStep('price-anomaly', 'failed', failureMessage);
                         processingStatus.price_anomaly_check.success = false;
-                        processingStatus.price_anomaly_check.comments = 'Price anomaly check failed';
+                        processingStatus.price_anomaly_check.comments = failureMessage;
                         apiResponses.price_anomaly_check.success = false;
-                        apiResponses.price_anomaly_check.comments = 'Price anomaly check failed';
+                        apiResponses.price_anomaly_check.comments = failureMessage;
                         apiResponses.price_anomaly_check.full_response = priceAnomalyData;
-                        overallStatus = 'completed_with_warnings';
-                        // Continue to next step even if this fails
+                        overallStatus = 'failed';
+                    } else {
+                        // No anomalies found - mark as completed (green)
+                        const successMessage = `No price anomalies detected (${totalItems} items checked)`;
+                        updateTimelineStep('price-anomaly', 'completed', successMessage);
+                        processingStatus.price_anomaly_check.success = true;
+                        processingStatus.price_anomaly_check.comments = successMessage;
+                        apiResponses.price_anomaly_check.success = true;
+                        apiResponses.price_anomaly_check.comments = successMessage;
+                        apiResponses.price_anomaly_check.full_response = priceAnomalyData;
                     }
                 } catch (error) {
                     console.error('Price anomaly check error:', error);
@@ -343,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     apiResponses.price_anomaly_check.success = false;
                     apiResponses.price_anomaly_check.comments = `Error: ${error.message}`;
                     apiResponses.price_anomaly_check.full_response = { error: error.message };
-                    overallStatus = 'completed_with_warnings';
+                    overallStatus = 'failed';
                 }
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -364,40 +372,51 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (processingCancelled) return;
                     
                     let duplicateData = await duplicateResponse.json();
-                    console.log('Duplicate Detection Response:', duplicateData);
+                    console.log('=== Duplicate Detection Response:', duplicateData);
                     
                     // Handle array response
                     if (Array.isArray(duplicateData) && duplicateData.length > 0) {
                         duplicateData = duplicateData[0];
                     }
                     
-                    if (duplicateData.success) {
-                        const isDuplicate = duplicateData.data && duplicateData.data.is_duplicate;
-                        if (isDuplicate) {
-                            updateTimelineStep('duplicate', 'failed', 'Duplicate invoice detected');
-                            processingStatus.duplicate_detection.success = false;
-                            processingStatus.duplicate_detection.comments = 'Duplicate invoice detected';
-                            apiResponses.duplicate_detection.success = false;
-                            apiResponses.duplicate_detection.comments = 'Duplicate invoice detected';
-                            apiResponses.duplicate_detection.full_response = duplicateData;
-                            overallStatus = 'failed';
-                        } else {
-                            updateTimelineStep('duplicate', 'completed', 'No duplicates found');
-                            processingStatus.duplicate_detection.success = true;
-                            processingStatus.duplicate_detection.comments = 'No duplicate found';
-                            apiResponses.duplicate_detection.success = true;
-                            apiResponses.duplicate_detection.comments = 'No duplicate found';
-                            apiResponses.duplicate_detection.full_response = duplicateData;
+                    // Updated API response format: response directly contains is_duplicate field
+                    // No nested success/data structure
+                    const isDuplicate = duplicateData.is_duplicate === true;
+                    const duplicateType = duplicateData.duplicate_type || 'none';
+                    const confidenceScore = duplicateData.confidence_score || 0;
+                    
+                    console.log('=== Duplicate Check Results - is_duplicate:', isDuplicate, 'type:', duplicateType, 'confidence:', confidenceScore);
+                    
+                    if (isDuplicate) {
+                        // Duplicate found - mark as failed (red)
+                        let failureMessage = 'Duplicate invoice detected';
+                        
+                        // Provide more specific message based on duplicate type
+                        if (duplicateType === 'exact_match') {
+                            failureMessage = `Exact duplicate found (${confidenceScore}% confidence)`;
+                        } else if (duplicateType === 'fuzzy_match') {
+                            failureMessage = `Similar invoice found (${confidenceScore}% confidence)`;
+                        } else if (duplicateType === 'potential_duplicate') {
+                            failureMessage = `Potential duplicate detected (${confidenceScore}% confidence)`;
+                        } else if (duplicateType === 'content_match') {
+                            failureMessage = `Content match found (${confidenceScore}% confidence)`;
                         }
-                    } else {
-                        updateTimelineStep('duplicate', 'failed', 'Duplicate check failed');
+                        
+                        updateTimelineStep('duplicate', 'failed', failureMessage);
                         processingStatus.duplicate_detection.success = false;
-                        processingStatus.duplicate_detection.comments = 'Duplicate check failed';
+                        processingStatus.duplicate_detection.comments = failureMessage;
                         apiResponses.duplicate_detection.success = false;
-                        apiResponses.duplicate_detection.comments = 'Duplicate check failed';
+                        apiResponses.duplicate_detection.comments = failureMessage;
                         apiResponses.duplicate_detection.full_response = duplicateData;
-                        overallStatus = 'completed_with_warnings';
-                        // Continue to next step even if this fails
+                        overallStatus = 'failed';
+                    } else {
+                        // No duplicate found - mark as completed (green)
+                        updateTimelineStep('duplicate', 'completed', 'No duplicates found');
+                        processingStatus.duplicate_detection.success = true;
+                        processingStatus.duplicate_detection.comments = 'No duplicate invoice found';
+                        apiResponses.duplicate_detection.success = true;
+                        apiResponses.duplicate_detection.comments = 'No duplicate invoice found';
+                        apiResponses.duplicate_detection.full_response = duplicateData;
                     }
                 } catch (error) {
                     console.error('Duplicate detection error:', error);
@@ -535,71 +554,104 @@ document.addEventListener('DOMContentLoaded', function() {
                             fileType
                         );
                         console.log('=== Store invoice response:', storeResponse);
+                        console.log('=== Response type:', typeof storeResponse);
+                        console.log('=== Is Array:', Array.isArray(storeResponse));
                         
-                        // Close timeline modal
+                        // Determine success/failure based on response
+                        let isSuccess = false;
+                        let notificationTitle = '';
+                        let notificationMessage = '';
+                        
+                        // Handle the response format: [{ success: true/false, invoice_id: "...", message/error: "..." }]
+                        let responseData = storeResponse;
+                        
+                        // Handle array response
+                        if (Array.isArray(storeResponse) && storeResponse.length > 0) {
+                            responseData = storeResponse[0];
+                            console.log('=== Extracted response data from array:', responseData);
+                        }
+                        
+                        // Check if response is valid and has success indicator
+                        // SUCCESS CRITERIA: If all 6 APIs were successfully executed (regardless of validation pass/fail),
+                        // and the store-processed-invoice API returns success, then show success
+                        if (responseData && typeof responseData === 'object') {
+                            // Check for the success field (new API format)
+                            if (responseData.success === true || responseData._id || responseData.invoice_id) {
+                                console.log('✅ Invoice processing complete - all APIs executed successfully');
+                                isSuccess = true;
+                                notificationTitle = '✅ Invoice Processed Successfully';
+                                
+                                // Get processing summary to show what passed/failed
+                                const summary = responseData.processing_summary || storeResponse.processing_summary;
+                                if (summary) {
+                                    const passRate = ((summary.passed_checks / summary.total_checks) * 100).toFixed(0);
+                                    notificationMessage = `Invoice processing complete! ${summary.passed_checks}/${summary.total_checks} validation checks passed (${passRate}%). Data saved to database.`;
+                                } else {
+                                    notificationMessage = 'Invoice processing complete! All validation checks have been performed and results have been saved to the database.';
+                                }
+                            }
+                            // Explicit failure (success === false)
+                            else if (responseData.success === false) {
+                                console.warn('❌ Failed to complete invoice processing:', responseData);
+                                isSuccess = false;
+                                notificationTitle = '❌ Invoice Processing Failed';
+                                notificationMessage = responseData.error || responseData.message || 'Failed to complete invoice processing. Please try again.';
+                                if (responseData.details) {
+                                    notificationMessage += ` (${responseData.details})`;
+                                }
+                            }
+                            // No clear success/failure indicator
+                            else {
+                                console.warn('⚠️ Ambiguous response - no clear success indicator:', responseData);
+                                isSuccess = false;
+                                notificationTitle = '❌ Invoice Processing Failed';
+                                notificationMessage = 'Unexpected response from server. Please check if invoice was stored.';
+                            }
+                        } else {
+                            // Response is null or not an object
+                            console.warn('❌ Invalid response - null or not an object:', storeResponse);
+                            isSuccess = false;
+                            notificationTitle = '❌ Invoice Processing Failed';
+                            notificationMessage = 'No response from server. Please try again.';
+                        }
+                        
+                        console.log('=== Notification decision - isSuccess:', isSuccess);
+                        console.log('=== Notification title:', notificationTitle);
+                        console.log('=== Notification message:', notificationMessage);
+                        
+                        // Close timeline modal first
                         if (processingPopup) {
+                            console.log('=== Closing timeline modal');
                             processingPopup.style.display = 'none';
                         }
                         
-                        // Check if response is valid and not null
-                        if (storeResponse && storeResponse !== null && !storeResponse.error) {
-                            // Check for success indicators in the new response format
-                            const hasId = storeResponse._id || (storeResponse.results && storeResponse.results.length > 0);
-                            const metadataExists = storeResponse.metadata && storeResponse.metadata.processed_at;
-                            
-                            if (hasId || metadataExists) {
-                                console.log('Invoice successfully stored in database');
-                                
-                                // Get processing summary for detailed message
-                                const summary = storeResponse.processing_summary;
-                                let detailMessage = 'All validation checks completed and invoice has been stored in the database.';
-                                
-                                if (summary) {
-                                    detailMessage = `Processing complete: ${summary.passed_checks}/${summary.total_checks} checks passed.`;
-                                }
-                                
-                                // Show success popup
-                                window.NotificationSystem.success(
-                                    'Invoice Processed Successfully',
-                                    detailMessage
-                                );
-                            } else {
-                                console.warn('Failed to store invoice in database:', storeResponse);
-                                
-                                // Show failure popup
-                                window.NotificationSystem.error(
-                                    'Invoice Processing Failed',
-                                    'Failed to store invoice in database. Please try again.'
-                                );
-                            }
-                        } else {
-                            // Response is null or contains error
-                            console.warn('Failed to store invoice - null response or error:', storeResponse);
-                            
-                            // Show failure popup
-                            window.NotificationSystem.error(
-                                'Invoice Processing Failed',
-                                storeResponse?.error || 'Failed to store invoice in database. Please try again.'
-                            );
-                        }
+                        // Show completion modal after a brief delay to ensure timeline modal has closed
+                        setTimeout(() => {
+                            console.log('=== Showing completion modal - isSuccess:', isSuccess);
+                            showCompletionModal(isSuccess, notificationMessage, responseData);
+                        }, 300);
+                        
                     } catch (storeError) {
                         console.error('Error storing invoice:', storeError);
                         
                         // Close timeline modal
                         if (processingPopup) {
+                            console.log('=== Closing timeline modal due to error');
                             processingPopup.style.display = 'none';
                         }
                         
-                        // Show failure popup
-                        window.NotificationSystem.error(
-                            'Invoice Processing Failed',
-                            `Error storing invoice: ${storeError.message}`
-                        );
+                        // Show failure modal after a brief delay
+                        setTimeout(() => {
+                            console.log('=== Showing error modal for store exception');
+                            showCompletionModal(false, `Error storing invoice: ${storeError.message}`, null);
+                        }, 300);
                     }
                 } else {
                     // Processing was cancelled
+                    console.log('=== Processing was cancelled by user');
                     if (processingPopup) {
                         processingPopup.style.display = 'none';
+                        document.body.classList.remove('modal-open');
                     }
                 }
                 
@@ -637,11 +689,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     );
                 }
                 
-                // Hide popup after delay
+                // Hide popup after delay and remove modal-open class
                 setTimeout(function() {
                     if (processingPopup) {
                         processingPopup.style.display = 'none';
                     }
+                    document.body.classList.remove('modal-open');
                 }, 2000);
             } finally {
                 // Only reset UI if not cancelled (cancelled state is handled separately)
@@ -667,14 +720,25 @@ document.addEventListener('DOMContentLoaded', function() {
 function performArithmeticValidation(invoiceData) {
     const errors = [];
     let isValid = true;
+    const details = [];
     
     try {
-        // Parse numeric values
-        const subtotal = parseFloat(invoiceData.subtotal);
-        const cgst = parseFloat(invoiceData.cgst_amount) || 0;
-        const sgst = parseFloat(invoiceData.sgst_amount) || 0;
-        const igst = parseFloat(invoiceData.igst_amount) || 0;
-        const invoiceAmount = parseFloat(invoiceData.invoice_amount);
+        // Parse numeric values with better error handling
+        const parseAmount = (value, fieldName) => {
+            const parsed = parseFloat(value);
+            if (isNaN(parsed)) {
+                errors.push(`Invalid ${fieldName}: "${value}" is not a number`);
+                isValid = false;
+                return 0;
+            }
+            return parsed;
+        };
+        
+        const subtotal = parseAmount(invoiceData.subtotal, 'subtotal');
+        const cgst = parseAmount(invoiceData.cgst_amount, 'CGST amount') || 0;
+        const sgst = parseAmount(invoiceData.sgst_amount, 'SGST amount') || 0;
+        const igst = parseAmount(invoiceData.igst_amount, 'IGST amount') || 0;
+        const invoiceAmount = parseAmount(invoiceData.invoice_amount, 'invoice amount');
         
         // Validate line items
         if (invoiceData.line_items && Array.isArray(invoiceData.line_items)) {
@@ -684,50 +748,72 @@ function performArithmeticValidation(invoiceData) {
                 const quantity = parseFloat(item.quantity);
                 const rate = parseFloat(item.rate);
                 const amount = parseFloat(item.amount);
+                
+                if (isNaN(quantity) || isNaN(rate) || isNaN(amount)) {
+                    errors.push(`Line ${index + 1}: Invalid data (Qty: ${item.quantity}, Rate: ${item.rate}, Amount: ${item.amount})`);
+                    isValid = false;
+                    return;
+                }
+                
                 const expectedAmount = quantity * rate;
                 
-                // Check if line item calculation is correct
+                // Check if line item calculation is correct (allow 0.01 tolerance for rounding)
                 if (Math.abs(expectedAmount - amount) > 0.01) {
-                    errors.push(`Line item ${index + 1}: Amount mismatch (${amount} vs expected ${expectedAmount})`);
+                    errors.push(`Line ${index + 1}: ${quantity} × ₹${rate} = ₹${expectedAmount.toFixed(2)} but shows ₹${amount.toFixed(2)}`);
                     isValid = false;
+                } else {
+                    details.push(`Line ${index + 1}: ✓ ${quantity} × ₹${rate} = ₹${amount.toFixed(2)}`);
                 }
                 
                 calculatedSubtotal += amount;
             });
             
-            // Check if subtotal matches sum of line items
-            if (Math.abs(calculatedSubtotal - subtotal) > 0.01) {
-                errors.push(`Subtotal mismatch (${subtotal} vs calculated ${calculatedSubtotal})`);
+            // Check if subtotal matches sum of line items (allow 1 rupee tolerance)
+            if (Math.abs(calculatedSubtotal - subtotal) > 1) {
+                errors.push(`Subtotal Error: Line items sum to ₹${calculatedSubtotal.toFixed(2)} but subtotal is ₹${subtotal.toFixed(2)}`);
                 isValid = false;
+            } else {
+                details.push(`✓ Line items total: ₹${calculatedSubtotal.toFixed(2)} matches subtotal: ₹${subtotal.toFixed(2)}`);
             }
         }
         
         // Calculate total with taxes
         const calculatedTotal = subtotal + cgst + sgst + igst;
         
-        // Check if invoice amount matches calculated total
-        if (Math.abs(calculatedTotal - invoiceAmount) > 0.01) {
-            errors.push(`Invoice total mismatch (${invoiceAmount} vs calculated ${calculatedTotal})`);
+        // Build tax breakdown detail
+        const taxDetails = [];
+        if (cgst > 0) taxDetails.push(`CGST: ₹${cgst.toFixed(2)}`);
+        if (sgst > 0) taxDetails.push(`SGST: ₹${sgst.toFixed(2)}`);
+        if (igst > 0) taxDetails.push(`IGST: ₹${igst.toFixed(2)}`);
+        
+        // Check if invoice amount matches calculated total (allow 1 rupee tolerance)
+        if (Math.abs(calculatedTotal - invoiceAmount) > 1) {
+            errors.push(`Total Error: ₹${subtotal.toFixed(2)} + ${taxDetails.join(' + ')} = ₹${calculatedTotal.toFixed(2)} but invoice shows ₹${invoiceAmount.toFixed(2)}`);
             isValid = false;
+        } else {
+            details.push(`✓ Subtotal + Taxes: ₹${subtotal.toFixed(2)} + ${taxDetails.join(' + ')} = ₹${invoiceAmount.toFixed(2)}`);
         }
         
         return {
             isValid,
             errors,
+            details,
             calculations: {
                 subtotal,
                 cgst,
                 sgst,
                 igst,
                 calculatedTotal,
-                invoiceAmount
+                invoiceAmount,
+                difference: Math.abs(calculatedTotal - invoiceAmount)
             }
         };
     } catch (error) {
         console.error('Arithmetic validation exception:', error);
         return {
             isValid: false,
-            errors: ['Failed to parse invoice amounts'],
+            errors: [`Failed to parse invoice amounts: ${error.message}`],
+            details: [],
             calculations: null
         };
     }
@@ -1114,6 +1200,9 @@ function cancelProcessing() {
         submitBtn.disabled = false;
     }
     
+    // Remove modal-open class when cancelling
+    document.body.classList.remove('modal-open');
+    
     resetTimelineSteps();
     
     console.log('Processing cancelled by user - all operations stopped');
@@ -1148,3 +1237,151 @@ function updateMinimizedIndicator() {
     // If no step is in progress, show first pending step
     currentStepElement.textContent = 'Preparing...';
 }
+
+/**
+ * Show completion modal with processing results
+ * @param {boolean} isSuccess - Whether processing was successful
+ * @param {string} message - Message to display
+ * @param {object} responseData - Response data from store-processed-invoice API
+ */
+function showCompletionModal(isSuccess, message, responseData) {
+    console.log('=== showCompletionModal called ===');
+    console.log('isSuccess:', isSuccess);
+    console.log('message:', message);
+    console.log('responseData:', responseData);
+    
+    const completionModal = document.querySelector('[data-completion-modal]');
+    const completionHeader = document.querySelector('[data-completion-header]');
+    const completionTitle = document.querySelector('[data-completion-title]');
+    const completionSubtitle = document.querySelector('[data-completion-subtitle]');
+    const completionMessage = document.querySelector('[data-completion-message]');
+    const completionMessageBox = document.querySelector('[data-completion-message-box]');
+    const totalChecksEl = document.querySelector('[data-total-checks]');
+    const passedChecksEl = document.querySelector('[data-passed-checks]');
+    const iconSuccess = completionModal.querySelector('.icon-success');
+    const iconError = completionModal.querySelector('.icon-error');
+    
+    if (!completionModal) {
+        console.error('Completion modal not found!');
+        alert(isSuccess ? 'Invoice Processed Successfully!' : 'Invoice Processing Failed!');
+        return;
+    }
+    
+    // Update modal styling based on success/failure
+    if (isSuccess) {
+        completionHeader.classList.add('success');
+        completionHeader.classList.remove('failed');
+        completionMessageBox.classList.add('success');
+        completionMessageBox.classList.remove('failed');
+        iconSuccess.style.display = 'block';
+        iconError.style.display = 'none';
+        completionTitle.textContent = 'Invoice Processed Successfully';
+        completionSubtitle.textContent = 'All validation steps have been completed';
+    } else {
+        completionHeader.classList.add('failed');
+        completionHeader.classList.remove('success');
+        completionMessageBox.classList.add('failed');
+        completionMessageBox.classList.remove('success');
+        iconSuccess.style.display = 'none';
+        iconError.style.display = 'block';
+        completionTitle.textContent = 'Invoice Processing Failed';
+        completionSubtitle.textContent = 'Unable to complete processing';
+    }
+    
+    // Update message
+    completionMessage.textContent = message;
+    
+    // Update stats if available
+    if (responseData && responseData.processing_summary) {
+        const summary = responseData.processing_summary;
+        totalChecksEl.textContent = summary.total_checks || '6';
+        passedChecksEl.textContent = summary.passed_checks || '0';
+        
+        if (summary.passed_checks > 0) {
+            passedChecksEl.classList.add('success');
+            passedChecksEl.classList.remove('failed');
+        } else {
+            passedChecksEl.classList.add('failed');
+            passedChecksEl.classList.remove('success');
+        }
+    } else {
+        // Default values - all 6 APIs were executed (success/failure determined by store API)
+        totalChecksEl.textContent = '6';
+        if (isSuccess) {
+            passedChecksEl.textContent = '6';
+            passedChecksEl.classList.add('success');
+            passedChecksEl.classList.remove('failed');
+        } else {
+            passedChecksEl.textContent = '0';
+            passedChecksEl.classList.add('failed');
+            passedChecksEl.classList.remove('success');
+        }
+    }
+    
+    // Keep body blur active (modal-open class)
+    document.body.classList.add('modal-open');
+    
+    // Show the modal
+    completionModal.classList.add('show');
+    console.log('=== Completion modal should now be visible ===');
+}
+
+/**
+ * Close completion modal
+ */
+function closeCompletionModal() {
+    console.log('=== Closing completion modal ===');
+    const completionModal = document.querySelector('[data-completion-modal]');
+    
+    if (completionModal) {
+        completionModal.classList.remove('show');
+    }
+    
+    // Remove blur from body
+    document.body.classList.remove('modal-open');
+    
+    // Reset the file input and UI
+    const fileInput = document.querySelector('[data-file-input]');
+    const filePreview = document.querySelector('[data-file-preview]');
+    const uploadArea = document.querySelector('[data-upload-area]');
+    const submitBtn = document.querySelector('[data-action="process-file"]');
+    
+    if (fileInput) {
+        fileInput.value = '';
+    }
+    
+    if (filePreview) {
+        filePreview.style.display = 'none';
+    }
+    
+    if (uploadArea) {
+        uploadArea.style.display = 'flex';
+    }
+    
+    if (submitBtn) {
+        submitBtn.disabled = true;
+    }
+    
+    // Clear the selected file reference
+    window.selectedInvoiceFile = null;
+    
+    console.log('=== File input and UI reset ===');
+}
+
+// Attach event listeners for completion modal
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== Setting up completion modal event listeners ===');
+    
+    const closeButtons = document.querySelectorAll('[data-action="close-completion-modal"]');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', closeCompletionModal);
+    });
+    
+    // Close on overlay click
+    const overlay = document.querySelector('.completion-modal-overlay');
+    if (overlay) {
+        overlay.addEventListener('click', closeCompletionModal);
+    }
+    
+    console.log('=== Completion modal event listeners attached ===');
+});

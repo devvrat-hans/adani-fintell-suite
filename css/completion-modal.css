@@ -1,0 +1,377 @@
+/**
+ * Adani Fintell Suite - Completion Modal
+ * Styles for the invoice processing completion popup
+ */
+
+/* ==========================================================================
+   Completion Modal
+   ========================================================================== */
+
+.completion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.completion-modal.show {
+    display: flex;
+}
+
+.completion-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.completion-modal-content {
+    position: relative;
+    background: var(--bg-white);
+    border-radius: 20px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35), 
+                0 0 2px rgba(0, 0, 0, 0.15);
+    max-width: 520px;
+    width: 90%;
+    z-index: 1000001;
+    overflow: hidden;
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Modal Header with Status Indicator */
+.completion-modal-header {
+    padding: 40px 40px 32px 40px;
+    background: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
+    text-align: center;
+    position: relative;
+}
+
+.completion-modal-header.success {
+    background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
+}
+
+.completion-modal-header.failed {
+    background: linear-gradient(135deg, #DC3545 0%, #C82333 100%);
+}
+
+/* Status Icon */
+.completion-status-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+}
+
+.completion-status-icon::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    animation: pulse 2s infinite;
+}
+
+.completion-status-icon svg {
+    width: 48px;
+    height: 48px;
+    color: var(--bg-white);
+    position: relative;
+    z-index: 1;
+}
+
+/* Modal Title */
+.completion-modal-title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--bg-white);
+    margin: 0 0 12px 0;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.completion-modal-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Modal Body */
+.completion-modal-body {
+    padding: 32px 40px 40px 40px;
+    background: var(--bg-white);
+}
+
+/* Stats Grid */
+.completion-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.completion-stat {
+    padding: 16px;
+    background: var(--bg-lighter);
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.completion-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.completion-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--adani-blue);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+}
+
+.completion-stat-value.success {
+    color: var(--status-success);
+}
+
+.completion-stat-value.failed {
+    color: var(--status-error);
+}
+
+.completion-stat-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Message Section */
+.completion-message {
+    padding: 20px;
+    background: var(--bg-light);
+    border-left: 4px solid var(--adani-blue);
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.completion-message.success {
+    border-left-color: var(--status-success);
+    background: var(--status-success-light);
+}
+
+.completion-message.failed {
+    border-left-color: var(--status-error);
+    background: var(--status-error-light);
+}
+
+.completion-message-text {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Details List */
+.completion-details {
+    margin-bottom: 24px;
+}
+
+.completion-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.completion-detail-item:last-child {
+    border-bottom: none;
+}
+
+.completion-detail-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.completion-detail-icon.success {
+    color: var(--status-success);
+}
+
+.completion-detail-icon.failed {
+    color: var(--status-error);
+}
+
+.completion-detail-text {
+    flex: 1;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Modal Actions */
+.completion-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.completion-modal-actions button {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-close-modal {
+    background: var(--gradient-blue-purple);
+    color: var(--bg-white);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.3);
+}
+
+.btn-close-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(11, 116, 176, 0.4);
+}
+
+.btn-close-modal:active {
+    transform: translateY(0);
+}
+
+.btn-view-details {
+    background: var(--bg-lighter);
+    color: var(--adani-blue);
+    border: 2px solid var(--adani-blue);
+}
+
+.btn-view-details:hover {
+    background: var(--adani-blue);
+    color: var(--bg-white);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .completion-modal-content {
+        max-width: 95%;
+        margin: 0 16px;
+    }
+    
+    .completion-modal-header {
+        padding: 32px 24px 24px 24px;
+    }
+    
+    .completion-status-icon {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 20px;
+    }
+    
+    .completion-status-icon svg {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .completion-modal-title {
+        font-size: 1.5rem;
+    }
+    
+    .completion-modal-subtitle {
+        font-size: 0.9375rem;
+    }
+    
+    .completion-modal-body {
+        padding: 24px;
+    }
+    
+    .completion-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .completion-modal-actions {
+        flex-direction: column;
+    }
+}
+
+/* Ensure modal is not blurred */
+body.modal-open .completion-modal {
+    filter: none !important;
+}

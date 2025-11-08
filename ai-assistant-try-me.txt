@@ -1,0 +1,21 @@
+🧾 Invoice & Anomaly Queries
+
+Show me the last 2 detected invoice anomalies
+
+List all duplicate invoices from this week
+
+Show anomalies for invoice ID IN000000000000042
+
+What are the top 3 price mismatch invoices?
+
+List invoices where billed rate is higher than market rate
+
+Show invoices flagged for tax mismatch
+
+Get anomalies for vendor ABC Traders
+
+Show invoices with missing GST number
+
+List invoices processed today
+
+Show anomalies detected today

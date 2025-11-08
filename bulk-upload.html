@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="FinGuard - Invoice OCR and GST validation for Adani Group">
-    <title>FinGuard - Adani Fintell Suite</title>
+    <meta name="description" content="Bulk Upload - Process multiple invoices for Adani Group">
+    <title>Bulk Invoice Upload - Adani Fintell Suite</title>
     <link rel="icon" type="image/png" href="assets/images/logos/favicon.png">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/finguard.css">
+    <link rel="stylesheet" href="css/bulk-upload.css">
     <link rel="stylesheet" href="css/timeline-modal.css">
     <link rel="stylesheet" href="css/completion-modal.css">
     <link rel="stylesheet" href="css/notification.css">
@@ -28,8 +28,8 @@
             <!-- Page Header -->
             <header class="page-header">
                 <div class="header-content">
-                    <h1 class="page-title">FinGuard</h1>
-                    <p class="page-description">Upload invoices for intelligent OCR processing, GST validation, and compliance checking</p>
+                    <h1 class="page-title">Bulk Invoice Upload</h1>
+                    <p class="page-description">Upload and process multiple invoices at once with automated OCR, GST validation, and compliance checking</p>
                 </div>
             </header>
             
@@ -37,22 +37,8 @@
             <section class="upload-section">
                 <div class="upload-card">
                     <div class="card-header">
-                        <h2 class="card-title">Upload Invoice Document</h2>
-                        <p class="card-subtitle">Supported formats: PDF, PNG, JPEG (Max 50MB)</p>
-                        <div class="bulk-upload-link-container">
-                            <p class="bulk-upload-text">
-                                Need to process multiple invoices? 
-                                <a href="bulk-upload.html" class="bulk-upload-link">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                        <line x1="8" y1="13" x2="16" y2="13"></line>
-                                        <line x1="12" y1="9" x2="12" y2="17"></line>
-                                    </svg>
-                                    Use Bulk Upload
-                                </a>
-                            </p>
-                        </div>
+                        <h2 class="card-title">Upload Multiple Invoice Documents</h2>
+                        <p class="card-subtitle">Supported formats: PDF only (Max 50MB per file, up to 50 files)</p>
                     </div>
                     
                     <div class="card-body">
@@ -63,67 +49,68 @@
                                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                                 </svg>
                             </div>
-                            <p class="upload-text">Drag & drop your invoice here</p>
+                            <p class="upload-text">Drag & drop multiple PDF invoices here</p>
                             <p class="upload-subtext">or</p>
                             <label for="fileInput" class="browse-btn" tabindex="0" role="button">Browse Files</label>
-                            <input type="file" id="fileInput" accept="application/pdf,image/png,image/jpeg,.pdf,.png,.jpg,.jpeg" hidden data-file-input>
+                            <input type="file" id="fileInput" accept="application/pdf,.pdf" multiple hidden data-file-input>
                         </div>
                         
-                        <!-- File Preview -->
-                        <div class="file-preview" data-file-preview style="display: none;">
-                            <div class="preview-header">
-                                <div class="file-info">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                    </svg>
-                                    <div class="file-details">
-                                        <p class="file-name" data-file-name>document.pdf</p>
-                                        <p class="file-size" data-file-size>2.5 MB</p>
-                                    </div>
-                                </div>
-                                <button class="remove-file-btn" type="button" data-action="remove-file" aria-label="Remove file">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                        <!-- File List -->
+                        <div class="file-list" data-file-list style="display: none;">
+                            <div class="file-list-header">
+                                <h3 class="file-list-title">Selected Files (<span data-file-count>0</span>)</h3>
+                                <button class="clear-all-btn" type="button" data-action="clear-all" aria-label="Clear all files">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                                         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                                     </svg>
+                                    Clear All
                                 </button>
+                            </div>
+                            <div class="file-items" data-file-items>
+                                <!-- File items will be added here dynamically -->
                             </div>
                         </div>
                         
                         <!-- Submit Button -->
                         <div class="submit-section">
-                            <button class="submit-btn" type="button" data-action="process-file" disabled>
-                                <span class="btn-text">Process Invoice</span>
+                            <button class="submit-btn" type="button" data-action="process-all-files" disabled>
+                                <span class="btn-text">Process All Invoices</span>
                                 <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                                     <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
                                 </svg>
                             </button>
                         </div>
-                        
-                        <!-- Loading State -->
-                        <div class="loading-state" data-loading-state style="display: none;">
-                            <div class="spinner"></div>
-                            <p class="loading-text">Processing your invoice...</p>
-                            <p class="loading-subtext">This may take a few moments</p>
-                        </div>
                     </div>
                 </div>
             </section>
             
-            <!-- Results Section -->
-            <section class="results-section" data-results-section style="display: none;">
-                <div class="results-card">
+            <!-- Processing Queue Section -->
+            <section class="queue-section" data-queue-section style="display: none;">
+                <div class="queue-card">
                     <div class="card-header">
-                        <h2 class="card-title">OCR Results</h2>
-                        <button class="copy-btn" type="button" data-action="copy-results" aria-label="Copy results">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                            </svg>
-                            Copy
-                        </button>
+                        <h2 class="card-title">Processing Queue</h2>
+                        <div class="queue-stats">
+                            <span class="stat-item">
+                                <span class="stat-label">Total:</span>
+                                <span class="stat-value" data-queue-total>0</span>
+                            </span>
+                            <span class="stat-item success">
+                                <span class="stat-label">Completed:</span>
+                                <span class="stat-value" data-queue-completed>0</span>
+                            </span>
+                            <span class="stat-item processing">
+                                <span class="stat-label">Processing:</span>
+                                <span class="stat-value" data-queue-processing>0</span>
+                            </span>
+                            <span class="stat-item error">
+                                <span class="stat-label">Failed:</span>
+                                <span class="stat-value" data-queue-failed>0</span>
+                            </span>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div class="results-content" data-results-content>
-                            <!-- OCR results will be displayed here -->
+                        <div class="queue-items" data-queue-items>
+                            <!-- Queue items will be added here dynamically -->
                         </div>
                     </div>
                 </div>
@@ -131,25 +118,26 @@
         </div>
     </main>
     
-    <!-- Processing Timeline Popup -->
+    <!-- Processing Timeline Popup (same as FinGuard) -->
     <div class="processing-popup" data-processing-popup style="display: none;">
         <div class="popup-overlay" data-popup-overlay></div>
         <div class="popup-content">
             <div class="popup-header">
                 <div class="popup-header-content">
-                    <h3 class="popup-title">Processing Invoice</h3>
+                    <h3 class="popup-title">Processing Invoice <span data-current-invoice-number>1</span> of <span data-total-invoices>0</span></h3>
+                    <p class="popup-filename" data-current-filename>document.pdf</p>
                     <div class="progress-indicator" data-progress-indicator>
                         <span class="progress-percentage" data-progress-percentage>0%</span>
                         <span class="progress-text">Complete</span>
                     </div>
                 </div>
                 <div class="popup-header-actions">
-                    <button class="popup-close-btn" type="button" data-action="cancel-processing" aria-label="Minimize Processing">
+                    <button class="popup-close-btn" type="button" data-action="minimize-processing" aria-label="Minimize Processing">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                             <path d="M19 13H5v-2h14v2z"/>
                         </svg>
                     </button>
-                    <button class="popup-cancel-btn" type="button" onclick="cancelProcessing()" aria-label="Cancel Processing">
+                    <button class="popup-cancel-btn" type="button" data-action="cancel-processing" aria-label="Cancel Processing">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                         </svg>
@@ -308,70 +296,18 @@
     
     <!-- Minimized Processing Indicator -->
     <div class="minimized-processing" data-minimized-processing style="display: none;">
-        <div class="minimized-content" onclick="expandProcessingModal()">
+        <div class="minimized-content" data-action="expand-processing">
             <div class="spinner-mini"></div>
             <div class="minimized-text">
-                <span class="minimized-title">Processing Invoice...</span>
+                <span class="minimized-title">Processing Invoices... <span data-mini-progress>1/5</span></span>
                 <span class="minimized-subtitle" data-current-step>OCR Processing</span>
             </div>
         </div>
-        <button class="minimized-close" onclick="cancelProcessing()" aria-label="Stop Processing">
+        <button class="minimized-close" data-action="cancel-all-processing" aria-label="Stop Processing">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
         </button>
-    </div>
-    
-    <!-- Completion Modal -->
-    <div class="completion-modal" data-completion-modal>
-        <div class="completion-modal-overlay" data-action="close-completion-modal"></div>
-        <div class="completion-modal-content">
-            <div class="completion-modal-header" data-completion-header>
-                <div class="completion-status-icon" data-completion-icon>
-                    <!-- Success Icon (Check Circle) -->
-                    <svg class="icon-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <!-- Error Icon (X Circle) -->
-                    <svg class="icon-error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
-                    </svg>
-                </div>
-                <h2 class="completion-modal-title" data-completion-title>Invoice Processed Successfully</h2>
-                <p class="completion-modal-subtitle" data-completion-subtitle>All validation steps have been completed</p>
-            </div>
-            
-            <div class="completion-modal-body">
-                <!-- Processing Stats -->
-                <div class="completion-stats" data-completion-stats>
-                    <div class="completion-stat">
-                        <p class="completion-stat-value" data-total-checks>6</p>
-                        <p class="completion-stat-label">Total Checks</p>
-                    </div>
-                    <div class="completion-stat">
-                        <p class="completion-stat-value success" data-passed-checks>4</p>
-                        <p class="completion-stat-label">Passed</p>
-                    </div>
-                </div>
-                
-                <!-- Message -->
-                <div class="completion-message" data-completion-message-box>
-                    <p class="completion-message-text" data-completion-message>
-                        Invoice processing complete! All validation checks have been performed and results have been saved to the database.
-                    </p>
-                </div>
-                
-                <!-- Actions -->
-                <div class="completion-modal-actions">
-                    <button class="btn-close-modal" data-action="close-completion-modal">
-                        <span>Close</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
     
     <!-- Scripts -->
@@ -380,7 +316,6 @@
     <script src="js/utils/notification.js"></script>
     <script src="js/core/navbar.js" defer></script>
     <script src="js/core/sidebar.js" defer></script>
-    <script src="js/finguard/file-upload-handler.js"></script>
-    <script src="js/finguard/process-handler.js"></script>
+    <script src="js/bulk-upload.js"></script>
 </body>
 </html>

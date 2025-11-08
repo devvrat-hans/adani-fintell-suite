@@ -1,0 +1,195 @@
+# Rename Conversation API
+
+## Endpoint
+`PATCH /api/ai-assistant/conversation/:sessionId/rename`
+
+## Description
+Renames an existing AI assistant conversation.
+
+## Request
+
+### Path Parameters
+- `sessionId` (string, required): The unique session identifier for the conversation
+
+### Headers
+- `Content-Type: application/json`
+- `Authorization: Bearer <token>` (when authentication is implemented)
+
+### Request Body
+```json
+{
+  "title": "New conversation name"
+}
+```
+
+### Field Descriptions
+- `title` (string, required): The new name for the conversation (max 100 characters)
+
+## Response
+
+### Success Response (200 OK)
+```json
+{
+  "success": true,
+  "message": "Conversation renamed successfully",
+  "data": {
+    "session_id": "sess_today_001",
+    "title": "New conversation name",
+    "updated_at": "2024-11-08T10:30:00.000Z"
+  }
+}
+```
+
+### Error Response (400 Bad Request)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Title is required and must be between 1-100 characters"
+  }
+}
+```
+
+### Error Response (404 Not Found)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Conversation not found"
+  }
+}
+```
+
+### Error Response (401 Unauthorized)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Authentication required"
+  }
+}
+```
+
+## Example Usage
+
+### JavaScript Fetch
+```javascript
+const renameConversation = async (sessionId, newTitle) => {
+  try {
+    const response = await fetch(`/api/ai-assistant/conversation/${sessionId}/rename`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer ${token}` // When auth is implemented
+      },
+      body: JSON.stringify({ title: newTitle })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Conversation renamed:', data);
+    return data;
+  } catch (error) {
+    console.error('Error renaming conversation:', error);
+    throw error;
+  }
+};
+
+// Usage
+renameConversation('sess_today_001', 'Updated conversation name')
+  .then(data => console.log('Success:', data))
+  .catch(error => console.error('Error:', error));
+```
+
+### cURL
+```bash
+curl -X PATCH "http://localhost:3000/api/ai-assistant/conversation/sess_today_001/rename" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated conversation name"}'
+```
+
+## n8n Workflow Integration
+
+### Workflow Structure
+1. **Webhook Trigger**: Receives PATCH request with sessionId and title
+2. **Validation Node**: Validates title (non-empty, max 100 chars)
+3. **Database Update**: Updates conversation title in database
+4. **Response Node**: Returns success/error response
+
+### Database Schema
+```sql
+-- Conversations table
+CREATE TABLE conversations (
+  session_id VARCHAR(255) PRIMARY KEY,
+  user_id VARCHAR(255) NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  message_count INT DEFAULT 0,
+  preview TEXT
+);
+
+-- Update query
+UPDATE conversations 
+SET title = ?, last_updated = NOW() 
+WHERE session_id = ? AND user_id = ?;
+```
+
+## Business Logic
+
+### Validation Rules
+1. Title must not be empty
+2. Title must be between 1-100 characters
+3. Special characters are allowed (emojis, unicode)
+4. HTML tags should be escaped/stripped
+5. Leading/trailing whitespace should be trimmed
+
+### Security Considerations
+1. Verify user owns the conversation (when auth is implemented)
+2. Sanitize input to prevent XSS attacks
+3. Rate limiting: Max 10 renames per minute per user
+4. Audit log: Track rename operations for compliance
+
+### Edge Cases
+1. Conversation doesn't exist → 404 error
+2. User doesn't own conversation → 403 Forbidden
+3. Title unchanged → Success (no-op)
+4. Database connection error → 500 error with retry logic
+
+## Testing
+
+### Test Cases
+1. ✅ Valid rename with normal text
+2. ✅ Valid rename with special characters
+3. ✅ Valid rename with emoji
+4. ❌ Empty title (validation error)
+5. ❌ Title too long (>100 chars)
+6. ❌ Non-existent session ID
+7. ❌ Missing authorization (when implemented)
+8. ❌ Invalid session ID format
+
+### Mock Response (Development)
+```javascript
+// For development/testing without backend
+const mockRenameResponse = {
+  success: true,
+  message: "Conversation renamed successfully",
+  data: {
+    session_id: "sess_today_001",
+    title: "New conversation name",
+    updated_at: new Date().toISOString()
+  }
+};
+```
+
+## Related Endpoints
+- `GET /api/ai-assistant/history` - List all conversations
+- `DELETE /api/ai-assistant/conversation/:sessionId` - Delete conversation
+- `GET /api/ai-assistant/conversation/:sessionId/messages` - Get conversation messages
+- `POST /api/ai-assistant/chat` - Send new message in conversation

@@ -286,6 +286,34 @@ function setupEventListeners() {
             }
         });
     });
+    
+    // Existing rename buttons
+    const existingRenameButtons = document.querySelectorAll('.rename-conversation-btn');
+    existingRenameButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const wrapper = this.closest('.history-item-wrapper');
+            const sessionId = wrapper?.dataset.sessionId;
+            
+            if (sessionId && wrapper) {
+                handleRenameConversation(sessionId, wrapper);
+            }
+        });
+    });
+    
+    // Existing delete buttons
+    const existingDeleteButtons = document.querySelectorAll('.delete-conversation-btn');
+    existingDeleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const wrapper = this.closest('.history-item-wrapper');
+            const sessionId = wrapper?.dataset.sessionId;
+            
+            if (sessionId) {
+                handleDeleteConversation(sessionId);
+            }
+        });
+    });
 }
 
 /**
@@ -301,14 +329,14 @@ function setupConversationItemHandler(item, sessionId) {
  * Create a new session
  */
 function createNewSession() {
-    // Initialize conversation history with mock data
-    state.conversationHistory = [...MOCK_CONVERSATIONS];
-    
-    // Set current session to the first active conversation
-    if (state.conversationHistory.length > 0) {
-        state.currentSessionId = state.conversationHistory[0].session_id;
-    } else {
-        state.currentSessionId = `sess_${Date.now()}`;
+    // Only initialize if not already loaded from localStorage
+    if (!state.currentSessionId) {
+        // Set current session to the first active conversation or create new
+        if (state.conversationHistory.length > 0) {
+            state.currentSessionId = state.conversationHistory[0].session_id;
+        } else {
+            state.currentSessionId = `sess_${Date.now()}`;
+        }
     }
 }
 
@@ -453,9 +481,27 @@ function renderConversationInSidebar(conversation) {
     conversationButton.className = 'history-item';
     conversationButton.innerHTML = `<span class="history-text">${conversation.title}</span>`;
     
+    // Create actions container
+    const actionsContainer = document.createElement('div');
+    actionsContainer.className = 'conversation-actions';
+    
+    // Create rename button
+    const renameButton = document.createElement('button');
+    renameButton.className = 'rename-conversation-btn';
+    renameButton.setAttribute('aria-label', 'Rename conversation');
+    renameButton.setAttribute('title', 'Rename');
+    renameButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+    `;
+    
+    // Create delete button
     const deleteButton = document.createElement('button');
     deleteButton.className = 'delete-conversation-btn';
     deleteButton.setAttribute('aria-label', 'Delete conversation');
+    deleteButton.setAttribute('title', 'Delete');
     deleteButton.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -469,14 +515,23 @@ function renderConversationInSidebar(conversation) {
         loadConversation(conversation.session_id);
     });
     
+    // Add click handler for rename button
+    renameButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent triggering conversation load
+        handleRenameConversation(conversation.session_id, conversationItem);
+    });
+    
     // Add click handler for delete button
     deleteButton.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevent triggering conversation load
         handleDeleteConversation(conversation.session_id);
     });
     
+    actionsContainer.appendChild(renameButton);
+    actionsContainer.appendChild(deleteButton);
+    
     conversationItem.appendChild(conversationButton);
-    conversationItem.appendChild(deleteButton);
+    conversationItem.appendChild(actionsContainer);
     
     // Insert after the heading
     const heading = todaySection.querySelector('.history-heading');
@@ -640,6 +695,283 @@ async function handleDeleteConversation(sessionId) {
                 conversationElement.remove();
             }
             
+            // Remove from localStorage
+            localStorage.removeItem(`conversation-${sessionId}`);
+            
+            // Save updated state
+            saveConversationHistory();
+            
+            // If we deleted the active conversation, load another one
+            if (state.currentSessionId === sessionId) {
+                if (state.conversationHistory.length > 0) {
+                    loadConversation(state.conversationHistory[0].session_id);
+                } else {
+                    // No more conversations, create a new one
+                    handleNewChat();
+                }
+            }
+            
+            showNotification('success', 'Conversation deleted successfully');
+        } else {
+            throw new Error(data.error?.message || 'Failed to delete conversation');
+        }
+        
+    } catch (error) {
+        console.error('Error deleting conversation:', error);
+        
+        // Fallback: delete locally even if API fails
+        state.conversationHistory = state.conversationHistory.filter(
+            conv => conv.session_id !== sessionId
+        );
+        
+        const conversationElement = document.querySelector(`[data-session-id="${sessionId}"]`);
+        if (conversationElement) {
+            conversationElement.remove();
+        }
+        
+        // Remove from localStorage
+        localStorage.removeItem(`conversation-${sessionId}`);
+        
+        // Save updated state
+        saveConversationHistory();
+        
+        if (state.currentSessionId === sessionId) {
+            if (state.conversationHistory.length > 0) {
+                loadConversation(state.conversationHistory[0].session_id);
+            } else {
+                handleNewChat();
+            }
+        }
+        
+        showNotification('error', 'Failed to delete conversation. Please try again.');
+    }
+}
+
+/**
+ * Handle renaming a conversation
+ * @param {string} sessionId - Session ID to rename
+ * @param {HTMLElement} conversationElement - The conversation wrapper element
+ */
+function handleRenameConversation(sessionId, conversationElement) {
+    // Prevent multiple rename operations
+    if (conversationElement.classList.contains('editing')) {
+        return;
+    }
+    
+    conversationElement.classList.add('editing');
+    
+    const historyItem = conversationElement.querySelector('.history-item');
+    const historyText = historyItem.querySelector('.history-text');
+    const currentTitle = historyText.textContent.trim();
+    const actionsContainer = conversationElement.querySelector('.conversation-actions');
+    
+    // Hide actions while editing
+    actionsContainer.style.opacity = '0';
+    actionsContainer.style.visibility = 'hidden';
+    
+    // Create rename input container
+    const renameContainer = document.createElement('div');
+    renameContainer.className = 'rename-input-container';
+    
+    const renameInput = document.createElement('input');
+    renameInput.type = 'text';
+    renameInput.className = 'rename-input';
+    renameInput.value = currentTitle;
+    renameInput.maxLength = 100;
+    renameInput.placeholder = 'Enter conversation name...';
+    
+    const renameActions = document.createElement('div');
+    renameActions.className = 'rename-actions';
+    
+    // Save button
+    const saveButton = document.createElement('button');
+    saveButton.className = 'rename-save-btn';
+    saveButton.setAttribute('aria-label', 'Save');
+    saveButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>
+    `;
+    
+    // Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.className = 'rename-cancel-btn';
+    cancelButton.setAttribute('aria-label', 'Cancel');
+    cancelButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+    `;
+    
+    renameActions.appendChild(saveButton);
+    renameActions.appendChild(cancelButton);
+    
+    renameContainer.appendChild(renameInput);
+    renameContainer.appendChild(renameActions);
+    
+    // Replace history item content
+    historyItem.innerHTML = '';
+    historyItem.appendChild(renameContainer);
+    
+    // Focus and select input
+    renameInput.focus();
+    renameInput.select();
+    
+    // Handle save
+    const saveRename = async () => {
+        const newTitle = renameInput.value.trim();
+        
+        if (!newTitle) {
+            showNotification('warning', 'Conversation name cannot be empty');
+            renameInput.focus();
+            return;
+        }
+        
+        if (newTitle === currentTitle) {
+            cancelRename();
+            return;
+        }
+        
+        try {
+            // Call API to rename conversation
+            const response = await fetch(`/api/ai-assistant/conversation/${sessionId}/rename`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: newTitle })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to rename conversation: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update in state
+                const conversation = state.conversationHistory.find(
+                    conv => conv.session_id === sessionId
+                );
+                if (conversation) {
+                    conversation.title = newTitle;
+                    conversation.last_updated = new Date().toISOString();
+                }
+                
+                // Save to localStorage
+                saveConversationHistory();
+                
+                // Update UI
+                historyItem.innerHTML = `<span class="history-text">${newTitle}</span>`;
+                conversationElement.classList.remove('editing');
+                actionsContainer.style.opacity = '';
+                actionsContainer.style.visibility = '';
+                
+                showNotification('success', 'Conversation renamed successfully');
+            } else {
+                throw new Error(data.error?.message || 'Failed to rename conversation');
+            }
+            
+        } catch (error) {
+            console.error('Error renaming conversation:', error);
+            
+            // Fallback: update locally even if API fails
+            const conversation = state.conversationHistory.find(
+                conv => conv.session_id === sessionId
+            );
+            if (conversation) {
+                conversation.title = newTitle;
+                conversation.last_updated = new Date().toISOString();
+            }
+            
+            // Save to localStorage
+            saveConversationHistory();
+            
+            historyItem.innerHTML = `<span class="history-text">${newTitle}</span>`;
+            conversationElement.classList.remove('editing');
+            actionsContainer.style.opacity = '';
+            actionsContainer.style.visibility = '';
+            
+            showNotification('success', 'Conversation renamed locally (sync may fail)');
+        }
+    };
+    
+    // Handle cancel
+    const cancelRename = () => {
+        historyItem.innerHTML = `<span class="history-text">${currentTitle}</span>`;
+        conversationElement.classList.remove('editing');
+        actionsContainer.style.opacity = '';
+        actionsContainer.style.visibility = '';
+    };
+    
+    // Event listeners
+    saveButton.addEventListener('click', saveRename);
+    cancelButton.addEventListener('click', cancelRename);
+    
+    // Enter to save, Escape to cancel
+    renameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveRename();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            cancelRename();
+        }
+    });
+    
+    // Click outside to cancel
+    const handleClickOutside = (e) => {
+        if (!conversationElement.contains(e.target)) {
+            cancelRename();
+            document.removeEventListener('click', handleClickOutside);
+        }
+    };
+    
+    // Add listener with a small delay to prevent immediate trigger
+    setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+    }, 100);
+}
+
+/**
+ * Legacy delete handler - kept for backwards compatibility
+ */
+async function legacyHandleDeleteConversation(sessionId) {
+    // Confirm deletion
+    if (!confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        // Call API to delete conversation
+        const response = await fetch(`/api/ai-assistant/conversation/${sessionId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+                // Add authorization header when authentication is implemented
+                // 'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to delete conversation: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Remove from state
+            state.conversationHistory = state.conversationHistory.filter(
+                conv => conv.session_id !== sessionId
+            );
+            
+            // Remove from UI
+            const conversationElement = document.querySelector(`[data-session-id="${sessionId}"]`);
+            if (conversationElement) {
+                conversationElement.remove();
+            }
+            
             // If we deleted the active conversation, load another one
             if (state.currentSessionId === sessionId) {
                 if (state.conversationHistory.length > 0) {
@@ -729,14 +1061,6 @@ function addMessage(text, type) {
     };
 
     state.messages.push(messageObj);
-
-    // Hide suggested queries after first user message
-    if (type === 'user') {
-        const suggestedQueries = document.getElementById('suggestedQueries');
-        if (suggestedQueries) {
-            suggestedQueries.style.display = 'none';
-        }
-    }
 
     // Render the message
     renderMessage(messageObj);
@@ -1190,7 +1514,18 @@ function scrollToBottom() {
  */
 function saveConversationHistory() {
     try {
-        localStorage.setItem('chatbot-history', JSON.stringify(state.messages));
+        const dataToSave = {
+            messages: state.messages,
+            conversationHistory: state.conversationHistory,
+            currentSessionId: state.currentSessionId,
+            lastUpdated: new Date().toISOString()
+        };
+        localStorage.setItem('ai-assistant-state', JSON.stringify(dataToSave));
+        
+        // Also save individual conversation messages
+        if (state.currentSessionId) {
+            localStorage.setItem(`conversation-${state.currentSessionId}`, JSON.stringify(state.messages));
+        }
     } catch (error) {
         console.error('Error saving conversation history:', error);
     }
@@ -1201,9 +1536,17 @@ function saveConversationHistory() {
  */
 function loadConversationHistory() {
     try {
-        const history = localStorage.getItem('chatbot-history');
-        if (history && chatMessagesArea) {
-            state.messages = JSON.parse(history);
+        const savedState = localStorage.getItem('ai-assistant-state');
+        if (savedState && chatMessagesArea) {
+            const data = JSON.parse(savedState);
+            
+            // Restore state
+            state.messages = data.messages || [];
+            state.conversationHistory = data.conversationHistory || [...MOCK_CONVERSATIONS];
+            state.currentSessionId = data.currentSessionId || null;
+            
+            // Render conversation history in sidebar
+            renderConversationHistorySidebar();
             
             // Render loaded messages (skip welcome message from HTML)
             const existingMessages = chatMessagesArea.querySelectorAll('.message');
@@ -1212,10 +1555,155 @@ function loadConversationHistory() {
             state.messages.slice(welcomeMessageCount).forEach(message => {
                 renderMessage(message);
             });
+            
+            // Set active conversation if exists
+            if (state.currentSessionId) {
+                setActiveConversation(state.currentSessionId);
+            }
+        } else {
+            // No saved state, load mock conversations
+            state.conversationHistory = [...MOCK_CONVERSATIONS];
+            renderConversationHistorySidebar();
         }
     } catch (error) {
         console.error('Error loading conversation history:', error);
+        // Fallback to mock data
+        state.conversationHistory = [...MOCK_CONVERSATIONS];
+        renderConversationHistorySidebar();
     }
+}
+
+/**
+ * Render conversation history in sidebar from state
+ */
+function renderConversationHistorySidebar() {
+    const chatHistory = document.getElementById('chatHistory');
+    if (!chatHistory) return;
+    
+    // Clear existing items (except static ones if any)
+    chatHistory.innerHTML = '';
+    
+    // Group conversations by time
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const todayConversations = [];
+    const yesterdayConversations = [];
+    const olderConversations = [];
+    
+    state.conversationHistory.forEach(conv => {
+        const convDate = new Date(conv.last_updated || conv.started_at);
+        if (isSameDay(convDate, today)) {
+            todayConversations.push(conv);
+        } else if (isSameDay(convDate, yesterday)) {
+            yesterdayConversations.push(conv);
+        } else {
+            olderConversations.push(conv);
+        }
+    });
+    
+    // Render Today section
+    if (todayConversations.length > 0) {
+        const todaySection = createConversationSection('Today', todayConversations);
+        chatHistory.appendChild(todaySection);
+    }
+    
+    // Render Yesterday section
+    if (yesterdayConversations.length > 0) {
+        const yesterdaySection = createConversationSection('Yesterday', yesterdayConversations);
+        chatHistory.appendChild(yesterdaySection);
+    }
+    
+    // Render Older section
+    if (olderConversations.length > 0) {
+        const olderSection = createConversationSection('Older', olderConversations);
+        chatHistory.appendChild(olderSection);
+    }
+}
+
+/**
+ * Create a conversation section with heading and items
+ */
+function createConversationSection(heading, conversations) {
+    const section = document.createElement('div');
+    section.className = 'history-section';
+    
+    const headingEl = document.createElement('h4');
+    headingEl.className = 'history-heading';
+    headingEl.textContent = heading;
+    section.appendChild(headingEl);
+    
+    conversations.forEach(conv => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'history-item-wrapper';
+        wrapper.dataset.sessionId = conv.session_id;
+        
+        const button = document.createElement('button');
+        button.className = 'history-item';
+        if (conv.session_id === state.currentSessionId) {
+            button.classList.add('active');
+        }
+        button.innerHTML = `<span class="history-text">${conv.title}</span>`;
+        
+        // Actions container
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'conversation-actions';
+        
+        // Rename button
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'rename-conversation-btn';
+        renameBtn.setAttribute('aria-label', 'Rename conversation');
+        renameBtn.setAttribute('title', 'Rename');
+        renameBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+        `;
+        
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-conversation-btn';
+        deleteBtn.setAttribute('aria-label', 'Delete conversation');
+        deleteBtn.setAttribute('title', 'Delete');
+        deleteBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+        `;
+        
+        // Event listeners
+        button.addEventListener('click', () => loadConversation(conv.session_id));
+        renameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleRenameConversation(conv.session_id, wrapper);
+        });
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleDeleteConversation(conv.session_id);
+        });
+        
+        actionsContainer.appendChild(renameBtn);
+        actionsContainer.appendChild(deleteBtn);
+        
+        wrapper.appendChild(button);
+        wrapper.appendChild(actionsContainer);
+        section.appendChild(wrapper);
+    });
+    
+    return section;
+}
+
+/**
+ * Check if two dates are the same day
+ */
+function isSameDay(date1, date2) {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
 }
 
 /**
@@ -1223,7 +1711,19 @@ function loadConversationHistory() {
  */
 function clearConversationHistory() {
     state.messages = [];
-    localStorage.removeItem('chatbot-history');
+    state.conversationHistory = [];
+    state.currentSessionId = null;
+    
+    // Clear from localStorage
+    localStorage.removeItem('chatbot-history'); // Legacy key
+    localStorage.removeItem('ai-assistant-state');
+    
+    // Clear individual conversation caches
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('conversation-')) {
+            localStorage.removeItem(key);
+        }
+    });
     
     // Clear all messages except welcome message
     if (chatMessagesArea) {
@@ -1234,6 +1734,10 @@ function clearConversationHistory() {
             }
         });
     }
+    
+    // Reload with default mock data
+    state.conversationHistory = [...MOCK_CONVERSATIONS];
+    renderConversationHistorySidebar();
 
     showNotification('success', 'Chat history cleared');
 }

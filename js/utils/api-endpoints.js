@@ -27,7 +27,7 @@ const AUTH_ENDPOINTS = {
 // ==========================================================================
 
 const FINGUARD_ENDPOINTS = {
-    OCR_PDF: `${API_BASE_URL}/webhook/f/finguard/ocr/pdf`,
+    OCR_PDF: `${API_BASE_URL}/webhook/f/finguard/ocr/pdf/02`,
     OCR_IMAGE: `${API_BASE_URL}/webhook/f/finguard/ocr/image`,
     DETECT_DUPLICATE: `${API_BASE_URL}/webhook/f/finguard/detect-duplicate`,
     VALIDATE_GST: `${API_BASE_URL}/webhook/f/finguard/validate-gst`,

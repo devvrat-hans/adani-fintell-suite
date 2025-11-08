@@ -128,6 +128,44 @@ body {
     margin: 0;
 }
 
+.bulk-upload-link-container {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(11, 116, 176, 0.05) 0%, rgba(117, 71, 156, 0.05) 100%);
+    border-left: 3px solid var(--finguard-primary);
+    border-radius: 6px;
+}
+
+.bulk-upload-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.bulk-upload-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--finguard-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.bulk-upload-link:hover {
+    background: rgba(11, 116, 176, 0.1);
+    color: var(--finguard-secondary);
+}
+
+.bulk-upload-link svg {
+    flex-shrink: 0;
+}
+
 .card-body {
     padding: var(--spacing-lg);
 }
@@ -1106,3 +1144,29 @@ body {
     color: var(--status-error);
 }
 
+/* ==========================================================================
+   Modal Effects
+   ========================================================================== */
+
+/* Prevent scrollbar layout shift when modal is open */
+body.modal-open {
+    overflow: hidden;
+    padding-right: 0 !important; /* Prevent padding from being added */
+}
+
+/* Blur effect for background elements when modal is open */
+body.modal-open .app-navbar,
+body.modal-open .sidebar,
+body.modal-open .main-content {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.3s ease;
+}
+
+/* Ensure modals and notifications are not blurred */
+body.modal-open .processing-popup,
+body.modal-open .completion-modal,
+body.modal-open .notification-container {
+    filter: none !important;
+}

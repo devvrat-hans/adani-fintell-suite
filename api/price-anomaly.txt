@@ -23,44 +23,105 @@ request body:
 
 response body:
 
-{
-  "anomalies": [
-    {
-      "description": "Financial Consulting",
-      "billed_rate": 2500,
-      "market_rate": 2500,
-      "deviation_percent": 0,
-      "issue": "Price deviation below 20%"
-    },
-    {
-      "description": "Tax Advisory",
-      "billed_rate": 3000,
-      "market_rate": 3250,
-      "deviation_percent": -7.7,
-      "issue": "Price deviation below 20%"
+[
+  {
+    json: {
+      anomalies: [
+        {
+          description: "Apples",
+          billed_rate: 120,
+          market_rate: 100,
+          deviation_percent: 20,
+          issue: "Price deviation above 20%"
+        }
+      ],
+      marketComparison: [
+        {
+          description: "Apples",
+          billed_rate: 120,
+          market_rate: 100,
+          deviation_percent: 20,
+          status: "Deviation above 20%"
+        },
+        {
+          description: "Bananas",
+          billed_rate: 80,
+          market_rate: 75,
+          deviation_percent: 6.7,
+          status: "Within acceptable range"
+        },
+        {
+          description: "Cherries",
+          billed_rate: 200,
+          market_rate: 210,
+          deviation_percent: -4.8,
+          status: "Within acceptable range"
+        }
+      ],
+      anomalyFound: true,
+      totalItems: 3,
+      anomalyCount: 1,
+      summary: "Analyzed 3 items, found 1 anomalies"
     }
-  ],
-  "anomalyFound": false,
-  "totalItems": 2,
-  "anomalyCount": 0,
-  "summary": "Analyzed 2 items, found 0 anomalies"
-}
+  }
+]
 
-or this
-
-{
-  "anomalies": [
-    {
-      "description": "Financial Consulting",
-      "billed_rate": 2500,
-      "market_rate": 1500,
-      "deviation_percent": 66.7,
-      "issue": "Price deviation above 20%"
+[
+  {
+    json: {
+      anomalies: [
+        {
+          description: "Oranges",
+          billed_rate: 150,
+          issue: "No market rate found"
+        }
+      ],
+      marketComparison: [
+        {
+          description: "Oranges",
+          billed_rate: 150,
+          market_rate: null,
+          deviation_percent: null,
+          status: "No market rate found"
+        }
+      ],
+      anomalyFound: true,
+      totalItems: 1,
+      anomalyCount: 1,
+      summary: "Analyzed 1 items, found 1 anomalies"
     }
-  ],
-  "anomalyFound": true,
-  "totalItems": 2,
-  "anomalyCount": 1,
-  "summary": "Analyzed 2 items, found 1 anomalies"
-}
+  }
+]
+
+[
+  {
+    json: {
+      anomalies: [],
+      marketComparison: [
+        {
+          description: "Apples",
+          billed_rate: 100,
+          market_rate: 100,
+          deviation_percent: 0,
+          status: "Within acceptable range"
+        },
+        {
+          description: "Bananas",
+          billed_rate: 80,
+          market_rate: 80,
+          deviation_percent: 0,
+          status: "Within acceptable range"
+        }
+      ],
+      anomalyFound: false,
+      totalItems: 2,
+      anomalyCount: 0,
+      summary: "Analyzed 2 items, found 0 anomalies"
+    }
+  }
+]
+
+
+
+
 

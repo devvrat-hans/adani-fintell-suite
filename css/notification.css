@@ -8,10 +8,16 @@
     position: fixed;
     top: 80px;  /* Adjusted to appear below navbar */
     right: 24px;
-    z-index: 1000000;
+    z-index: 10000000;  /* Higher than any modal */
     display: flex;
     flex-direction: column;
     gap: 12px;
+    pointer-events: none;
+}
+
+/* Ensure notifications are never blurred */
+body.modal-open .notification-container {
+    filter: none !important;
     pointer-events: none;
 }
 
