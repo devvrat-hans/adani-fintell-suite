@@ -1,0 +1,291 @@
+endpoint: GET https://n8n-n8n.qoezvx.easypanel.host/webhook/f/fetch-processed-invoice-details
+
+request parameters: 
+[
+{
+"invoice_id": 
+"IN000000000000041"
+}
+]
+
+response:
+
+[
+  {
+    "_id": "690eb3cac0d7d24c6849d264",
+    "results": [
+      {
+        "invoice_id": "IN000000000000041",
+        "invoice_number": "BTC/25-26/483",
+        "invoice_date": "2025-08-29T00:00:00.000Z",
+        "invoice_amount": null,
+        "vendor_name": "BISWAL TOOLS CENTRE",
+        "vendor_gstin": "21 APOPB6452J1ZY",
+        "company_gstin": "21AACCG6721F1Z4",
+        "hsn_sac_codes": [
+          "73072900",
+          "73079990",
+          "84818050"
+        ],
+        "subtotal": 5,
+        "cgst_amount": 514.8,
+        "sgst_amount": 514.8,
+        "igst_amount": null,
+        "gst_rate": 18,
+        "line_items": [
+          {
+            "description": "NIPPLE HOSE\n100MM",
+            "hsn_sac": "73072900",
+            "quantity": 2,
+            "rate": 370,
+            "amount": 740
+          },
+          {
+            "description": "HOSE CLAMP 4INCH",
+            "hsn_sac": "73079990",
+            "quantity": 4,
+            "rate": 1,
+            "amount": 4
+          },
+          {
+            "description": "VALVE, BUTTERFLY, 40NB,",
+            "hsn_sac": "84818050",
+            "quantity": 1,
+            "rate": 70000,
+            "amount": 700
+          }
+        ],
+        "upload_timestamp": "2025-11-08T02:52:19.067Z",
+        "_id": "690eb063c0d7d24c6849d263",
+        "id": "690eb063c0d7d24c6849d263"
+      }
+    ],
+    "metadata": {
+      "overall_status": "failed",
+      "processed_at": "2025-11-08T02:52:27.526Z",
+      "file_name": "6P120S001#5001773360.pdf",
+      "file_type": "pdf",
+      "total_invoices": 1
+    },
+    "processing_summary": {
+      "passed_checks": 2,
+      "failed_checks": 4,
+      "total_checks": 6,
+      "all_checks": [
+        {
+          "check_name": "ocr_extraction",
+          "success": true,
+          "comments": "OCR extraction successful"
+        },
+        {
+          "check_name": "arithmetic_accuracy",
+          "success": true,
+          "comments": "All calculations verified successfully"
+        },
+        {
+          "check_name": "price_anomaly_check",
+          "success": false,
+          "comments": "Price anomaly check failed"
+        },
+        {
+          "check_name": "duplicate_detection",
+          "success": false,
+          "comments": "Error: Failed to execute 'json' on 'Response': Unexpected end of JSON input"
+        },
+        {
+          "check_name": "gst_validation",
+          "success": false,
+          "comments": "Error: Failed to execute 'json' on 'Response': Unexpected end of JSON input"
+        },
+        {
+          "check_name": "gst_rate_validation",
+          "success": false,
+          "comments": "GST rate validation failed"
+        }
+      ]
+    },
+    "api_responses_full": {
+      "ocr_processing": {
+        "success": true,
+        "comments": "OCR extraction successful",
+        "full_response": {
+          "success": true,
+          "data": [
+            {
+              "invoice_id": "IN000000000000041",
+              "invoice_number": "BTC/25-26/483",
+              "invoice_date": "2025-08-29T00:00:00.000Z",
+              "invoice_amount": null,
+              "vendor_name": "BISWAL TOOLS CENTRE",
+              "vendor_gstin": "21 APOPB6452J1ZY",
+              "company_gstin": "21AACCG6721F1Z4",
+              "hsn_sac_codes": [
+                "73072900",
+                "73079990",
+                "84818050"
+              ],
+              "line_items": [
+                {
+                  "description": "NIPPLE HOSE\n100MM",
+                  "hsn_sac": "73072900",
+                  "quantity": 2,
+                  "rate": 370,
+                  "amount": 740
+                },
+                {
+                  "description": "HOSE CLAMP 4INCH",
+                  "hsn_sac": "73079990",
+                  "quantity": 4,
+                  "rate": 1,
+                  "amount": 4
+                },
+                {
+                  "description": "VALVE, BUTTERFLY, 40NB,",
+                  "hsn_sac": "84818050",
+                  "quantity": 1,
+                  "rate": 70000,
+                  "amount": 700
+                }
+              ],
+              "subtotal": 5,
+              "cgst_amount": 514.8,
+              "sgst_amount": 514.8,
+              "igst_amount": null,
+              "gst_rate": 18,
+              "upload_timestamp": "2025-11-08T02:52:19.067Z",
+              "_id": "690eb063c0d7d24c6849d263",
+              "id": "690eb063c0d7d24c6849d263"
+            }
+          ]
+        }
+      },
+      "arithmetic_accuracy": {
+        "success": true,
+        "comments": "All calculations verified successfully",
+        "full_response": {
+          "isValid": true,
+          "errors": [],
+          "calculations": {
+            "subtotal": null,
+            "cgst": 0,
+            "sgst": 0,
+            "igst": 0,
+            "calculatedTotal": null,
+            "invoiceAmount": null
+          }
+        }
+      },
+      "price_anomaly_check": {
+        "success": false,
+        "comments": "Price anomaly check failed",
+        "full_response": {
+          "anomalies": [
+            {
+              "description": "NIPPLE HOSE\n100MM",
+              "billed_rate": 370,
+              "issue": "No market rate found"
+            },
+            {
+              "description": "HOSE CLAMP 4INCH",
+              "billed_rate": 1,
+              "market_rate": 50,
+              "deviation_percent": -98,
+              "issue": "Price deviation below 20%"
+            },
+            {
+              "description": "VALVE, BUTTERFLY, 40NB,",
+              "billed_rate": 70000,
+              "issue": "No market rate found"
+            }
+          ],
+          "marketComparison": [
+            {
+              "description": "NIPPLE HOSE\n100MM",
+              "billed_rate": 370,
+              "market_rate": null,
+              "deviation_percent": null,
+              "status": "No market rate found"
+            },
+            {
+              "description": "HOSE CLAMP 4INCH",
+              "billed_rate": 1,
+              "market_rate": 50,
+              "deviation_percent": -98,
+              "status": "Deviation below 20%"
+            },
+            {
+              "description": "VALVE, BUTTERFLY, 40NB,",
+              "billed_rate": 70000,
+              "market_rate": null,
+              "deviation_percent": null,
+              "status": "No market rate found"
+            }
+          ],
+          "anomalyFound": true,
+          "totalItems": 3,
+          "anomalyCount": 3,
+          "summary": "Analyzed 3 items, found 3 anomalies"
+        }
+      },
+      "duplicate_detection": {
+        "success": false,
+        "comments": "Error: Failed to execute 'json' on 'Response': Unexpected end of JSON input",
+        "full_response": {
+          "error": "Failed to execute 'json' on 'Response': Unexpected end of JSON input"
+        }
+      },
+      "gst_validation": {
+        "success": false,
+        "comments": "Error: Failed to execute 'json' on 'Response': Unexpected end of JSON input",
+        "full_response": {
+          "error": "Failed to execute 'json' on 'Response': Unexpected end of JSON input"
+        }
+      },
+      "gst_rate_validation": {
+        "success": false,
+        "comments": "GST rate validation failed",
+        "full_response": {
+          "status": "anomaly",
+          "anomalies": [
+            {
+              "description": "NIPPLE HOSE\n100MM",
+              "hsn_sac": "73072900",
+              "billed": {
+                "rate": 370,
+                "amount": 740,
+                "quantity": 2
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            },
+            {
+              "description": "HOSE CLAMP 4INCH",
+              "hsn_sac": "73079990",
+              "billed": {
+                "rate": 1,
+                "amount": 4,
+                "quantity": 4
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            },
+            {
+              "description": "VALVE, BUTTERFLY, 40NB,",
+              "hsn_sac": "84818050",
+              "billed": {
+                "rate": 70000,
+                "amount": 700,
+                "quantity": 1
+              },
+              "expected": null,
+              "status": "INVALID",
+              "issue": "HSN/SAC not found in master list"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

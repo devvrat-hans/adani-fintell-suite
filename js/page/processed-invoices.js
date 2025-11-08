@@ -572,16 +572,30 @@ window.viewProcessingDetails = async function(invoiceId) {
             </div>
         `;
         elements.modalOverlay.classList.add('active');
-
-        // Get processed invoice data from state (from fetch-processed-invoices API)
-        const processedInvoice = state.invoices.find(inv => (inv.invoice_id || inv._id) === invoiceId);
-        if (!processedInvoice) {
-            throw new Error('Invoice not found in processed invoices');
+        
+        // Blur navbar, sidebar, and main content
+        const navbar = document.querySelector('.navbar');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.processed-invoices-main');
+        if (navbar) {
+            navbar.style.filter = 'blur(3px)';
+            navbar.style.pointerEvents = 'none';
         }
+        if (sidebar) {
+            sidebar.style.filter = 'blur(3px)';
+            sidebar.style.pointerEvents = 'none';
+        }
+        if (mainContent) {
+            mainContent.style.filter = 'blur(3px)';
+            mainContent.style.pointerEvents = 'none';
+        }
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
 
-        // Fetch detailed invoice data from get-invoice-details API
-        console.log('Fetching invoice details for ID:', invoiceId);
-        const detailsResponse = await fetch(`${window.API_ENDPOINTS.FINGUARD.GET_INVOICE_DETAILS}?invoice_id=${invoiceId}`, {
+        // Fetch detailed invoice data from the new unified API
+        console.log('Fetching processed invoice details for ID:', invoiceId);
+        const detailsResponse = await fetch(`https://n8n-n8n.qoezvx.easypanel.host/webhook/f/fetch-processed-invoice-details?invoice_id=${invoiceId}`, {
             method: 'GET'
         });
         
@@ -592,13 +606,13 @@ window.viewProcessingDetails = async function(invoiceId) {
         const detailsResult = await detailsResponse.json();
         console.log('Invoice details received:', detailsResult);
 
-        // API returns an array with one item
-        const invoiceDetails = Array.isArray(detailsResult) && detailsResult.length > 0 
+        // API returns an array with one item containing all the data
+        const invoiceData = Array.isArray(detailsResult) && detailsResult.length > 0 
             ? detailsResult[0] 
             : detailsResult;
 
-        // Combine both data sources and display
-        displayCombinedInvoiceDetails(processedInvoice, invoiceDetails);
+        // Display the comprehensive invoice details
+        displayProcessedInvoiceDetails(invoiceData);
 
     } catch (error) {
         console.error('Error loading invoice details:', error);
@@ -624,149 +638,221 @@ window.viewProcessingDetails = async function(invoiceId) {
 };
 
 /**
- * Display combined invoice details from both APIs
+ * Display comprehensive processed invoice details from unified API
  */
-function displayCombinedInvoiceDetails(processedInvoice, invoiceDetails) {
-    // Calculate overall status from processing_status
-    const processingStatus = processedInvoice.processing_status || {};
-    let overallStatus = 'completed';
-    let failedCount = 0;
+function displayProcessedInvoiceDetails(invoiceData) {
+    // Extract the main data structures
+    const invoiceInfo = invoiceData.results && invoiceData.results[0] ? invoiceData.results[0] : {};
+    const metadata = invoiceData.metadata || {};
+    const processingSummary = invoiceData.processing_summary || {};
+    const apiResponsesFull = invoiceData.api_responses_full || {};
     
-    Object.values(processingStatus).forEach(step => {
-        if (step.success === false) {
-            failedCount++;
-        }
-    });
+    // Calculate overall status
+    const passedChecks = processingSummary.passed_checks || 0;
+    const failedChecks = processingSummary.failed_checks || 0;
+    const totalChecks = processingSummary.total_checks || 0;
+    const overallStatus = metadata.overall_status || (failedChecks > 0 ? 'failed' : 'completed');
     
-    if (failedCount > 0) {
-        overallStatus = 'failed';
-    }
-    
-    // Get processed date from multiple possible sources
-    const processedDate = processedInvoice.upload_timestamp || 
-                         processedInvoice.batch_metadata?.processed_at || 
-                         processedInvoice.processed_at;
+    // Get processed date
+    const processedDate = metadata.processed_at || invoiceInfo.upload_timestamp;
     
     let detailsHTML = '<div class="invoice-details-sections">';
 
-    // Section 1: Processing Status (from fetch-processed-invoices)
+    // Section 1: Processing Summary
     detailsHTML += `
-        <section class="details-section">
-            <h3 class="section-title">Processing Status</h3>
-            <div class="detail-row">
-                <span class="detail-label">Overall Status:</span>
-                <span class="detail-value"><span class="badge badge-${overallStatus}">${overallStatus}</span></span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Processed Date:</span>
-                <span class="detail-value">${formatDateTime(processedDate)}</span>
-            </div>
-            ${overallStatus === 'failed' ? `
-            <div class="detail-row">
-                <span class="detail-label">Failed Stages:</span>
-                <span class="detail-value">${getFailedStage(processedInvoice)}</span>
-            </div>
-            ` : ''}
-        </section>
-    `;
-
-    // Section 2: Invoice Information (from get-invoice-details)
-    detailsHTML += `
-        <section class="details-section">
-            <h3 class="section-title">Invoice Information</h3>
-            <div class="detail-row">
-                <span class="detail-label">Invoice Number:</span>
-                <span class="detail-value">${invoiceDetails.invoice_number || 'N/A'}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Invoice Date:</span>
-                <span class="detail-value">${invoiceDetails.invoice_date ? new Date(invoiceDetails.invoice_date).toLocaleDateString() : 'N/A'}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Invoice Amount:</span>
-                <span class="detail-value">${invoiceDetails.invoice_amount ? '₹' + formatAmount(invoiceDetails.invoice_amount) : 'N/A'}</span>
-            </div>
-        </section>
-    `;
-
-    // Section 3: Vendor Information (from get-invoice-details)
-    detailsHTML += `
-        <section class="details-section">
-            <h3 class="section-title">Vendor Information</h3>
-            <div class="detail-row">
-                <span class="detail-label">Vendor Name:</span>
-                <span class="detail-value">${invoiceDetails.vendor_name || 'N/A'}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Vendor GSTIN:</span>
-                <span class="detail-value">${invoiceDetails.vendor_gstin || 'N/A'}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Company GSTIN:</span>
-                <span class="detail-value">${invoiceDetails.company_gstin || 'N/A'}</span>
+        <section class="details-section summary-section">
+            <h3 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path d="M9 11l3 3L22 4"></path>
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                </svg>
+                Processing Summary
+            </h3>
+            <div class="summary-cards-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Overall Status</div>
+                    <div class="summary-value">
+                        <span class="badge badge-large badge-${overallStatus}">${overallStatus.toUpperCase()}</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Checks Passed</div>
+                    <div class="summary-value passed-count">${passedChecks}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Checks Failed</div>
+                    <div class="summary-value failed-count">${failedChecks}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Checks</div>
+                    <div class="summary-value">${totalChecks}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Processed Date</div>
+                    <div class="summary-value date-value">${formatDateTime(processedDate)}</div>
+                </div>
+                ${metadata.file_name ? `
+                <div class="summary-card">
+                    <div class="summary-label">File Name</div>
+                    <div class="summary-value" style="font-size: 0.85rem; word-break: break-all;">${metadata.file_name}</div>
+                </div>
+                ` : ''}
             </div>
         </section>
     `;
 
-    // Section 4: GST Details (from get-invoice-details)
-    if (invoiceDetails.subtotal || invoiceDetails.gst_rate) {
+    // Section 2: Invoice Information
+    detailsHTML += `
+        <section class="details-section">
+            <h3 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Invoice Information
+            </h3>
+            <div class="detail-grid-2col">
+                <div class="detail-item">
+                    <span class="detail-label">Invoice ID</span>
+                    <span class="detail-value mono">${invoiceInfo.invoice_id || invoiceInfo._id || 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Invoice Number</span>
+                    <span class="detail-value">${invoiceInfo.invoice_number || 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Invoice Date</span>
+                    <span class="detail-value">${invoiceInfo.invoice_date ? new Date(invoiceInfo.invoice_date).toLocaleDateString('en-IN') : 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Invoice Amount</span>
+                    <span class="detail-value amount-highlight">₹${invoiceInfo.invoice_amount ? formatAmount(invoiceInfo.invoice_amount) : 'N/A'}</span>
+                </div>
+            </div>
+        </section>
+    `;
+
+    // Section 3: Vendor & Company Information
+    detailsHTML += `
+        <section class="details-section">
+            <h3 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 010 7.75"></path>
+                </svg>
+                Vendor & Company Information
+            </h3>
+            <div class="two-column-layout">
+                <div class="column-section vendor-section">
+                    <h4 class="column-header">Vendor Details</h4>
+                    <div class="detail-grid-1col">
+                        <div class="detail-item">
+                            <span class="detail-label">Vendor Name</span>
+                            <span class="detail-value">${invoiceInfo.vendor_name || 'N/A'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Vendor GSTIN</span>
+                            <span class="detail-value mono">${invoiceInfo.vendor_gstin || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column-section company-section">
+                    <h4 class="column-header">Company Details</h4>
+                    <div class="detail-grid-1col">
+                        <div class="detail-item">
+                            <span class="detail-label">Company GSTIN</span>
+                            <span class="detail-value mono">${invoiceInfo.company_gstin || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `;
+
+    // Section 4: GST & Tax Details
+    detailsHTML += `
+        <section class="details-section">
+            <h3 class="section-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"></path>
+                </svg>
+                GST & Tax Details
+            </h3>
+            <div class="detail-grid-3col">
+                <div class="detail-item">
+                    <span class="detail-label">Subtotal</span>
+                    <span class="detail-value amount-highlight">₹${invoiceInfo.subtotal ? formatAmount(invoiceInfo.subtotal) : 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">GST Rate</span>
+                    <span class="detail-value">${invoiceInfo.gst_rate || 0}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">CGST Amount</span>
+                    <span class="detail-value">₹${invoiceInfo.cgst_amount ? formatAmount(invoiceInfo.cgst_amount) : 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">SGST Amount</span>
+                    <span class="detail-value">₹${invoiceInfo.sgst_amount ? formatAmount(invoiceInfo.sgst_amount) : 'N/A'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">IGST Amount</span>
+                    <span class="detail-value">₹${invoiceInfo.igst_amount ? formatAmount(invoiceInfo.igst_amount) : 'N/A'}</span>
+                </div>
+                ${invoiceInfo.hsn_sac_codes && invoiceInfo.hsn_sac_codes.length > 0 ? `
+                <div class="detail-item full-width">
+                    <span class="detail-label">HSN/SAC Codes</span>
+                    <span class="detail-value">
+                        ${invoiceInfo.hsn_sac_codes.map(code => 
+                            `<span class="badge badge-code">${code}</span>`
+                        ).join(' ')}
+                    </span>
+                </div>
+                ` : ''}
+            </div>
+        </section>
+    `;
+
+    // Section 5: Line Items
+    if (invoiceInfo.line_items && invoiceInfo.line_items.length > 0) {
         detailsHTML += `
             <section class="details-section">
-                <h3 class="section-title">GST Details</h3>
-                <div class="detail-row">
-                    <span class="detail-label">Subtotal:</span>
-                    <span class="detail-value">${invoiceDetails.subtotal ? '₹' + formatAmount(invoiceDetails.subtotal) : 'N/A'}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">GST Rate:</span>
-                    <span class="detail-value">${invoiceDetails.gst_rate ? invoiceDetails.gst_rate + '%' : 'N/A'}</span>
-                </div>
-                ${invoiceDetails.cgst_amount ? `
-                <div class="detail-row">
-                    <span class="detail-label">CGST:</span>
-                    <span class="detail-value">₹${formatAmount(invoiceDetails.cgst_amount)}</span>
-                </div>
-                ` : ''}
-                ${invoiceDetails.sgst_amount ? `
-                <div class="detail-row">
-                    <span class="detail-label">SGST:</span>
-                    <span class="detail-value">₹${formatAmount(invoiceDetails.sgst_amount)}</span>
-                </div>
-                ` : ''}
-                ${invoiceDetails.igst_amount ? `
-                <div class="detail-row">
-                    <span class="detail-label">IGST:</span>
-                    <span class="detail-value">₹${formatAmount(invoiceDetails.igst_amount)}</span>
-                </div>
-                ` : ''}
-            </section>
-        `;
-    }
-
-    // Section 5: Line Items (from get-invoice-details)
-    if (invoiceDetails.line_items && invoiceDetails.line_items.length > 0) {
-        detailsHTML += `
-            <section class="details-section">
-                <h3 class="section-title">Line Items</h3>
-                <div class="line-items-table">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <h3 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    Line Items (${invoiceInfo.line_items.length})
+                </h3>
+                <div class="responsive-table-wrapper">
+                    <table class="line-items-table">
                         <thead>
-                            <tr style="background: var(--bg-lighter); text-align: left;">
-                                <th style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">Description</th>
-                                <th style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">HSN/SAC</th>
-                                <th style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">Qty</th>
-                                <th style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">Rate</th>
-                                <th style="padding: 0.75rem; border-bottom: 1px solid var(--border-color); text-align: right;">Amount</th>
+                            <tr>
+                                <th>Description</th>
+                                <th>HSN/SAC</th>
+                                <th class="text-right">Quantity</th>
+                                <th class="text-right">Rate</th>
+                                <th class="text-right">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${invoiceDetails.line_items.map(item => `
+                            ${invoiceInfo.line_items.map((item, index) => `
                                 <tr>
-                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-light);">${item.description || '-'}</td>
-                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-light);">${item.hsn_sac || '-'}</td>
-                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-light);">${item.quantity || '-'}</td>
-                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-light);">₹${item.rate ? formatAmount(item.rate) : '-'}</td>
-                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-light); text-align: right;">₹${item.amount ? formatAmount(item.amount) : '-'}</td>
+                                    <td class="description-cell">${item.description || '-'}</td>
+                                    <td><span class="badge badge-code">${item.hsn_sac || '-'}</span></td>
+                                    <td class="text-right">${item.quantity || '-'}</td>
+                                    <td class="text-right amount-cell">₹${item.rate ? formatAmount(item.rate) : '-'}</td>
+                                    <td class="text-right amount-cell amount-highlight">₹${item.amount ? formatAmount(item.amount) : '-'}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -776,17 +862,46 @@ function displayCombinedInvoiceDetails(processedInvoice, invoiceDetails) {
         `;
     }
 
-    // Section 6: Validation Results (from fetch-processed-invoices)
-    if (processedInvoice.processing_status) {
+    // Section 6: Validation Results
+    if (processingSummary.all_checks && processingSummary.all_checks.length > 0) {
         detailsHTML += `
             <section class="details-section">
-                <h3 class="section-title">Validation Results</h3>
-                ${renderValidationStatus('OCR Extraction', processedInvoice.processing_status.ocr_extraction)}
-                ${renderValidationStatus('Arithmetic Accuracy', processedInvoice.processing_status.arithmetic_accuracy)}
-                ${renderValidationStatus('Price Anomaly Check', processedInvoice.processing_status.price_anomaly_check)}
-                ${renderValidationStatus('Duplicate Detection', processedInvoice.processing_status.duplicate_detection)}
-                ${renderValidationStatus('GST Validation', processedInvoice.processing_status.gst_validation)}
-                ${renderValidationStatus('GST Rate Validation', processedInvoice.processing_status.gst_rate_validation)}
+                <h3 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <polyline points="9 11 12 14 22 4"></polyline>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                    </svg>
+                    Validation Results
+                </h3>
+                <div class="validation-results-grid">
+                    ${processingSummary.all_checks.map(check => {
+                        const checkLabel = formatCheckName(check.check_name);
+                        return renderValidationStatusFromCheck(checkLabel, check);
+                    }).join('')}
+                </div>
+            </section>
+        `;
+    }
+
+    // Section 7: Detailed API Responses (Collapsible)
+    if (apiResponsesFull && Object.keys(apiResponsesFull).length > 0) {
+        detailsHTML += `
+            <section class="details-section">
+                <h3 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    Detailed API Responses
+                </h3>
+                <div class="api-responses-accordion">
+                    ${renderAPIResponse('OCR Processing', apiResponsesFull.ocr_processing)}
+                    ${renderAPIResponse('Arithmetic Accuracy', apiResponsesFull.arithmetic_accuracy)}
+                    ${renderAPIResponse('Price Anomaly Check', apiResponsesFull.price_anomaly_check)}
+                    ${renderAPIResponse('Duplicate Detection', apiResponsesFull.duplicate_detection)}
+                    ${renderAPIResponse('GST Validation', apiResponsesFull.gst_validation)}
+                    ${renderAPIResponse('GST Rate Validation', apiResponsesFull.gst_rate_validation)}
+                </div>
             </section>
         `;
     }
@@ -794,6 +909,53 @@ function displayCombinedInvoiceDetails(processedInvoice, invoiceDetails) {
     detailsHTML += '</div>';
 
     elements.modalBody.innerHTML = detailsHTML;
+    
+    // Attach event listeners for collapsible sections
+    attachAccordionListeners();
+}
+
+/**
+ * Format check name to display name
+ */
+function formatCheckName(checkName) {
+    const checkNameMap = {
+        'ocr_extraction': 'OCR Extraction',
+        'arithmetic_accuracy': 'Arithmetic Accuracy',
+        'price_anomaly_check': 'Price Anomaly Check',
+        'duplicate_detection': 'Duplicate Detection',
+        'gst_validation': 'GST Validation',
+        'gst_rate_validation': 'GST Rate Validation'
+    };
+    return checkNameMap[checkName] || checkName;
+}
+
+/**
+ * Render validation status from check object
+ */
+function renderValidationStatusFromCheck(label, check) {
+    if (!check) return '';
+    
+    const success = check.success === true;
+    const statusIcon = success
+        ? `<svg class="validation-icon-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+        : `<svg class="validation-icon-failed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+    
+    const statusBadge = success
+        ? '<span class="validation-badge badge-success-check">Passed</span>'
+        : '<span class="validation-badge badge-failed-check">Failed</span>';
+    
+    return `
+        <div class="validation-card ${success ? 'success' : 'failed'}">
+            <div class="validation-card-header">
+                ${statusIcon}
+                <span class="validation-card-label">${label}</span>
+            </div>
+            <div class="validation-card-body">
+                ${statusBadge}
+                ${check.comments ? `<p class="validation-card-comment">${check.comments}</p>` : ''}
+            </div>
+        </div>
+    `;
 }
 
 /**
@@ -804,22 +966,22 @@ function renderValidationStatus(label, statusObj) {
     
     const success = statusObj.success === true;
     const statusIcon = success
-        ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color: var(--status-success);"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color: var(--status-error);"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+        ? `<svg class="validation-icon-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+        : `<svg class="validation-icon-failed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
     
     const statusBadge = success
-        ? '<span class="badge badge-success" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Passed</span>'
-        : '<span class="badge badge-failed" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">Failed</span>';
+        ? '<span class="validation-badge badge-success-check">Passed</span>'
+        : '<span class="validation-badge badge-failed-check">Failed</span>';
     
     return `
-        <div class="validation-row">
-            <div class="validation-left">
-                <div class="validation-icon">${statusIcon}</div>
-                <span class="validation-label">${label}</span>
+        <div class="validation-card ${success ? 'success' : 'failed'}">
+            <div class="validation-card-header">
+                ${statusIcon}
+                <span class="validation-card-label">${label}</span>
             </div>
-            <div class="validation-right">
+            <div class="validation-card-body">
                 ${statusBadge}
-                ${statusObj.comments ? `<span class="validation-comment">${statusObj.comments}</span>` : ''}
+                ${statusObj.comments ? `<p class="validation-card-comment">${statusObj.comments}</p>` : ''}
             </div>
         </div>
     `;
@@ -830,6 +992,26 @@ function renderValidationStatus(label, statusObj) {
  */
 function closeModal() {
     elements.modalOverlay.classList.remove('active');
+    
+    // Remove blur from navbar, sidebar, and main content
+    const navbar = document.querySelector('.navbar');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.processed-invoices-main');
+    if (navbar) {
+        navbar.style.filter = 'none';
+        navbar.style.pointerEvents = '';
+    }
+    if (sidebar) {
+        sidebar.style.filter = 'none';
+        sidebar.style.pointerEvents = '';
+    }
+    if (mainContent) {
+        mainContent.style.filter = 'none';
+        mainContent.style.pointerEvents = '';
+    }
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
 }
 
 // Make closeModal available globally
@@ -929,6 +1111,277 @@ function formatStage(stage) {
         'price_anomaly': 'Price Anomaly Detection'
     };
     return stageNames[stage] || stage;
+}
+
+/**
+ * Render API Response in collapsible accordion with structured data display
+ */
+function renderAPIResponse(label, response) {
+    if (!response) return '';
+    
+    const accordionId = label.toLowerCase().replace(/\s+/g, '-');
+    const success = response.success === true;
+    const statusIcon = success
+        ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color: var(--status-success);"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color: var(--status-error);"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+    
+    // Format the response data in a user-friendly way
+    let contentHTML = '';
+    
+    if (response.comments) {
+        contentHTML += `<p class="api-comments"><strong>Status:</strong> ${response.comments}</p>`;
+    }
+    
+    // Check what type of response we have and format accordingly
+    if (response.full_response) {
+        const fullResponse = response.full_response;
+        
+        // Handle error responses
+        if (fullResponse.error) {
+            contentHTML += `
+                <div class="api-error-message">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>${fullResponse.error}</span>
+                </div>
+            `;
+        }
+        
+        // Handle price anomaly check response
+        else if (fullResponse.anomalies || fullResponse.marketComparison) {
+            contentHTML += `<div class="api-structured-data">`;
+            
+            if (fullResponse.summary) {
+                contentHTML += `<div class="api-summary">${fullResponse.summary}</div>`;
+            }
+            
+            if (fullResponse.anomalies && fullResponse.anomalies.length > 0) {
+                contentHTML += `
+                    <h5 class="api-section-title">Anomalies Detected:</h5>
+                    <div class="anomalies-list">
+                        ${fullResponse.anomalies.map(anomaly => `
+                            <div class="anomaly-item">
+                                <div class="anomaly-description">${anomaly.description || 'N/A'}</div>
+                                <div class="anomaly-details">
+                                    ${anomaly.billed_rate ? `<span class="detail-chip">Billed: ₹${formatAmount(anomaly.billed_rate)}</span>` : ''}
+                                    ${anomaly.market_rate ? `<span class="detail-chip">Market: ₹${formatAmount(anomaly.market_rate)}</span>` : ''}
+                                    ${anomaly.deviation_percent !== null && anomaly.deviation_percent !== undefined ? `<span class="detail-chip alert">${anomaly.deviation_percent}% deviation</span>` : ''}
+                                    ${anomaly.issue ? `<span class="detail-chip warning">${anomaly.issue}</span>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            contentHTML += `</div>`;
+        }
+        
+        // Handle duplicate detection response
+        else if (fullResponse.is_duplicate !== undefined) {
+            contentHTML += `<div class="api-structured-data">`;
+            contentHTML += `
+                <div class="detail-grid-2col">
+                    <div class="detail-item">
+                        <span class="detail-label">Is Duplicate</span>
+                        <span class="detail-value">${fullResponse.is_duplicate ? 'Yes' : 'No'}</span>
+                    </div>
+                    ${fullResponse.duplicate_type ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Duplicate Type</span>
+                        <span class="detail-value">${fullResponse.duplicate_type}</span>
+                    </div>
+                    ` : ''}
+                    ${fullResponse.confidence_score !== undefined ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Confidence Score</span>
+                        <span class="detail-value">${fullResponse.confidence_score}%</span>
+                    </div>
+                    ` : ''}
+                    ${fullResponse.matched_invoice_ids && fullResponse.matched_invoice_ids.length > 0 ? `
+                    <div class="detail-item full-width">
+                        <span class="detail-label">Matched Invoice IDs</span>
+                        <span class="detail-value mono">${fullResponse.matched_invoice_ids.join(', ')}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            contentHTML += `</div>`;
+        }
+        
+        // Handle GST validation response
+        else if (fullResponse.vendorValidation || fullResponse.companyValidation || fullResponse.gstSummary) {
+            contentHTML += `<div class="api-structured-data">`;
+            
+            if (fullResponse.messages && fullResponse.messages.length > 0) {
+                contentHTML += `
+                    <div class="validation-messages">
+                        ${fullResponse.messages.map(msg => `
+                            <div class="validation-message-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                                    <polyline points="9 11 12 14 22 4"></polyline>
+                                </svg>
+                                <span>${msg}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            if (fullResponse.vendorValidation) {
+                contentHTML += `
+                    <h5 class="api-section-title">Vendor Validation:</h5>
+                    <div class="detail-grid-3col">
+                        ${fullResponse.vendorValidation.gstin ? `
+                        <div class="detail-item">
+                            <span class="detail-label">GSTIN</span>
+                            <span class="detail-value mono">${fullResponse.vendorValidation.gstin}</span>
+                        </div>
+                        ` : ''}
+                        ${fullResponse.vendorValidation.legalName ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Legal Name</span>
+                            <span class="detail-value">${fullResponse.vendorValidation.legalName}</span>
+                        </div>
+                        ` : ''}
+                        ${fullResponse.vendorValidation.tradeName ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Trade Name</span>
+                            <span class="detail-value">${fullResponse.vendorValidation.tradeName}</span>
+                        </div>
+                        ` : ''}
+                        ${fullResponse.vendorValidation.status ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value"><span class="badge badge-${fullResponse.vendorValidation.active ? 'success' : 'failed'}">${fullResponse.vendorValidation.status}</span></span>
+                        </div>
+                        ` : ''}
+                        ${fullResponse.vendorValidation.businessType ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Business Type</span>
+                            <span class="detail-value">${fullResponse.vendorValidation.businessType}</span>
+                        </div>
+                        ` : ''}
+                        ${fullResponse.vendorValidation.state ? `
+                        <div class="detail-item">
+                            <span class="detail-label">State</span>
+                            <span class="detail-value">${fullResponse.vendorValidation.state}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            contentHTML += `</div>`;
+        }
+        
+        // Handle arithmetic accuracy response
+        else if (fullResponse.isValid !== undefined || fullResponse.calculations) {
+            contentHTML += `<div class="api-structured-data">`;
+            contentHTML += `
+                <div class="detail-grid-2col">
+                    ${fullResponse.isValid !== undefined ? `
+                    <div class="detail-item">
+                        <span class="detail-label">Is Valid</span>
+                        <span class="detail-value"><span class="badge badge-${fullResponse.isValid ? 'success' : 'failed'}">${fullResponse.isValid ? 'Valid' : 'Invalid'}</span></span>
+                    </div>
+                    ` : ''}
+                    ${fullResponse.errors && fullResponse.errors.length > 0 ? `
+                    <div class="detail-item full-width">
+                        <span class="detail-label">Errors</span>
+                        <span class="detail-value">${fullResponse.errors.join(', ')}</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            if (fullResponse.calculations) {
+                contentHTML += `
+                    <h5 class="api-section-title">Calculations:</h5>
+                    <div class="detail-grid-3col">
+                        ${Object.entries(fullResponse.calculations).map(([key, value]) => `
+                            <div class="detail-item">
+                                <span class="detail-label">${key}</span>
+                                <span class="detail-value">${value !== null && value !== undefined ? (typeof value === 'number' ? '₹' + formatAmount(value) : value) : 'N/A'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            contentHTML += `</div>`;
+        }
+        
+        // Handle OCR and other generic responses
+        else if (fullResponse.data) {
+            contentHTML += `<div class="api-success-message">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Data extracted successfully. See invoice information above.</span>
+            </div>`;
+        }
+        
+        // Default: Show a simplified message
+        else {
+            contentHTML += `<div class="api-info-message">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>Response data available</span>
+            </div>`;
+        }
+    }
+    
+    return `
+        <div class="accordion-item">
+            <div class="accordion-header" data-accordion="${accordionId}">
+                <div class="accordion-title">
+                    ${statusIcon}
+                    <span>${label}</span>
+                </div>
+                <div class="accordion-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="accordion-content" id="accordion-${accordionId}">
+                <div class="accordion-content-inner">
+                    ${contentHTML}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Attach accordion event listeners
+ */
+function attachAccordionListeners() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const accordionId = this.getAttribute('data-accordion');
+            const content = document.getElementById(`accordion-${accordionId}`);
+            const isActive = this.classList.contains('active');
+            
+            // Close all accordion items
+            document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
+            
+            // Open clicked item if it wasn't active
+            if (!isActive) {
+                this.classList.add('active');
+                content.classList.add('active');
+            }
+        });
+    });
 }
 
 /**

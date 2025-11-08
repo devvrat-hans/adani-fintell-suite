@@ -192,9 +192,7 @@ console.log('Notification system ready');
  * @param {string} title - Optional notification title
  * @param {number} duration - Optional duration in milliseconds
  */
-export function showNotification(type, message, title = '', duration = 5000) {
+window.showNotification = function(type, message, title = '', duration = 5000) {
     return NotificationSystem.show({ type, title, message, duration });
-}
+};
 
-// Export the notification system as well
-export { NotificationSystem };

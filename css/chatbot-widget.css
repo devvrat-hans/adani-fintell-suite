@@ -62,8 +62,8 @@
     position: absolute;
     bottom: 80px;
     right: 0;
-    width: 400px;
-    height: 600px;
+    width: 450px;
+    height: 650px;
     background: #FFFFFF;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
@@ -254,11 +254,13 @@
 
 .bot-message {
     align-self: flex-start;
+    max-width: 90%;
 }
 
 .user-message {
     align-self: flex-end;
     flex-direction: row-reverse;
+    max-width: 85%;
 }
 
 .message-avatar {
@@ -280,11 +282,15 @@
 
 .message-content {
     flex: 1;
-    max-width: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: calc(100% - 48px);
+    min-width: 0;
 }
 
 .user-message .message-content {
-    text-align: right;
+    align-items: flex-end;
 }
 
 .message-text {
@@ -295,25 +301,64 @@
     line-height: 1.5;
     color: #1A1A1A;
     margin: 0 0 0.25rem;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+}
+
+.message-text p {
+    margin: 0 0 0.5rem 0;
+}
+
+.message-text p:last-child {
+    margin-bottom: 0;
+}
+
+.message-text ul {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.25rem;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+.message-text ul li {
+    margin: 0.25rem 0;
+    padding-left: 0;
+    line-height: 1.6;
+}
+
+.message-text strong {
+    font-weight: 600;
+    color: inherit;
+}
+
+.message-text em {
+    font-style: italic;
+}
+
+.message-text code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8125rem;
 }
 
 .user-message .message-text {
     background: linear-gradient(135deg, #0B74B0 0%, #75479C 100%);
     color: #FFFFFF;
     border-radius: 12px 12px 0 12px;
+    text-align: left;
+}
+
+.user-message .message-text code {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .bot-message .message-text {
     border-radius: 12px 12px 12px 0;
-}
-
-.message-list {
-    margin: 0.5rem 0 0;
-    padding-left: 1.25rem;
-}
-
-.message-list li {
-    margin: 0.25rem 0;
 }
 
 .message-time {
@@ -328,12 +373,14 @@
     padding: 0.75rem 1rem;
     width: auto;
     display: inline-block;
+    background: #F8F9FA;
 }
 
 .typing-dots {
     display: flex;
     gap: 0.375rem;
     align-items: center;
+    padding: 0.5rem;
 }
 
 .typing-dots span {
@@ -361,6 +408,21 @@
         transform: translateY(-10px);
         opacity: 1;
     }
+}
+
+/* Welcome message specific styling */
+.bot-message:first-child .message-text {
+    max-width: 100%;
+}
+
+.bot-message:first-child .message-text ul {
+    list-style-position: inside;
+    padding-left: 0;
+}
+
+.bot-message:first-child .message-text ul li {
+    text-indent: -1.25rem;
+    padding-left: 1.25rem;
 }
 
 /* Input Area */
@@ -458,8 +520,8 @@
 
     .chatbot-window {
         width: calc(100vw - 32px);
-        max-width: 400px;
-        height: 500px;
+        max-width: 450px;
+        height: 550px;
     }
 
     .chatbot-toggle-btn {
@@ -478,6 +540,6 @@
         bottom: 76px;
         right: -8px;
         width: calc(100vw - 16px);
-        height: 450px;
+        height: 500px;
     }
 }
