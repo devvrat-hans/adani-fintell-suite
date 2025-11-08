@@ -97,15 +97,21 @@ body {
 
 .nav-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 0;
     padding: var(--spacing-sm) var(--spacing-lg);
+    gap: 175px;
 }
 
 .logo-container {
     flex-shrink: 0;
+}
+
+.brand-logo {
+    height: 40px;
+    width: auto;
 }
 
 .logo-text {
@@ -121,29 +127,38 @@ body {
     display: flex;
     list-style: none;
     gap: var(--spacing-lg);
+    margin: 0;
+    flex: 1;
 }
 
 .nav-link {
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    transition: color 0.3s ease, border-bottom 0.3s ease;
-    border-bottom: 2px solid transparent;
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
 }
 
 .nav-link:hover {
     color: var(--adani-blue);
+    background: rgba(11, 116, 176, 0.1);
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.2);
+    transform: translateY(-2px);
 }
 
 .nav-link.active {
-    color: var(--adani-blue);
-    border-bottom: 2px solid var(--adani-blue);
+    color: var(--bg-white);
+    background: var(--gradient-blue-purple);
+    box-shadow: 0 4px 16px rgba(11, 116, 176, 0.3);
+    font-weight: 600;
 }
 
 .nav-actions {
     display: flex;
     gap: var(--spacing-sm);
+    margin-left: auto;
 }
 
 /* ==========================================================================
@@ -195,7 +210,7 @@ body {
    ========================================================================== */
 
 .hero-section {
-    min-height: 80vh;
+    min-height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -336,13 +351,43 @@ body {
     border-left: 4px solid var(--adani-blue);
 }
 
+.card-blue-accent .feature-icon {
+    color: var(--adani-blue);
+}
+
+.card-green-accent {
+    border-left: 4px solid var(--status-success);
+}
+
+.card-green-accent .feature-icon {
+    color: var(--status-success);
+}
+
+.card-orange-accent {
+    border-left: 4px solid #FF8C42;
+}
+
+.card-orange-accent .feature-icon {
+    color: #FF8C42;
+}
+
 .card-purple-accent {
     border-left: 4px solid var(--adani-purple);
 }
 
+.card-purple-accent .feature-icon {
+    color: var(--adani-purple);
+}
+
 .feature-icon {
-    font-size: 3rem;
-    margin-bottom: var(--spacing-sm);
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .feature-title {
@@ -455,29 +500,51 @@ body {
 
 .tech-stack {
     text-align: center;
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(11, 116, 176, 0.05) 0%, rgba(117, 71, 156, 0.05) 100%);
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
 }
 
 .tech-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
     color: var(--text-primary);
+    background: var(--gradient-blue-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .tech-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
     justify-content: center;
 }
 
 .tech-badge {
+    background: var(--bg-white);
+    color: var(--adani-blue);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(11, 116, 176, 0.15);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tech-badge:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(11, 116, 176, 0.25);
+    border: 2px solid var(--adani-blue);
     background: var(--gradient-blue-purple);
     color: var(--bg-white);
-    padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.95rem;
 }
 
 /* ==========================================================================
