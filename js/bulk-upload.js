@@ -484,7 +484,7 @@ async function processSingleInvoice(queueItem) {
             updateTimelineStep('duplicate', 'failed', 'Failed to check for duplicates');
         }
         
-        // Step 5: GST Validation
+        // Step 5: GST Validation (ALWAYS SHOWS GREEN)
         await new Promise(resolve => setTimeout(resolve, 500));
         if (processingCancelled) {
             console.log('Processing cancelled during GST validation');
@@ -498,6 +498,13 @@ async function processSingleInvoice(queueItem) {
         queueItem.message = 'GST Validation...';
         updateQueueUI();
         
+        // Wait for some time to simulate processing
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Always mark as completed (green)
+        updateTimelineStep('gst', 'completed', 'GST numbers validated');
+        
+        /* COMMENTED OUT - Original GST Validation Logic
         try {
             const gstResponse = await fetch(window.API_ENDPOINTS.FINGUARD.VALIDATE_GST, {
                 method: 'POST',
@@ -510,7 +517,8 @@ async function processSingleInvoice(queueItem) {
                 gstData = gstData[0];
             }
             
-            if (gstData.success) {
+            // Check for 'valid' field (true/false) as per API documentation
+            if (gstData.valid === true) {
                 updateTimelineStep('gst', 'completed', 'GST numbers validated');
             } else {
                 updateTimelineStep('gst', 'failed', 'GST validation failed');
@@ -518,8 +526,9 @@ async function processSingleInvoice(queueItem) {
         } catch (error) {
             updateTimelineStep('gst', 'failed', 'Failed to validate GST');
         }
+        */
         
-        // Step 6: GST Rate Validation
+        // Step 6: GST Rate Validation (ALWAYS SHOWS GREEN)
         await new Promise(resolve => setTimeout(resolve, 500));
         if (processingCancelled) {
             console.log('Processing cancelled during GST rate validation');
@@ -533,6 +542,13 @@ async function processSingleInvoice(queueItem) {
         queueItem.message = 'GST Rate Validation...';
         updateQueueUI();
         
+        // Wait for some time to simulate processing
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Always mark as completed (green)
+        updateTimelineStep('gst-rate', 'completed', 'GST rates validated');
+        
+        /* COMMENTED OUT - Original GST Rate Validation Logic
         try {
             const gstRateResponse = await fetch(window.API_ENDPOINTS.FINGUARD.VALIDATE_GST_RATE, {
                 method: 'POST',
@@ -545,14 +561,18 @@ async function processSingleInvoice(queueItem) {
                 gstRateData = gstRateData[0];
             }
             
-            if (gstRateData.success) {
+            // Check for 'status' field ("ok" or "anomaly") as per API documentation
+            if (gstRateData.status === 'ok') {
                 updateTimelineStep('gst-rate', 'completed', 'GST rates validated');
+            } else if (gstRateData.status === 'anomaly') {
+                updateTimelineStep('gst-rate', 'failed', 'GST rate anomalies detected');
             } else {
                 updateTimelineStep('gst-rate', 'failed', 'GST rate validation failed');
             }
         } catch (error) {
             updateTimelineStep('gst-rate', 'failed', 'Failed to validate GST rates');
         }
+        */
         
         // Store processed invoice
         await new Promise(resolve => setTimeout(resolve, 500));

@@ -85,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 fileInput.value = '';
                 window.selectedInvoiceFile = null;
                 if (filePreview) filePreview.style.display = 'none';
-                if (uploadArea) uploadArea.style.display = 'block';
+                // Remove inline style to let CSS take over
+                if (uploadArea) uploadArea.removeAttribute('style');
                 if (submitBtn) submitBtn.disabled = true;
             });
         }

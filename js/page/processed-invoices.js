@@ -499,7 +499,6 @@ function renderTable() {
                 <td>${invoice.invoice_amount ? '₹' + formatAmount(invoice.invoice_amount) : '-'}</td>
                 <td>${formatDateTime(processedDate)}</td>
                 <td><span class="badge badge-${overallStatus}">${overallStatus}</span></td>
-                <td>${getFailedStage(invoice)}</td>
                 <td>-</td>
                 <td>
                     <div class="action-buttons">

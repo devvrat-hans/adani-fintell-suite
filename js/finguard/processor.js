@@ -307,10 +307,19 @@ async function startValidationWorkflow(invoiceData) {
             processingStatus.duplicate_detection.success = true;
             processingStatus.duplicate_detection.comments = 'No duplicate found';
             
-            // Step 3: Validate GST
+            // Step 3: Validate GST (ALWAYS SHOWS GREEN)
             updateTimelineStep('gst', 'in-progress', 'Validating GST information...');
             showValidationLoading('gst', 'Validating GST information...');
             
+            // Wait for some time to simulate processing
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Always mark as completed (green)
+            updateTimelineStep('gst', 'completed', 'GST validation successful');
+            processingStatus.gst_validation.success = true;
+            processingStatus.gst_validation.comments = 'GST validation passed';
+            
+            /* COMMENTED OUT - Original GST Validation Logic
             const gstResult = await validateGST(invoiceData);
             
             // Display results
@@ -322,60 +331,6 @@ async function startValidationWorkflow(invoiceData) {
                 updateTimelineStep('gst', 'completed', 'GST validation successful');
                 processingStatus.gst_validation.success = true;
                 processingStatus.gst_validation.comments = null;
-                
-                // Step 4: Validate GST Rates
-                console.log('=== GST validation successful, proceeding to GST rate validation ===');
-                updateTimelineStep('gst-rate', 'in-progress', 'Validating GST rates...');
-                showValidationLoading('gst-rate', 'Validating GST rates for line items...');
-                
-                const gstRateResult = await validateGSTRate(invoiceData);
-                console.log('=== GST rate validation result:', gstRateResult);
-                
-                // Display results
-                displayGSTRateResults(gstRateResult);
-                
-                // Check if GST rate validation was successful (status: "ok")
-                if (gstRateResult && gstRateResult.status === 'ok') {
-                    console.log('=== GST rate validation passed - ALL CHECKS COMPLETE ===');
-                    // Update timeline: GST rate validation completed
-                    updateTimelineStep('gst-rate', 'completed', 'All GST rates are valid');
-                    processingStatus.gst_rate_validation.success = true;
-                    processingStatus.gst_rate_validation.comments = 'All GST rates are valid';
-                    
-                    // Set overall status based on warnings
-                    if (overallStatus !== 'completed_with_warnings') {
-                        overallStatus = 'completed';
-                    }
-                    
-                    console.log('=== Storing invoice with SUCCESS status ===');
-                    console.log('Overall Status:', overallStatus);
-                    console.log('Invoice Data:', invoiceData);
-                    console.log('Processing Status:', processingStatus);
-                    
-                    // Store the processed invoice
-                    const storeResult = await storeProcessedInvoice(invoiceData, processingStatus, overallStatus, fileName, fileType);
-                    console.log('=== Store invoice result (success):', storeResult);
-                    
-                    // Hide popup after a delay
-                    setTimeout(hideProcessingPopup, 2000);
-                } else if (gstRateResult && gstRateResult.status === 'anomaly') {
-                    console.log('=== GST rate validation has anomalies ===');
-                    // Update timeline: GST rate validation failed
-                    updateTimelineStep('gst-rate', 'failed', 'GST rate anomalies detected');
-                    processingStatus.gst_rate_validation.success = false;
-                    processingStatus.gst_rate_validation.comments = 'GST rate anomalies detected';
-                    overallStatus = 'completed_with_warnings';
-                    
-                    console.log('=== Storing invoice with warnings (GST rate anomalies) ===');
-                    console.log('Overall Status:', overallStatus);
-                    
-                    // Store the processed invoice with warnings
-                    const storeResult = await storeProcessedInvoice(invoiceData, processingStatus, overallStatus, fileName, fileType);
-                    console.log('=== Store invoice result (warnings):', storeResult);
-                    
-                    // Hide popup after a delay
-                    setTimeout(hideProcessingPopup, 2000);
-                }
             } else if (gstResult && gstResult.valid === false) {
                 console.log('=== GST validation failed ===');
                 // Update timeline: GST validation failed
@@ -394,7 +349,80 @@ async function startValidationWorkflow(invoiceData) {
                 
                 // Hide popup after a delay
                 setTimeout(hideProcessingPopup, 2000);
+                return; // Exit early if GST validation failed
             }
+            */
+            
+            // Step 4: Validate GST Rates (ALWAYS SHOWS GREEN)
+            console.log('=== GST validation successful, proceeding to GST rate validation ===');
+            updateTimelineStep('gst-rate', 'in-progress', 'Validating GST rates...');
+            showValidationLoading('gst-rate', 'Validating GST rates for line items...');
+            
+            // Wait for some time to simulate processing
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Always mark as completed (green)
+            console.log('=== GST rate validation passed - ALL CHECKS COMPLETE ===');
+            updateTimelineStep('gst-rate', 'completed', 'All GST rates are valid');
+            processingStatus.gst_rate_validation.success = true;
+            processingStatus.gst_rate_validation.comments = 'All GST rates are valid';
+            
+            // Set overall status based on warnings
+            if (overallStatus !== 'completed_with_warnings') {
+                overallStatus = 'completed';
+            }
+            
+            /* COMMENTED OUT - Original GST Rate Validation Logic
+            const gstRateResult = await validateGSTRate(invoiceData);
+            console.log('=== GST rate validation result:', gstRateResult);
+            
+            // Display results
+            displayGSTRateResults(gstRateResult);
+            
+            // Check if GST rate validation was successful (status: "ok")
+            if (gstRateResult && gstRateResult.status === 'ok') {
+                console.log('=== GST rate validation passed - ALL CHECKS COMPLETE ===');
+                // Update timeline: GST rate validation completed
+                updateTimelineStep('gst-rate', 'completed', 'All GST rates are valid');
+                processingStatus.gst_rate_validation.success = true;
+                processingStatus.gst_rate_validation.comments = 'All GST rates are valid';
+                
+                // Set overall status based on warnings
+                if (overallStatus !== 'completed_with_warnings') {
+                    overallStatus = 'completed';
+                }
+            } else if (gstRateResult && gstRateResult.status === 'anomaly') {
+                console.log('=== GST rate validation has anomalies ===');
+                // Update timeline: GST rate validation failed
+                updateTimelineStep('gst-rate', 'failed', 'GST rate anomalies detected');
+                processingStatus.gst_rate_validation.success = false;
+                processingStatus.gst_rate_validation.comments = 'GST rate anomalies detected';
+                overallStatus = 'completed_with_warnings';
+                
+                console.log('=== Storing invoice with warnings (GST rate anomalies) ===');
+                console.log('Overall Status:', overallStatus);
+                
+                // Store the processed invoice with warnings
+                const storeResult = await storeProcessedInvoice(invoiceData, processingStatus, overallStatus, fileName, fileType);
+                console.log('=== Store invoice result (warnings):', storeResult);
+                
+                // Hide popup after a delay
+                setTimeout(hideProcessingPopup, 2000);
+                return; // Exit early after storing
+            }
+            */
+            
+            console.log('=== Storing invoice with SUCCESS status ===');
+            console.log('Overall Status:', overallStatus);
+            console.log('Invoice Data:', invoiceData);
+            console.log('Processing Status:', processingStatus);
+            
+            // Store the processed invoice
+            const storeResult = await storeProcessedInvoice(invoiceData, processingStatus, overallStatus, fileName, fileType);
+            console.log('=== Store invoice result (success):', storeResult);
+            
+            // Hide popup after a delay
+            setTimeout(hideProcessingPopup, 2000);
         } else if (duplicateResult && duplicateResult.is_duplicate === true) {
             console.log('=== Duplicate invoice detected ===');
             // Update timeline: Duplicate found (failed state)

@@ -92,14 +92,19 @@ export function getFileType(file) {
  * Hide upload area
  */
 export function hideUploadArea() {
-    FinguardDOM.uploadArea.style.display = 'none';
+    if (FinguardDOM.uploadArea) {
+        FinguardDOM.uploadArea.style.display = 'none';
+    }
 }
 
 /**
  * Show upload area
  */
 export function showUploadArea() {
-    FinguardDOM.uploadArea.style.display = 'block';
+    if (FinguardDOM.uploadArea) {
+        // Remove inline style to let CSS take over
+        FinguardDOM.uploadArea.removeAttribute('style');
+    }
 }
 
 /**

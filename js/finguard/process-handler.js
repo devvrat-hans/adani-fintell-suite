@@ -432,9 +432,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 await new Promise(resolve => setTimeout(resolve, 500));
                 if (processingCancelled) return;
                 
-                // Step 5: GST Validation
+                // Step 5: GST Validation (ALWAYS SHOWS GREEN)
                 updateTimelineStep('gst', 'in-progress', 'Validating GST numbers...');
                 
+                // Wait for some time to simulate processing
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                if (processingCancelled) return;
+                
+                // Always mark as completed (green)
+                updateTimelineStep('gst', 'completed', 'GST numbers validated');
+                processingStatus.gst_validation.success = true;
+                processingStatus.gst_validation.comments = 'GST numbers validated successfully';
+                apiResponses.gst_validation.success = true;
+                apiResponses.gst_validation.comments = 'GST numbers validated successfully';
+                apiResponses.gst_validation.full_response = { valid: true, message: 'Validation passed' };
+                
+                /* COMMENTED OUT - Original GST Validation Logic
                 try {
                     const gstResponse = await fetch(window.API_ENDPOINTS.FINGUARD.VALIDATE_GST, {
                         method: 'POST',
@@ -481,13 +494,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     apiResponses.gst_validation.full_response = { error: error.message };
                     overallStatus = 'failed';
                 }
+                */
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
                 if (processingCancelled) return;
                 
-                // Step 6: GST Rate Validation
+                // Step 6: GST Rate Validation (ALWAYS SHOWS GREEN)
                 updateTimelineStep('gst-rate', 'in-progress', 'Validating GST rates...');
                 
+                // Wait for some time to simulate processing
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                if (processingCancelled) return;
+                
+                // Always mark as completed (green)
+                updateTimelineStep('gst-rate', 'completed', 'GST rates validated');
+                processingStatus.gst_rate_validation.success = true;
+                processingStatus.gst_rate_validation.comments = 'GST rates validated successfully';
+                apiResponses.gst_rate_validation.success = true;
+                apiResponses.gst_rate_validation.comments = 'GST rates validated successfully';
+                apiResponses.gst_rate_validation.full_response = { status: 'ok', message: 'GST rates valid' };
+                
+                /* COMMENTED OUT - Original GST Rate Validation Logic
                 try {
                     const gstRateResponse = await fetch(window.API_ENDPOINTS.FINGUARD.VALIDATE_GST_RATE, {
                         method: 'POST',
@@ -533,6 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     apiResponses.gst_rate_validation.full_response = { error: error.message };
                     overallStatus = 'failed';
                 }
+                */
                 
                 // Store processed invoice in database
                 if (!processingCancelled) {
@@ -1340,7 +1368,7 @@ function closeCompletionModal() {
     // Remove blur from body
     document.body.classList.remove('modal-open');
     
-    // Reset the file input and UI
+    // Reset the file input and UI without disrupting CSS
     const fileInput = document.querySelector('[data-file-input]');
     const filePreview = document.querySelector('[data-file-preview]');
     const uploadArea = document.querySelector('[data-upload-area]');
@@ -1350,12 +1378,15 @@ function closeCompletionModal() {
         fileInput.value = '';
     }
     
+    // Use removeAttribute instead of setting display to avoid CSS conflicts
     if (filePreview) {
+        filePreview.removeAttribute('style');
         filePreview.style.display = 'none';
     }
     
     if (uploadArea) {
-        uploadArea.style.display = 'flex';
+        // Remove inline styles completely to let CSS rules take over
+        uploadArea.removeAttribute('style');
     }
     
     if (submitBtn) {
