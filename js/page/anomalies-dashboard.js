@@ -62,8 +62,18 @@ async function init() {
     // Attach event listeners
     attachEventListeners();
 
-    // Load data
-    await fetchAnomalies();
+    // Load data - try API first, fallback to mock data
+    try {
+        await fetchAnomalies();
+        // If no data was fetched, use mock data
+        if (state.anomalies.length === 0) {
+            console.log('No data from API, using mock data');
+            loadMockData();
+        }
+    } catch (error) {
+        console.log('API failed, using mock data');
+        loadMockData();
+    }
 
     // Remove loading state
     document.body.classList.remove('loading-layout');
@@ -130,7 +140,273 @@ function attachEventListeners() {
     });
     
     console.log('Event listeners attached');
-}/**
+}
+
+/**
+ * Load mock data for testing/demo purposes
+ */
+function loadMockData() {
+    console.log('Loading mock data...');
+    
+    const mockInvoices = [
+        {
+            batchId: "BATCH001",
+            invoiceId: "IN00001",
+            invoiceNumber: "INV-2025-001",
+            vendorName: "Adani Exports Ltd",
+            invoiceAmount: 125000.50,
+            uploadTimestamp: "2025-11-06T10:30:00.000Z",
+            vendorGstin: "27AABCA1234E1Z5",
+            anomalyDetails: [
+                {
+                    type: "DUPLICATE_DETECTION",
+                    severity: "HIGH",
+                    description: "Duplicate invoice detected - Invoice already processed on 2025-11-01"
+                },
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "MEDIUM",
+                    description: "Price deviation detected | Expected: ₹120,000 | Billed: ₹125,000"
+                }
+            ],
+            severity: "high",
+            status: "flagged",
+            riskScore: 85
+        },
+        {
+            batchId: "BATCH002",
+            invoiceId: "IN00002",
+            invoiceNumber: "INV-2025-002",
+            vendorName: "Gujarat Industries Pvt Ltd",
+            invoiceAmount: 45000.00,
+            uploadTimestamp: "2025-11-06T11:15:00.000Z",
+            vendorGstin: "24AABCG5678K1Z9",
+            anomalyDetails: [
+                {
+                    type: "GST_VALIDATION",
+                    severity: "HIGH",
+                    description: "Vendor GSTIN mismatch - Registered name different from invoice"
+                }
+            ],
+            severity: "high",
+            status: "under_review",
+            riskScore: 75
+        },
+        {
+            batchId: "BATCH003",
+            invoiceId: "IN00003",
+            invoiceNumber: "INV-2025-003",
+            vendorName: "Maharashtra Traders",
+            invoiceAmount: 89500.75,
+            uploadTimestamp: "2025-11-06T12:00:00.000Z",
+            vendorGstin: "27AABCM9012L1Z3",
+            anomalyDetails: [
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "MEDIUM",
+                    description: "Price significantly higher than market rate | Market: ₹75,000 | Billed: ₹89,500"
+                }
+            ],
+            severity: "medium",
+            status: "flagged",
+            riskScore: 60
+        },
+        {
+            batchId: "BATCH004",
+            invoiceId: "IN00004",
+            invoiceNumber: "INV-2025-004",
+            vendorName: "Rajasthan Steel Works",
+            invoiceAmount: 234000.00,
+            uploadTimestamp: "2025-11-06T13:30:00.000Z",
+            vendorGstin: "08AABCR3456D1Z7",
+            anomalyDetails: [
+                {
+                    type: "GST_RATE_ANOMALY",
+                    severity: "MEDIUM",
+                    description: "GST rate mismatch | Expected: 18% | Applied: 12%"
+                },
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "LOW",
+                    description: "Minor price variation detected | Expected: ₹230,000 | Billed: ₹234,000"
+                }
+            ],
+            severity: "medium",
+            status: "under_review",
+            riskScore: 55
+        },
+        {
+            batchId: "BATCH005",
+            invoiceId: "IN00005",
+            invoiceNumber: "INV-2025-005",
+            vendorName: "Tamil Nadu Construction Co",
+            invoiceAmount: 567800.00,
+            uploadTimestamp: "2025-11-07T09:00:00.000Z",
+            vendorGstin: "33AABCT6789F1Z1",
+            anomalyDetails: [
+                {
+                    type: "HIGH_RISK_FLAG",
+                    severity: "HIGH",
+                    description: "Multiple critical issues: Duplicate detection, GST mismatch, and price anomaly"
+                },
+                {
+                    type: "DUPLICATE_DETECTION",
+                    severity: "HIGH",
+                    description: "Possible duplicate - Similar invoice found from same vendor"
+                },
+                {
+                    type: "GST_VALIDATION",
+                    severity: "HIGH",
+                    description: "GST validation failed - GSTIN not found in database"
+                }
+            ],
+            severity: "high",
+            status: "flagged",
+            riskScore: 95
+        },
+        {
+            batchId: "BATCH006",
+            invoiceId: "IN00006",
+            invoiceNumber: "INV-2025-006",
+            vendorName: "Karnataka Logistics Ltd",
+            invoiceAmount: 32500.00,
+            uploadTimestamp: "2025-11-07T10:15:00.000Z",
+            vendorGstin: "29AABCK2345H1Z8",
+            anomalyDetails: [
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "LOW",
+                    description: "Slight price difference | Expected: ₹31,800 | Billed: ₹32,500"
+                }
+            ],
+            severity: "low",
+            status: "resolved",
+            riskScore: 25
+        },
+        {
+            batchId: "BATCH007",
+            invoiceId: "IN00007",
+            invoiceNumber: "INV-2025-007",
+            vendorName: "Delhi Equipment Suppliers",
+            invoiceAmount: 156000.00,
+            uploadTimestamp: "2025-11-07T11:30:00.000Z",
+            vendorGstin: "07AABCD4567J1Z4",
+            anomalyDetails: [
+                {
+                    type: "GST_VALIDATION",
+                    severity: "MEDIUM",
+                    description: "Company GSTIN status verification pending"
+                }
+            ],
+            severity: "medium",
+            status: "under_review",
+            riskScore: 45
+        },
+        {
+            batchId: "BATCH008",
+            invoiceId: "IN00008",
+            invoiceNumber: "INV-2025-008",
+            vendorName: "Uttar Pradesh Materials",
+            invoiceAmount: 98700.50,
+            uploadTimestamp: "2025-11-07T12:45:00.000Z",
+            vendorGstin: "09AABCU7890K1Z2",
+            anomalyDetails: [
+                {
+                    type: "DUPLICATE_DETECTION",
+                    severity: "MEDIUM",
+                    description: "Similar invoice found - Requires manual verification"
+                }
+            ],
+            severity: "medium",
+            status: "under_review",
+            riskScore: 50
+        },
+        {
+            batchId: "BATCH009",
+            invoiceId: "IN00009",
+            invoiceNumber: "INV-2025-009",
+            vendorName: "West Bengal Trading Co",
+            invoiceAmount: 412000.00,
+            uploadTimestamp: "2025-11-07T14:00:00.000Z",
+            vendorGstin: "19AABCW1234M1Z6",
+            anomalyDetails: [
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "HIGH",
+                    description: "Significant price anomaly | Market: ₹350,000 | Billed: ₹412,000"
+                },
+                {
+                    type: "GST_RATE_ANOMALY",
+                    severity: "MEDIUM",
+                    description: "HSN/SAC code mismatch with applied GST rate"
+                }
+            ],
+            severity: "high",
+            status: "flagged",
+            riskScore: 80
+        },
+        {
+            batchId: "BATCH010",
+            invoiceId: "IN00010",
+            invoiceNumber: "INV-2025-010",
+            vendorName: "Punjab Machinery Works",
+            invoiceAmount: 267500.00,
+            uploadTimestamp: "2025-11-07T15:15:00.000Z",
+            vendorGstin: "03AABCP5678N1Z0",
+            anomalyDetails: [
+                {
+                    type: "GST_VALIDATION",
+                    severity: "HIGH",
+                    description: "Vendor business name mismatch with GSTIN records"
+                },
+                {
+                    type: "HIGH_RISK_FLAG",
+                    severity: "HIGH",
+                    description: "High-risk vendor - Previous compliance issues detected"
+                }
+            ],
+            severity: "high",
+            status: "flagged",
+            riskScore: 90
+        },
+        {
+            batchId: "BATCH011",
+            invoiceId: "IN00011",
+            invoiceNumber: "INV-2025-011",
+            vendorName: "Haryana Industries",
+            invoiceAmount: 73200.00,
+            uploadTimestamp: "2025-11-07T16:00:00.000Z",
+            vendorGstin: "06AABCH8901O1Z5",
+            anomalyDetails: [
+                {
+                    type: "PRICE_ANOMALY",
+                    severity: "LOW",
+                    description: "Minor price difference within acceptable range"
+                }
+            ],
+            severity: "low",
+            status: "resolved",
+            riskScore: 20
+        }
+    ];
+    
+    // Transform mock data
+    state.anomalies = transformAnomaliesToRecords(mockInvoices);
+    console.log('Mock data loaded:', state.anomalies.length, 'anomalies');
+    
+    // Save to localStorage
+    localStorage.setItem('anomaliesData', JSON.stringify(state.anomalies));
+    localStorage.setItem('anomaliesDataTimestamp', Date.now().toString());
+    
+    // Calculate summary
+    const summary = calculateSummary(state.anomalies);
+    updateSummary(summary);
+    
+    // Apply filters and render
+    applyFilters();
+}
+
+/**
  * Fetch anomalies from API
  */
 async function fetchAnomalies(forceRefresh = false) {
@@ -192,31 +468,38 @@ async function fetchAnomalies(forceRefresh = false) {
         console.log('Anomalies API response:', apiData);
         console.log('API data type:', typeof apiData);
         console.log('Is array:', Array.isArray(apiData));
+        console.log('API data stringified:', JSON.stringify(apiData, null, 2));
 
         // API returns an array of objects, each containing an invoices array
         let anomaliesData = [];
         
-        if (Array.isArray(apiData)) {
+        if (Array.isArray(apiData) && apiData.length > 0) {
             console.log('Processing array with', apiData.length, 'items');
             // Extract invoices from each object in the array
             apiData.forEach((item, index) => {
                 console.log(`Item ${index}:`, item);
-                if (item.invoices && Array.isArray(item.invoices)) {
+                console.log(`Item ${index} stringified:`, JSON.stringify(item, null, 2));
+                if (item && item.invoices && Array.isArray(item.invoices)) {
                     console.log(`  - Found ${item.invoices.length} invoices in item ${index}`);
+                    // Each invoice might have multiple anomalies, so we include the full invoice object
                     anomaliesData = anomaliesData.concat(item.invoices);
                 } else {
                     console.warn(`  - Item ${index} has no invoices array or it's not an array`);
+                    if (item) {
+                        console.log(`  - Item ${index} keys:`, Object.keys(item));
+                    }
                 }
             });
+        } else if (apiData && !Array.isArray(apiData) && apiData.invoices && Array.isArray(apiData.invoices)) {
+            // Handle case where API returns a single object with invoices array
+            console.log('Found invoices array in response object');
+            anomaliesData = apiData.invoices;
         } else {
-            console.warn('API response is not an array, checking if it has invoices property');
-            if (apiData && apiData.invoices && Array.isArray(apiData.invoices)) {
-                console.log('Found invoices array in response object');
-                anomaliesData = apiData.invoices;
-            }
+            console.warn('Unexpected API response structure');
         }
 
         console.log('Extracted anomalies data:', anomaliesData);
+        console.log('Extracted anomalies data stringified:', JSON.stringify(anomaliesData, null, 2));
         console.log('Total invoices with anomalies extracted:', anomaliesData.length);
 
         // Transform API data to anomaly records
