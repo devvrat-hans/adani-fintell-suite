@@ -202,10 +202,18 @@ async function fetchAnomalies(forceRefresh = false) {
             apiData.forEach((item, index) => {
                 console.log(`Item ${index}:`, item);
                 if (item.invoices && Array.isArray(item.invoices)) {
-                    console.log(`  - Found ${item.invoices.length} invoices`);
+                    console.log(`  - Found ${item.invoices.length} invoices in item ${index}`);
                     anomaliesData = anomaliesData.concat(item.invoices);
+                } else {
+                    console.warn(`  - Item ${index} has no invoices array or it's not an array`);
                 }
             });
+        } else {
+            console.warn('API response is not an array, checking if it has invoices property');
+            if (apiData && apiData.invoices && Array.isArray(apiData.invoices)) {
+                console.log('Found invoices array in response object');
+                anomaliesData = apiData.invoices;
+            }
         }
 
         console.log('Extracted anomalies data:', anomaliesData);
@@ -261,13 +269,29 @@ async function fetchAnomalies(forceRefresh = false) {
 function transformAnomaliesToRecords(anomaliesData) {
     console.log('=== transformAnomaliesToRecords START ===');
     console.log('Input data:', anomaliesData);
+    console.log('Input data type:', typeof anomaliesData);
+    console.log('Is input array:', Array.isArray(anomaliesData));
+    
     const records = [];
 
+    // Ensure we have an array
+    if (!Array.isArray(anomaliesData)) {
+        console.warn('Input is not an array, returning empty records');
+        return records;
+    }
+
     // The API response structure: invoices array containing invoice objects with anomalyDetails
-    anomaliesData.forEach(invoice => {
-        console.log('Processing invoice:', invoice);
+    anomaliesData.forEach((invoice, invoiceIndex) => {
+        console.log(`Processing invoice ${invoiceIndex}:`, invoice);
+        
+        // Handle null or undefined invoice
+        if (!invoice) {
+            console.warn(`Invoice at index ${invoiceIndex} is null/undefined, skipping`);
+            return;
+        }
         
         const anomalyDetails = invoice.anomalyDetails || [];
+        console.log(`  - Found ${anomalyDetails.length} anomaly details`);
         
         // Create a record for each anomaly detail
         anomalyDetails.forEach((anomaly, index) => {
@@ -279,22 +303,25 @@ function transformAnomaliesToRecords(anomaliesData) {
             else if (anomaly.type === 'GST_RATE_ANOMALY') anomalyType = 'gst_compliance';
             else if (anomaly.type === 'HIGH_RISK_FLAG') anomalyType = 'high_risk';
             
-            records.push({
-                id: `${invoice.invoiceId}-${index}`,
-                invoice_number: invoice.invoiceNumber,
-                vendor_name: invoice.vendorName,
-                vendor_gstin: invoice.gstMismatch?.invoiceVendorGstin || 'N/A',
-                invoice_date: invoice.uploadTimestamp,
-                invoice_amount: invoice.invoiceAmount,
+            const record = {
+                id: `${invoice.invoiceId || 'UNKNOWN'}-${index}`,
+                invoice_number: invoice.invoiceNumber || 'N/A',
+                vendor_name: invoice.vendorName || 'N/A',
+                vendor_gstin: invoice.gstMismatch?.invoiceVendorGstin || invoice.vendorGstin || 'N/A',
+                invoice_date: invoice.uploadTimestamp || new Date().toISOString(),
+                invoice_amount: invoice.invoiceAmount || 0,
                 anomaly_type: anomalyType,
-                severity: anomaly.severity.toLowerCase(), // 'HIGH', 'MEDIUM', 'LOW' -> 'high', 'medium', 'low'
+                severity: (anomaly.severity || 'LOW').toLowerCase(), // 'HIGH', 'MEDIUM', 'LOW' -> 'high', 'medium', 'low'
                 risk_score: invoice.riskScore || 0,
                 status: invoice.status || 'flagged', // 'under_review' -> keep as is
-                description: anomaly.description,
-                detection_date: invoice.uploadTimestamp,
-                batch_id: invoice.batchId,
+                description: anomaly.description || 'No description available',
+                detection_date: invoice.uploadTimestamp || new Date().toISOString(),
+                batch_id: invoice.batchId || 'N/A',
                 invoice_data: invoice
-            });
+            };
+            
+            console.log(`  - Created record ${index}:`, record);
+            records.push(record);
         });
     });
 
@@ -465,6 +492,11 @@ function renderTable() {
     console.log('Filtered anomalies count:', state.filteredAnomalies.length);
     console.log('tableBody element:', elements.tableBody);
     
+    if (!elements.tableBody) {
+        console.error('Table body element not found!');
+        return;
+    }
+    
     if (state.filteredAnomalies.length === 0) {
         console.log('No anomalies to display, showing empty state');
         elements.tableBody.innerHTML = `
@@ -492,7 +524,7 @@ function renderTable() {
     const pageAnomalies = state.filteredAnomalies.slice(start, end);
     console.log(`Rendering page ${state.currentPage}, items ${start}-${end}, count: ${pageAnomalies.length}`);
 
-    elements.tableBody.innerHTML = pageAnomalies.map(anomaly => `
+    const tableHTML = pageAnomalies.map(anomaly => `
         <tr>
             <td><strong>${anomaly.id}</strong></td>
             <td>${anomaly.invoice_number}</td>
@@ -517,7 +549,9 @@ function renderTable() {
             </td>
         </tr>
     `).join('');
-    console.log('Table HTML updated');
+    
+    elements.tableBody.innerHTML = tableHTML;
+    console.log('Table HTML updated with', pageAnomalies.length, 'rows');
     console.log('=== renderTable END ===');
 }
 
@@ -751,7 +785,7 @@ async function handleRefresh() {
     elements.refreshBtn.disabled = true;
     console.log('Calling fetchAnomalies with forceRefresh=true...');
     await fetchAnomalies(true); // Force refresh
-    showNotification('success', 'Data refreshed successfully');
+    showNotification('Data refreshed successfully', 'success');
     elements.refreshBtn.disabled = false;
     console.log('handleRefresh complete');
 }

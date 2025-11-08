@@ -187,12 +187,21 @@ console.log('Notification system ready');
 
 /**
  * Convenience function for showing notifications
+ * @param {string} message - Notification message  
  * @param {string} type - Type of notification ('success', 'error', 'warning', 'info')
- * @param {string} message - Notification message
  * @param {string} title - Optional notification title
  * @param {number} duration - Optional duration in milliseconds
  */
-window.showNotification = function(type, message, title = '', duration = 5000) {
+window.showNotification = function(message, type = 'info', title = '', duration = 5000) {
     return NotificationSystem.show({ type, title, message, duration });
 };
 
+/**
+ * Export for ES6 modules
+ */
+export function showNotification(message, type = 'info', title = '', duration = 5000) {
+    return NotificationSystem.show({ type, title, message, duration });
+}
+
+export { NotificationSystem };
+export default NotificationSystem;
